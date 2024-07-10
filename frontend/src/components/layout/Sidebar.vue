@@ -7,7 +7,7 @@
       <div class="sidebar-brand-icon rotate-n-15">
         <i class="fas fa-laugh-wink"></i>
       </div>
-      <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+      <div class="sidebar-brand-text mx-3">DoubleS <sup>S2</sup></div>
     </a>
 
     <!-- Divider -->
@@ -15,9 +15,9 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-      <a class="nav-link" href="#">
-        <i class="fas fa-fw fa-tachometer-alt"></i>
-        <span>Dashboard</span></a>
+      <router-link class="nav-link" to="/">
+        <i class="fas fa-home"></i>
+        <span>Main</span></router-link>
     </li>
 
     <!-- Divider -->
@@ -81,22 +81,22 @@
       <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
           <h6 class="collapse-header">Login Screens:</h6>
-          <a class="collapse-item" href="login.html">Login</a>
+          <router-link class="collapse-item" to="/login">Login</router-link>
           <a class="collapse-item" href="register.html">Register</a>
           <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
           <div class="collapse-divider"></div>
           <h6 class="collapse-header">Other Pages:</h6>
-          <a class="collapse-item" href="404.html">404 Page</a>
+          <router-link class="collapse-item" to="/error404">404 Page</router-link>
           <a class="collapse-item" href="blank.html">Blank Page</a>
         </div>
       </div>
     </li>
 
-    <!-- Nav Item - Charts -->
+    <!-- Nav Item - Todo -->
     <li class="nav-item">
-      <a class="nav-link" href="charts.html">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Charts</span></a>
+      <a class="nav-link" href="#">
+        <i class="fas fa-solid fa-list"></i>
+        <span> Todo</span></a>
     </li>
 
     <!-- Nav Item - Tables -->
@@ -126,8 +126,9 @@
 
 <script setup>
   const setToggled = () => {
-    $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
+    const sidebarClass = $(".sidebar");
+    sidebarClass.toggleClass("toggled");
+    if (sidebarClass.hasClass("toggled")) {
       $('.sidebar .collapse').collapse('hide');
     };
   }
