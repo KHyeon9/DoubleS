@@ -1,11 +1,8 @@
 <template>
-  <Main/>
-  <!-- <Login /> -->
+  <router-view />
 </template>
 
 <script setup>
-  import Main from './components/Main.vue';
-  import Login from './components/Login.vue';
 </script>
 
 <style scoped>
