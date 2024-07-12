@@ -29,11 +29,11 @@ public class UserAccount extends AuditingFields {
     private RoleType roleType = RoleType.USER; // 일반적으로는 USER만 생성되도록 함.
 
     @Setter
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String email; // 이메일
 
     @Setter
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String nickname; // 닉네임
 
     @Setter
