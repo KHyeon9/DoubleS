@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.dto.user;
 
+import com.doubles.selfstudy.entity.UserAccount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ public class UserAccountDto implements UserDetails {
         return new UserAccountDto(userId, password, roleType, email, nickname, memo, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
-    public static UserAccountDto fromEntity(UserAccountDto entity) {
+    public static UserAccountDto fromEntity(UserAccount entity) {
         return new UserAccountDto(
                 entity.getUserId(),
                 entity.getPassword(),
