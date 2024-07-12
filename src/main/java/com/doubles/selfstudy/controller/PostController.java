@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     @GetMapping
-    public void posts() {
-        // post list 반환
+    public void questionBoardList() {
+        // question board list 반환
     }
 }
