@@ -15,29 +15,29 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 @Entity
-public class UserAccount extends AuditingFields implements UserDetails {
+public class UserAccount extends AuditingFields {
 
     @Id
     @Column(length = 50)
-    private String userId;
+    private String userId; // 유저 ID
 
     @Setter
     @Column(nullable = false)
-    private String password;
+    private String password; // 비밀번호
 
     @Enumerated(EnumType.STRING)
-    private RoleType roleType = RoleType.USER;
+    private RoleType roleType = RoleType.USER; // 일반적으로는 USER만 생성되도록 함.
 
     @Setter
-    @Column(length = 100)
-    private String email;
+    @Column(length = 100, nullable = false)
+    private String email; // 이메일
 
     @Setter
-    @Column(length = 100)
-    private String nickname;
+    @Column(length = 100, nullable = false)
+    private String nickname; // 닉네임
 
     @Setter
-    private String memo;
+    private String memo; // 메로(자기 소개 비슷하게 사용)
 
     protected UserAccount() {}
 
@@ -57,15 +57,5 @@ public class UserAccount extends AuditingFields implements UserDetails {
 
     public static UserAccount of(String userId, String password, String email, String nickname, String memo, String createdBy) {
         return new UserAccount(userId, password, email, nickname, memo, createdBy);
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.getRoleType().getRoleName()));
-    }
-
-    @Override
-    public String getUsername() {
-        return getUserId();
     }
 }
