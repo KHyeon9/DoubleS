@@ -1,9 +1,9 @@
 <template>
   <div>
-    login
+    Notification
   </div>
 </template>
-<script>
+<script setup>
 
 </script>
 <style scoped>
