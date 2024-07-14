@@ -1,47 +1,79 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useIndexStore } from "../store/IndexStore";
 import MainComp from "../components/MainComp.vue";
-import Login from "../components/Login.vue";
-import Todo from "../components/layout/Todo.vue"
-import Post from "../components/layout/Post.vue";
-import Home from "../components/layout/Home.vue";
-import Group from "../components/layout/Group.vue";
-import Chat from "../components/layout/Chat.vue";
+import Todo from "../components/layout/main/Todo.vue"
+import Post from "../components/layout/main/Post.vue";
+import Home from "../components/layout/main/Home.vue";
+import Group from "../components/layout/main/Group.vue";
+import Chat from "../components/layout/main/Chat.vue";
+import Notification from "../components/layout/main/Notification.vue";
+import UserAccount from "../components/UserAccount.vue";
+import Login from "../components/layout/user/Login.vue";
+import Regist from "../components/layout/user/Regist.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { 
-      path: '/', 
+      path: '/main', 
       component: MainComp,
       children: [
         {
-          path: '/', 
+          path: '', 
           component: Home,
         },
         {
-          path: '/todo', 
+          path: 'notification',
+          component: Notification
+        },
+        {
+          path: 'todo', 
           component: Todo,
         },
         {
-          path: '/post', 
+          path: 'post', 
           component: Post,
         },
         {
-          path: '/group', 
+          path: 'group', 
           component: Group,
         },
         {
-          path: '/chat', 
+          path: 'chat', 
           component: Chat,
         },
         {
-          path: '/alarm', 
+          path: 'alarm', 
           component: Chat,
         },
       ]
     },
-    { path: '/login', component: Login },
+    { 
+      path: '/', 
+      component: UserAccount, 
+      children: [
+        {
+          path: 'login',
+          component: Login,
+        },
+        {
+          path: 'regist',
+          component: Regist,
+        },
+      ]
+    },
+    
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const indexStore = useIndexStore();
+  if (to.meta.bodyClass !== undefined) {
+    indexStore.setBodyClass(to.meta.bodyClass);
+  } else {
+    indexStore.setBodyClass('');
+  }
+  next();
+});
 
 export default router;

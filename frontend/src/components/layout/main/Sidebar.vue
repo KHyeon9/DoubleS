@@ -14,9 +14,9 @@
       <ul class="navbar-nav">
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/') }]"
-            @click="store.changePage('/')"
-            to="/"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main') }]"
+            @click="store.changePage('/main')"
+            to="/main"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">home</i>
@@ -26,9 +26,21 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/todo') }]" 
-            @click="store.changePage('/todo')"
-            to="/todo"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/notification') }]"
+            @click="store.changePage('/main/notification')"
+            to="/main/notification"
+          >
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">priority_high</i>
+            </div>
+            <span class="nav-link-text ms-1">Notification</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link 
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/todo') }]" 
+            @click="store.changePage('/main/todo')"
+            to="/main/todo"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">fact_check</i>
@@ -38,9 +50,9 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/post') }]" 
-            @click="store.changePage('/post')"
-            to="/post"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/post') }]" 
+            @click="store.changePage('/main/post')"
+            to="/main/post"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">table_view</i>
@@ -50,9 +62,9 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/group') }]" 
-            @click="store.changePage('/group')"
-            to="/group"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/group') }]" 
+            @click="store.changePage('/main/group')"
+            to="/main/group"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">group</i>
@@ -62,9 +74,9 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/chat') }]" 
-            @click="store.changePage('/chat')"
-            to="/chat"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/chat') }]" 
+            @click="store.changePage('/main/chat')"
+            to="/main/chat"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">chat</i>
@@ -74,9 +86,9 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/alarm') }]" 
-            @click="store.changePage('/alarm')"
-            to="/alarm"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/alarm') }]" 
+            @click="store.changePage('/main/alarm')"
+            to="/main/alarm"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">notifications</i>
@@ -104,12 +116,12 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white " href="../pages/sign-up.html">
+          <router-link class="nav-link text-white " to="/regist">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">assignment</i>
             </div>
             <span class="nav-link-text ms-1">Sign Up</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -126,7 +138,7 @@
 </template>
 <script setup>
   import { useRoute } from 'vue-router';
-  import { useIndexStore } from '../../store/IndexStore';
+  import { useIndexStore } from '../../../store/IndexStore';
   const route = useRoute();
   const store = useIndexStore();
 

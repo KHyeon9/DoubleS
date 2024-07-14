@@ -114,7 +114,7 @@
   </nav>
 </template>
 <script setup>
-  import { useIndexStore } from '../../store/IndexStore';
+  import { useIndexStore } from '../../../store/IndexStore';
   import { computed } from 'vue';
 
   const store = useIndexStore();
