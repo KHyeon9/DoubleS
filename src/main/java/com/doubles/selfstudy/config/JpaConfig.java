@@ -26,6 +26,7 @@ public class JpaConfig {
                     .map(UserAccountDto::getUsername);
 
             auditor.ifPresent(username -> log.info("Current auditor: {}", username));
+
             if (auditor.isEmpty()) {
                 log.warn("인증 정보를 SecurityContext에서 찾지 못했습니다.");
             }
