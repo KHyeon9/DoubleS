@@ -9,11 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 @RestController
 public class UserController {
 
-    private UserAccountService userAccountService;
+    private final UserAccountService userAccountService;
 
     @PostMapping("/login")
     public void login() {
