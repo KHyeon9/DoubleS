@@ -24,16 +24,14 @@ public class UserAccountDto implements UserDetails {
     private String nickname; // 닉네임
     private String memo; // 메로(자기 소개 비슷하게 사용)
     private LocalDateTime createdAt; // 생성 일시
-    private String createdBy; // 생성자
     private LocalDateTime modifiedAt; // 수정 일시
-    private String modifiedBy; // 수정자
 
     public static UserAccountDto of(String userId, String password, RoleType roleType, String email, String nickname, String memo) {
-        return new UserAccountDto(userId, password, roleType, email, nickname, memo, null, null, null, null);
+        return new UserAccountDto(userId, password, roleType, email, nickname, memo, null, null);
     }
 
-    public static UserAccountDto of(String userId, String password, RoleType roleType, String email, String nickname, String memo, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
-        return new UserAccountDto(userId, password, roleType, email, nickname, memo, createdAt, createdBy, modifiedAt, modifiedBy);
+    public static UserAccountDto of(String userId, String password, RoleType roleType, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new UserAccountDto(userId, password, roleType, email, nickname, memo, createdAt, modifiedAt);
     }
 
     public static UserAccountDto fromEntity(UserAccount entity) {
@@ -45,9 +43,7 @@ public class UserAccountDto implements UserDetails {
                 entity.getNickname(),
                 entity.getMemo(),
                 entity.getCreatedAt(),
-                entity.getCreatedBy(),
-                entity.getModifiedAt(),
-                entity.getModifiedBy()
+                entity.getModifiedAt()
         );
     }
 
@@ -63,6 +59,6 @@ public class UserAccountDto implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nickname;
+        return userId;
     }
 }
