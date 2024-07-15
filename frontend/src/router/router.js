@@ -14,6 +14,10 @@ import Regist from "../components/layout/user/Regist.vue";
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    {
+      path: '/',
+      redirect: '/login', // '/' 경로로 접근 시 '/login'으로 리다이렉트
+    },
     { 
       path: '/main', 
       component: MainComp,
