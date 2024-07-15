@@ -2,6 +2,7 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
+import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Optional;
 
 import static com.doubles.selfstudy.fixture.UserAccountFixture.get;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +36,7 @@ class UserAccountServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
-        when(userAccountRepository.save(any(UserAccount.class))).thenReturn(fixture); // 수정된 부분
+        when(userAccountRepository.save(any())).thenReturn(fixture);
 
         // Then
         assertDoesNotThrow(() -> userAccountService.regist(userId, password, email, nickname));
@@ -54,10 +54,12 @@ class UserAccountServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
-        when(userAccountRepository.save(any())).thenReturn(Optional.of(fixture));
+        when(userAccountRepository.save(any())).thenReturn(fixture);
 
         // Then
-        assertThrows(DoubleSApplicationException.class,
-                () -> userAccountService.regist(userId, password, email, nickname));
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class, () -> userAccountService.regist(userId, password, email, nickname));
+        assertEquals(ErrorCode.DUPLICATED_USER_ID, e.getErrorCode());
     }
+
 }

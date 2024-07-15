@@ -13,3 +13,8 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+jwt:
+  secret-key: self_study_project.doubles_application_2024.secret_key
+  token:
+    # 30 days
+    expired-time-ms: 2592000000

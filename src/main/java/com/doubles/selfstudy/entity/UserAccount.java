@@ -5,57 +5,69 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
+@Setter
+@Table(name = "user_account")
 @ToString(callSuper = true)
 @Entity
-public class UserAccount extends AuditingFields {
+public class UserAccount {
 
     @Id
-    @Column(length = 50)
+    @Column(length = 50, name = "user_id")
     private String userId; // 유저 ID
 
-    @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, name = "password")
     private String password; // 비밀번호
 
+    @Column(name = "role_type")
     @Enumerated(EnumType.STRING)
     private RoleType roleType = RoleType.USER; // 일반적으로는 USER만 생성되도록 함.
 
-    @Setter
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, name = "email")
     private String email; // 이메일
 
-    @Setter
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, name = "nickname")
     private String nickname; // 닉네임
 
-    @Setter
+    @Column(name = "memo")
     private String memo; // 메로(자기 소개 비슷하게 사용)
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 
     protected UserAccount() {}
 
-    private UserAccount(String userId, String password, String email, String nickname, String memo, String createdBy) {
+    private UserAccount(String userId, String password, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.userId = userId;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
         this.memo = memo;
-        this.createdBy = createdBy;
-        this.modifiedBy = createdBy;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 
     public static UserAccount of(String userId, String password, String email, String nickname, String memo) {
-        return UserAccount.of(userId, password, email, nickname, memo, null);
+        return UserAccount.of(userId, password, email, nickname, memo, null, null);
     }
 
-    public static UserAccount of(String userId, String password, String email, String nickname, String memo, String createdBy) {
-        return new UserAccount(userId, password, email, nickname, memo, createdBy);
+    public static UserAccount of(String userId, String password, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new UserAccount(userId, password, email, nickname, memo, createdAt, modifiedAt);
+    }
+
+    @PrePersist
+    void createdAt() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void modifiedAt() {
+        this.modifiedAt = LocalDateTime.now();
     }
 }
