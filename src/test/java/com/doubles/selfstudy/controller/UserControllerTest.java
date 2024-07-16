@@ -65,7 +65,7 @@ class UserControllerTest {
 
         // When
         when(userAccountService.regist(userId, password, email, nickname))
-                .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID, ""));
+                .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID));
 
         // Then
         mockMvc.perform(post("/api/regist")
@@ -102,7 +102,7 @@ class UserControllerTest {
 
         // When
         when(userAccountService.login(userId, password))
-                .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID, ""));
+                .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID));
 
         // Then
         mockMvc.perform(post("/api/login")
@@ -121,12 +121,12 @@ class UserControllerTest {
 
         // When
         when(userAccountService.login(userId, password))
-                .thenThrow(new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD, ""));
+                .thenThrow(new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD));
 
         // Then
         mockMvc.perform(post("/api/login")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userId,password)))
+                    .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userId, password)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PASSWORD.getStatus().value()));
