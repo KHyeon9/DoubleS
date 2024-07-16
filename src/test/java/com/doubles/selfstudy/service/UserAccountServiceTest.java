@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ class UserAccountServiceTest {
     private UserAccountService userAccountService;
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private BCryptPasswordEncoder encoder;
 
     @Test
     void 회원가입이_정상적으로_작동하는_경우() {
@@ -36,6 +39,7 @@ class UserAccountServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+        when(encoder.encode(password)).thenReturn("encrypt_password");
         when(userAccountRepository.save(any())).thenReturn(fixture);
 
         // Then
@@ -54,6 +58,7 @@ class UserAccountServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(encoder.encode(password)).thenReturn("encrypt_password");
         when(userAccountRepository.save(any())).thenReturn(fixture);
 
         // Then
@@ -62,4 +67,46 @@ class UserAccountServiceTest {
         assertEquals(ErrorCode.DUPLICATED_USER_ID, e.getErrorCode());
     }
 
+    @Test
+    void 로그인이_정상적으로_작동하는_경우() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+        UserAccount fixture = get(userId, password);
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(encoder.matches(password, fixture.getPassword())).thenReturn(true);
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.login(userId, password));
+    }
+
+    @Test
+    void 로그인시_userId로_가입한_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(DoubleSApplicationException.class, () -> userAccountService.login(userId, password));
+    }
+
+    @Test
+    void 로그인시_password가_틀린_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+        String wrongPassword = "wrongPassword";
+        UserAccount fixture = get(userId, password);
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+
+        // Then
+        assertThrows(DoubleSApplicationException.class, () -> userAccountService.login(userId, wrongPassword));
+    }
 }
