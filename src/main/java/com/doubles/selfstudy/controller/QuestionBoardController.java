@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/post")
 @RestController
-public class PostController {
+public class QuestionBoardController {
 
     @GetMapping
     public void questionBoardList() {
