@@ -2,12 +2,10 @@ package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
-import com.doubles.selfstudy.controller.response.UserLoginResponse;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.service.UserAccountService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
