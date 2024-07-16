@@ -9,4 +9,10 @@ public class UserAccountFixture {
 
         return userAccount;
     }
+
+    public static UserAccount get(String userId, String password) {
+        UserAccount userAccount = UserAccount.of(userId, password, "test@email.com", "test", "test memo");
+
+        return userAccount;
+    }
 }
