@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.mock;
@@ -35,8 +35,7 @@ class UserControllerTest {
     private UserAccountService userAccountService;
 
     @Test
-    @WithAnonymousUser
-    void 회원가입() throws Exception {
+    void 회원가입_정상_작동() throws Exception {
         // Given
         String userId = "userId";
         String password = "password";
@@ -57,7 +56,6 @@ class UserControllerTest {
     }
 
     @Test
-    @WithAnonymousUser
     void 회원가입시_이미_있는_userId로_가입을_하는_경우() throws Exception {
         // Given
         String userId = "userId";
@@ -78,4 +76,59 @@ class UserControllerTest {
                 .andExpect(status().is(ErrorCode.DUPLICATED_USER_ID.getStatus().value()));
     }
 
+    @Test
+    void 로그인_정상_작동() throws Exception {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        // When
+        when(userAccountService.login(userId, password)).thenReturn("test_token");
+
+        // Then
+        mockMvc.perform(post("/api/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userId, password)))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void 로그인시_userId로_가입한_유저가_없는_경우_에러_반환() throws Exception {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        // When
+        when(userAccountService.login(userId, password))
+                .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID, ""));
+
+        // Then
+        mockMvc.perform(post("/api/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userId, password)))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.DUPLICATED_USER_ID.getStatus().value()));
+    }
+
+    @Test
+    void 로그인시_password가_틀린_경우_에러_반환() throws Exception {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        // When
+        when(userAccountService.login(userId, password))
+                .thenThrow(new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD, ""));
+
+        // Then
+        mockMvc.perform(post("/api/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userId,password)))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_PASSWORD.getStatus().value()));
+    }
 }

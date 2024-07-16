@@ -17,11 +17,12 @@ public class JwtTokenUtils {
                 .signWith(getKey(key))
                 .compact();
     }
-
+    
+    // 서명 키 생성 메소드
     private static SecretKey getKey(String key) {
         return new SecretKeySpec(
                 key.getBytes(StandardCharsets.UTF_8),
-                Jwts.SIG.HS256.key().build().getAlgorithm()
+                Jwts.SIG.HS256.key().build().getAlgorithm() // HS256 사용
         );
     }
 }
