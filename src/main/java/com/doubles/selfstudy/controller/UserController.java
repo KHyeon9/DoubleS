@@ -1,7 +1,9 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.Response;
+import com.doubles.selfstudy.controller.response.UserLoginResponse;
 import com.doubles.selfstudy.controller.response.UserRegistResponse;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.service.UserAccountService;
@@ -16,8 +18,11 @@ public class UserController {
     private final UserAccountService userAccountService;
 
     @PostMapping("/login")
-    public void login() {
+    public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
         // login post
+        String token = userAccountService.login(request.getUserId(), request.getPassword());
+
+        return Response.success(new UserLoginResponse(token));
     }
 
     @PostMapping("/regist")
