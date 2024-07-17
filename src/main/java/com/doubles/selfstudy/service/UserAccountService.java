@@ -56,4 +56,12 @@ public class UserAccountService {
 
         return token;
     }
+    
+    // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
+    public UserAccountDto loadUserByUserId(String userId) {
+        return userAccountRepository.findById(userId).map(UserAccountDto::fromEntity).orElseThrow(
+                () -> new DoubleSApplicationException(
+                        ErrorCode.USER_NOT_FOUND, String.format("%s를 찾지 못했습니다", userId))
+        );
+    }
 }

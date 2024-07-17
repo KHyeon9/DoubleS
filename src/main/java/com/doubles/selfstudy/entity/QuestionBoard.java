@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
+@Table(name = "question_board")
 @ToString(callSuper = true)
 @Entity
 public class QuestionBoard extends AuditingFields {
