@@ -27,7 +27,7 @@ public class QuestionBoardController {
     @PostMapping("/create")
     public Response<Void> createQuestionBoard(@RequestBody QuestionBoardCreaeteRequest request, Authentication authentication) {
         // create page 생성
-        questionBoardService.createPost(request.getTitle(), request.getContent(), authentication.getName());
+        questionBoardService.createQuestionBoard(request.getTitle(), request.getContent(), authentication.getName());
 
         return Response.success();
     }

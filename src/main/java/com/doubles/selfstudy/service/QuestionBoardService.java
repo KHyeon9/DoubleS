@@ -17,8 +17,9 @@ public class QuestionBoardService {
     private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
 
+    // 질문 게시글 생성
     @Transactional
-    public void createPost(String title, String content, String userId) {
+    public void createQuestionBoard(String title, String content, String userId) {
         // user find
         UserAccount userAccount = getUserAccountOrException(userId);
 
@@ -26,6 +27,18 @@ public class QuestionBoardService {
         questionBoardRepository.save(
                 QuestionBoard.of(userAccount, title, content)
         );
+    }
+
+    // 질문 게시글 수정
+    @Transactional
+    public void modifyQuestionBoard(String title, String content, String userId, Long questionBoardId) {
+        // user find
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // post exist
+
+        // post permission
+        
     }
 
     private UserAccount getUserAccountOrException(String userId) {

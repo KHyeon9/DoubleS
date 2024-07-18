@@ -21,6 +21,7 @@ const router = createRouter({
     { 
       path: '/main', 
       component: MainComp,
+      meta: { bodyClass: 'g-sidenav-show bg-gray-200' }, 
       children: [
         {
           path: '', 

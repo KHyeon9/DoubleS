@@ -138,7 +138,7 @@
 </template>
 <script setup>
   import { useRoute } from 'vue-router';
-  import { useIndexStore } from '../../../store/IndexStore';
+  import { useIndexStore } from '../../../../store/IndexStore.js';
   const route = useRoute();
   const store = useIndexStore();
 

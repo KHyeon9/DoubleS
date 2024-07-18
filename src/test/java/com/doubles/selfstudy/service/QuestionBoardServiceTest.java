@@ -4,6 +4,8 @@ import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.QuestionBoardFixture;
+import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
@@ -40,12 +42,12 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.save(any())).thenReturn(mock(QuestionBoard.class));
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.createPost(title, content, userId));
+        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(title, content, userId));
     }
 
 
     @Test
-    void 질문_게시글_작성시_요청한_유저가_존재하지_않는_경우_에러_반환() {
+    void 질문_게시글_작성시_로그인한_유저가_존재하지_않는_경우_에러_반환() {
         // Given
         String title = "title";
         String content = "content";
@@ -58,8 +60,73 @@ class QuestionBoardServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> questionBoardService.createPost(title, content, userId)
+                () -> questionBoardService.createQuestionBoard(title, content, userId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_수정이_성공한_경우() {
+        // Given
+        String title = "modifiy_title";
+        String content = "modifiy_content";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        UserAccount userAccount = questionBoard.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId));
+    }
+
+    @Test
+    void 질문_게시글_수정시_게시글이_존재하지_않을_경우_에러_반환() {
+        // Given
+        String title = "modifiy_title";
+        String content = "modifiy_content";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        UserAccount userAccount = questionBoard.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                    questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId)
+                );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_수정시_권한이_없는_경우_에러_반환() {
+        // Given
+        String title = "modifiy_title";
+        String content = "modifiy_content";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        UserAccount writer = UserAccountFixture.get("testUserId", "password");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(writer));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId)
+        );
+
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
 }
