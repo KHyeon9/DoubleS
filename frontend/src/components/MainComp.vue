@@ -13,9 +13,9 @@
 </template>
 
 <script setup>
-  import Sidebar from './layout/main/Sidebar.vue';
-  import TopNavbar from './layout/main/TopNavbar.vue';
-  import FooterComp from './layout/main/FooterComp.vue';
+  import Sidebar from './layout/main/fragments/Sidebar.vue';
+  import TopNavbar from './layout/main/fragments/TopNavbar.vue';
+  import FooterComp from './layout/main/fragments/FooterComp.vue';
 </script>
 
 <style scoped>
