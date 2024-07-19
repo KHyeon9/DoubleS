@@ -21,7 +21,7 @@
               <li class="nav-item" role="presentation">
                 <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
                   <i class="material-icons text-lg position-relative">home</i>
-                  <span class="ms-1">App</span>
+                  <span class="ms-1">Home</span>
                 </a>
               </li>
               <li class="nav-item" role="presentation">
@@ -33,7 +33,7 @@
               <li class="nav-item" role="presentation">
                 <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false" tabindex="-1">
                   <i class="material-icons text-lg position-relative">settings</i>
-                  <span class="ms-1">Settings</span>
+                  <span class="ms-1">Modify</span>
                 </a>
               </li>
               <div class="moving-tab position-absolute nav-link" style="padding: 0px; transition: all 0.5s ease 0s; transform: translate3d(0px, 0px, 0px); width: 134px;">
