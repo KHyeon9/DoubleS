@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/main/post")
+@RequestMapping("/api/main/question_board")
 @RestController
 public class QuestionBoardController {
 
