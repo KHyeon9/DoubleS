@@ -73,8 +73,9 @@ class QuestionBoardServiceTest {
         String userId = "userId";
         Long questionBoardId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
         UserAccount userAccount = questionBoard.getUserAccount();
+        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
@@ -92,7 +93,7 @@ class QuestionBoardServiceTest {
         String userId = "userId";
         Long questionBoardId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
         UserAccount userAccount = questionBoard.getUserAccount();
 
         // When
@@ -115,7 +116,7 @@ class QuestionBoardServiceTest {
         String userId = "userId";
         Long questionBoardId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
         UserAccount writer = UserAccountFixture.get("testUserId", "password");
 
         // When

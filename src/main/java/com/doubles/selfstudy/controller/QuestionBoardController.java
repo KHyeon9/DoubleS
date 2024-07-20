@@ -1,7 +1,10 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.QuestionBoardCreaeteRequest;
+import com.doubles.selfstudy.controller.request.QuestionBoardCreateRequest;
+import com.doubles.selfstudy.controller.request.QuestionBoardModifyRequest;
+import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
+import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -25,10 +28,27 @@ public class QuestionBoardController {
     }
 
     @PostMapping("/create")
-    public Response<Void> createQuestionBoard(@RequestBody QuestionBoardCreaeteRequest request, Authentication authentication) {
+    public Response<Void> createQuestionBoard(@RequestBody QuestionBoardCreateRequest request, Authentication authentication) {
         // create page 생성
         questionBoardService.createQuestionBoard(request.getTitle(), request.getContent(), authentication.getName());
 
         return Response.success();
     }
+
+    @PutMapping("/modify/{questionBoardId}")
+    public Response<QuestionBoardResponse> modifyQuestionBoard(
+            @PathVariable Long questionBoardId,
+            @RequestBody QuestionBoardModifyRequest request,
+            Authentication authentication
+            ) {
+        QuestionBoardDto questionBoard = questionBoardService.modifyQuestionBoard(
+                request.getTitle(),
+                request.getContent(),
+                authentication.getName(),
+                questionBoardId
+        );
+
+        return Response.success(QuestionBoardResponse.fromQuetionBoardDto(questionBoard));
+    }
+
 }

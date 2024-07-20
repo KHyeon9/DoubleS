@@ -14,7 +14,8 @@ export const useIndexStore = defineStore('index', {
         '/main/post': 'Post',
         '/main/group': 'Study Group',
         '/main/chat': 'Chatting',
-        '/main/alarm': 'Alarm'
+        '/main/alarm': 'Alarm',
+        '/main/detail': 'Post Detail',
       };
       console.log(payload, 'payload');
       this.now_page = page_names[payload];
