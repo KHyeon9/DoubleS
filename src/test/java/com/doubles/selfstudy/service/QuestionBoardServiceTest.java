@@ -75,6 +75,7 @@ class QuestionBoardServiceTest {
 
         QuestionBoard questionBoard = QuestionBoardFixture.get(userId, questionBoardId);
         UserAccount userAccount = questionBoard.getUserAccount();
+        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
