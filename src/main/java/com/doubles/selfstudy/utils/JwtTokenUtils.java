@@ -10,16 +10,19 @@ import java.util.Date;
 
 public class JwtTokenUtils {
 
+    // userId 반환
     public static String getUserId(String token, String key) {
         return extractClaims(token, key).get("userId", String.class);
     }
 
+    // 토큰 종료 시간
     public static boolean isExpired(String token, String key) {
         Date expiredDate = extractClaims(token, key).getExpiration();
 
         return expiredDate.before(new Date());
     }
-
+    
+    // claim 추출
     private static Claims extractClaims(String token, String key) {
         return Jwts
                 .parser() // JWT 파서 객체 생성 (JWT에서 헤더, 페이로드, 서명 추출에 사용하기 위해)
@@ -29,6 +32,7 @@ public class JwtTokenUtils {
                 .getPayload(); // 클레임 추출
     }
 
+    // 토큰 생성
     public static String createJwtToken(String userId, String key, long expiredTimeMs) {
         return Jwts.builder()
                 .claim("userId", userId)
