@@ -11,11 +11,11 @@ export const useIndexStore = defineStore('index', {
         '/main': 'Home',
         '/main/notification': 'Notification',
         '/main/todo': 'Todo',
-        '/main/post': 'Post',
+        '/main/question_board': 'Question Board',
         '/main/group': 'Study Group',
         '/main/chat': 'Chatting',
         '/main/alarm': 'Alarm',
-        '/main/detail': 'Post Detail',
+        '/main/question_board/detail': 'Question Board Detail',
       };
       console.log(payload, 'payload');
       this.now_page = page_names[payload];

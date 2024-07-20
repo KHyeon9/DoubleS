@@ -16,17 +16,11 @@
             </p>
           </div>
         </div>
-        <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+        <div class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
           <div class="nav-wrapper position-relative end-0">
-            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+            <ul class="nav nav-pills nav-fill p-1" >
               <li class="nav-item" role="presentation">
-                <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                  <i class="material-icons text-lg position-relative">home</i>
-                  <span class="ms-1">Home</span>
-                </a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false" tabindex="-1">
+                <a class="nav-link mb-0 px-0 py-1 " href="javascript:;">
                   <i class="material-icons text-lg position-relative">email</i>
                   <span class="ms-1">Messages</span>
                 </a>
@@ -37,9 +31,6 @@
                   <span class="ms-1">Modify</span>
                 </a>
               </li>
-              <div class="moving-tab position-absolute nav-link" style="padding: 0px; transition: all 0.5s ease 0s; transform: translate3d(0px, 0px, 0px); width: 134px;">
-                <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">-</a>
-              </div>
             </ul>
           </div>
         </div>

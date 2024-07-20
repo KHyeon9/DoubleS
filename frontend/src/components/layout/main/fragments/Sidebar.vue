@@ -50,14 +50,14 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/post') }]" 
-            @click="store.changePage('/main/post')"
-            to="/main/post"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/question_board') }]" 
+            @click="store.changePage('/main/question_board')"
+            to="/main/question_board"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">table_view</i>
             </div>
-            <span class="nav-link-text ms-1">Post</span>
+            <span class="nav-link-text ms-1">Question Board</span>
           </router-link>
         </li>
         <li class="nav-item">
