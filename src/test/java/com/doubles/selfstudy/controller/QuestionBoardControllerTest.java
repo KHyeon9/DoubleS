@@ -47,7 +47,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(post("/api/main/post/create")
+        mockMvc.perform(post("/api/main/question_board/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
                 )
@@ -63,7 +63,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(post("/api/main/post/create")
+        mockMvc.perform(post("/api/main/question_board/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
                 )
@@ -84,7 +84,7 @@ class QuestionBoardControllerTest {
                 .thenReturn(QuestionBoardDto.fromEntity(QuestionBoardFixture.get("userId")));
 
         // Then
-        mockMvc.perform(put("/api/main/post/modify/1")
+        mockMvc.perform(put("/api/main/question_board/modify/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -101,7 +101,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(put("/api/main/post/modify/1")
+        mockMvc.perform(put("/api/main/question_board/modify/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -121,7 +121,7 @@ class QuestionBoardControllerTest {
                 .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
 
         // Then
-        mockMvc.perform(put("/api/main/post/modify/1")
+        mockMvc.perform(put("/api/main/question_board/modify/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -141,7 +141,7 @@ class QuestionBoardControllerTest {
                 .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
 
         // Then
-        mockMvc.perform(put("/api/main/post/modify/1")
+        mockMvc.perform(put("/api/main/question_board/modify/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )

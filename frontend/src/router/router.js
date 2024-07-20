@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useIndexStore } from "../store/IndexStore";
 import MainComp from "../components/MainComp.vue";
 import Todo from "../components/layout/main/Todo.vue"
-import Post from "../components/layout/main/Post.vue";
+import QuestionBoardList from "../components/layout/main/QuestionBoardList.vue";
 import Home from "../components/layout/main/Home.vue";
 import Group from "../components/layout/main/Group.vue";
 import Chat from "../components/layout/main/Chat.vue";
@@ -10,7 +10,7 @@ import Notification from "../components/layout/main/Notification.vue";
 import UserAccount from "../components/UserAccount.vue";
 import Login from "../components/layout/user/Login.vue";
 import Regist from "../components/layout/user/Regist.vue";
-import PostDetail from '../components/layout/main/PostDetail.vue'
+import QuestionBoardDetail from '../components/layout/main/QuestionBoardDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -37,8 +37,12 @@ const router = createRouter({
           component: Todo,
         },
         {
-          path: 'post', 
-          component: Post,
+          path: 'question_board', 
+          component: QuestionBoardList,
+        },
+        {
+          path: 'question_board/detail', 
+          component: QuestionBoardDetail,
         },
         {
           path: 'group', 
@@ -52,10 +56,7 @@ const router = createRouter({
           path: 'alarm', 
           component: Chat,
         },
-        {
-          path: 'detail', 
-          component: PostDetail,
-        },
+        
       ]
     },
     { 

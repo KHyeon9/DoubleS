@@ -1,7 +1,7 @@
 <template>
   <div>
-    Post
-    <router-link to="/main/detail" @click="store.changePage('/main/detail')">detail</router-link>
+    question_board
+    <router-link to="/main/question_board/detail">detail</router-link>
   </div>
 </template>
 <script setup>
