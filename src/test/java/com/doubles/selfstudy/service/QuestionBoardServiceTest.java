@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -190,5 +192,31 @@ class QuestionBoardServiceTest {
         );
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시판_리스트_조회가_성공한_경우() {
+        // Given
+        Pageable pageable = mock(Pageable.class);
+
+        // When
+        when(questionBoardRepository.findAll(pageable)).thenReturn(Page.empty());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.questionBoardList(pageable));
+    }
+
+    @Test
+    void 내_게시글_목록_조회가_성공한_경우() {
+        // Given
+        Pageable pageable = mock(Pageable.class);
+        UserAccount userAccount = mock(UserAccount.class);
+
+        // When
+        when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findByUserAccount(userAccount, pageable)).thenReturn(Page.empty());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList("", pageable));
     }
 }
