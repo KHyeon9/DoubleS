@@ -27,7 +27,7 @@ public class QuestionBoardController {
         // question board detail data 반환
     }
 
-    @PostMapping("/create")
+    @PostMapping
     public Response<Void> createQuestionBoard(@RequestBody QuestionBoardCreateRequest request, Authentication authentication) {
         // create page 생성
         questionBoardService.createQuestionBoard(request.getTitle(), request.getContent(), authentication.getName());
@@ -35,7 +35,7 @@ public class QuestionBoardController {
         return Response.success();
     }
 
-    @PutMapping("/modify/{questionBoardId}")
+    @PutMapping("/{questionBoardId}")
     public Response<QuestionBoardResponse> modifyQuestionBoard(
             @PathVariable Long questionBoardId,
             @RequestBody QuestionBoardModifyRequest request,
@@ -49,6 +49,13 @@ public class QuestionBoardController {
         );
 
         return Response.success(QuestionBoardResponse.fromQuetionBoardDto(questionBoard));
+    }
+
+    @DeleteMapping("/{questionBoardId}")
+    public Response<Void> deleteQuestionBoard(@PathVariable Long questionBoardId, Authentication authentication) {
+        questionBoardService.deleteQuestionBoard(authentication.getName(), questionBoardId);
+
+        return Response.success();
     }
 
 }
