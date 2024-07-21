@@ -46,7 +46,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(post("/api/main/question_board/create")
+        mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
                 )
@@ -62,7 +62,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(post("/api/main/question_board/create")
+        mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
                 )
