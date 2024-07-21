@@ -130,4 +130,65 @@ class QuestionBoardServiceTest {
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
+
+    @Test
+    void 질문_게시글_삭제_성공한_경우() {
+        // Given
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        UserAccount userAccount = questionBoard.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.deleteQuestionBoard(userId, questionBoardId));
+    }
+
+    @Test
+    void 질문_게시글_삭제시_포스트가_존재하지_않는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        UserAccount userAccount = questionBoard.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> questionBoardService.deleteQuestionBoard(userId, questionBoardId)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_삭제시_권한이_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        UserAccount writer = UserAccountFixture.get("writerUser", "password");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(writer));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> questionBoardService.deleteQuestionBoard(userId, questionBoardId)
+        );
+
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
 }

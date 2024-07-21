@@ -22,8 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,7 +83,7 @@ class QuestionBoardControllerTest {
                 .thenReturn(QuestionBoardDto.fromEntity(QuestionBoardFixture.get("userId")));
 
         // Then
-        mockMvc.perform(put("/api/main/question_board/modify/1")
+        mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -101,7 +100,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When&Then
-        mockMvc.perform(put("/api/main/question_board/modify/1")
+        mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -121,7 +120,7 @@ class QuestionBoardControllerTest {
                 .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
 
         // Then
-        mockMvc.perform(put("/api/main/question_board/modify/1")
+        mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
                 )
@@ -141,9 +140,73 @@ class QuestionBoardControllerTest {
                 .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
 
         // Then
-        mockMvc.perform(put("/api/main/question_board/modify/1")
+        mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_삭제_성공() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 질문_게시글_삭제시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_삭제시_작성자와_삭제_요청자가_다른_경우_에러_반환() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
+                .when(questionBoardService).deleteQuestionBoard(any(), any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_삭제시_삭제하려는_게시글이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(questionBoardService).deleteQuestionBoard(any(), any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1")
+                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
