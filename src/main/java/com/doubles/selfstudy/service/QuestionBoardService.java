@@ -8,6 +8,8 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,18 @@ public class QuestionBoardService {
 
     private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
+    
+    // 질문 게시글 리스트
+    public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
+        return questionBoardRepository.findAll(pageable).map(QuestionBoardDto::fromEntity);
+    }
+
+    // 나의 질문 게시글 리스트
+    public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        return questionBoardRepository.findByUserAccount(userAccount, pageable).map(QuestionBoardDto::fromEntity);
+    }
 
     // 질문 게시글 생성
     @Transactional
@@ -56,6 +70,7 @@ public class QuestionBoardService {
         return QuestionBoardDto.fromEntity(questionBoardRepository.saveAndFlush(questionBoard));
     }
 
+    // 질문 게시글 삭제
     @Transactional
     public void deleteQuestionBoard(String userId, Long questionBoardId) {
         // user find
