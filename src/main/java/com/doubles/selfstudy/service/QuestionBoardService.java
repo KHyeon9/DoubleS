@@ -93,6 +93,12 @@ public class QuestionBoardService {
         questionBoardRepository.delete(questionBoard);
     }
 
+    // 좋아요 기능
+    @Transactional
+    public void like(Integer questionBoardId, String userId) {
+        // like
+    }
+
     private UserAccount getUserAccountOrException(String userId) {
         // find useraccount
         return userAccountRepository.findById(userId).orElseThrow(() ->
