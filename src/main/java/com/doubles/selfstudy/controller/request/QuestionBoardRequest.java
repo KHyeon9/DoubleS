@@ -1,5 +1,6 @@
-package com.doubles.selfstudy.controller.response;
+package com.doubles.selfstudy.controller.request;
 
+import com.doubles.selfstudy.controller.response.UserResponse;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.dto.post.QuestionBoardTag;
 import lombok.AllArgsConstructor;
