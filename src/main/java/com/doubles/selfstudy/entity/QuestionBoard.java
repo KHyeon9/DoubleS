@@ -19,7 +19,7 @@ public class QuestionBoard extends AuditingFields {
 
     // UsreAccount와 연결 -> JoinColumn을 통해 user_id와 연결
     @Setter
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     @ManyToOne
     private UserAccount userAccount; // 유저 정보
 
@@ -34,6 +34,9 @@ public class QuestionBoard extends AuditingFields {
     @Setter
     @Enumerated(EnumType.STRING)
     private QuestionBoardTag tag; // 태그
+
+    @PersistenceContext
+    private transient EntityManager entityManager;
 
     protected QuestionBoard() {}
 
@@ -50,5 +53,13 @@ public class QuestionBoard extends AuditingFields {
 
     public static QuestionBoard of(UserAccount userAccount, String title, String content) {
         return QuestionBoard.of(userAccount, title, content, null);
+    }
+
+    @PreRemove
+    private void preRemove() {
+        String deleteLikeJpql = "DELETE FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = :boardId";
+        entityManager.createQuery(deleteLikeJpql)
+                .setParameter("boardId", this.id)
+                .executeUpdate();
     }
 }
