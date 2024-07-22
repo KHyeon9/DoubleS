@@ -55,8 +55,11 @@ public class QuestionBoard extends AuditingFields {
         return QuestionBoard.of(userAccount, title, content, null);
     }
 
+    
+    // delete가 발생시 실행
     @PreRemove
     private void preRemove() {
+        // 질문 게시글 삭제시 해당 게시글 좋아요들 삭제
         String deleteLikeJpql = "DELETE FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = :boardId";
         entityManager.createQuery(deleteLikeJpql)
                 .setParameter("boardId", this.id)
