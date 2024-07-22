@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -210,5 +211,73 @@ class QuestionBoardControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_리스트_조회_성공() throws Exception {
+        // Given
+        Page<QuestionBoardDto> list = questionBoardService.questionBoardList(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 질문_게시글_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<QuestionBoardDto> list = questionBoardService.questionBoardList(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 내_질문_게시글_목록_조회_성공() throws Exception {
+        // Given
+        Page<QuestionBoardDto> my = questionBoardService.myQuestionBoardList(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 내_질문_게시글_목록_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<QuestionBoardDto> my = questionBoardService.myQuestionBoardList(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
     }
 }

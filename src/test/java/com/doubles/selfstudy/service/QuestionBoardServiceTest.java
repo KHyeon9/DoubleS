@@ -195,7 +195,7 @@ class QuestionBoardServiceTest {
     }
 
     @Test
-    void 질문_게시판_리스트_조회가_성공한_경우() {
+    void 질문_게시글_리스트_조회가_성공한_경우() {
         // Given
         Pageable pageable = mock(Pageable.class);
 
