@@ -55,7 +55,6 @@ public class QuestionBoard extends AuditingFields {
         return QuestionBoard.of(userAccount, title, content, null);
     }
 
-    
     // delete가 발생시 실행
     @PreRemove
     private void preRemove() {
