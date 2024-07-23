@@ -280,4 +280,68 @@ class QuestionBoardControllerTest {
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
     }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능_성공() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 좋아요_기능을_로그인하지_않고_누른_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능을_눌렀을_때_게시물이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(questionBoardService).questionBoardLike(any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능을_눌렀을_때_이미_좋아요가_되어있는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.ALREADY_LIKED))
+                .when(questionBoardService).questionBoardLike(any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.ALREADY_LIKED.getStatus().value()));
+    }
 }
