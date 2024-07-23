@@ -1,7 +1,6 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.QuestionBoardCreateRequest;
-import com.doubles.selfstudy.controller.request.QuestionBoardModifyRequest;
+import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
@@ -52,7 +51,7 @@ public class QuestionBoardController {
 
     @PostMapping
     public Response<Void> createQuestionBoard(
-                @RequestBody QuestionBoardCreateRequest request,
+                @RequestBody QuestionBoardRequest request,
                 Authentication authentication
     ) {
         // create page 생성
@@ -65,7 +64,7 @@ public class QuestionBoardController {
     @PutMapping("/{questionBoardId}")
     public Response<QuestionBoardResponse> modifyQuestionBoard(
                 @PathVariable Long questionBoardId,
-                @RequestBody QuestionBoardModifyRequest request,
+                @RequestBody QuestionBoardRequest request,
                 Authentication authentication
     ) {
         QuestionBoardDto questionBoard = questionBoardService.modifyQuestionBoard(

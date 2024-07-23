@@ -1,7 +1,6 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.QuestionBoardCreateRequest;
-import com.doubles.selfstudy.controller.request.QuestionBoardModifyRequest;
+import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
@@ -49,7 +48,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -65,7 +64,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -86,7 +85,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -103,7 +102,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -123,7 +122,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
@@ -143,7 +142,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
