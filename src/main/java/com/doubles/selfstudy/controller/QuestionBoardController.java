@@ -88,4 +88,21 @@ public class QuestionBoardController {
         return Response.success();
     }
 
+    @PostMapping("/{questionBoardId}/like")
+    public Response<Void> questionBoardLike(
+            @PathVariable Long questionBoardId,
+            Authentication authentication
+    ) {
+        questionBoardService.questionBoardLike(authentication.getName(), questionBoardId);
+
+        return Response.success();
+    }
+
+    @GetMapping("/{questionBoardId}/like")
+    public Response<Integer> questionBoardLikeCount(
+            @PathVariable Long questionBoardId,
+            Authentication authentication
+    ) {
+        return Response.success(questionBoardService.questionBoardLikeCount(questionBoardId));
+    }
 }
