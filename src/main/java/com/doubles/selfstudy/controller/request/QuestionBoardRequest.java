@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class QuestionBoardModifyRequest {
+public class QuestionBoardRequest {
 
     private String title;
     private String content;

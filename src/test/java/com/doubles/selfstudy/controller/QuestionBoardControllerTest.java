@@ -1,7 +1,6 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.QuestionBoardCreateRequest;
-import com.doubles.selfstudy.controller.request.QuestionBoardModifyRequest;
+import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -48,7 +48,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -64,7 +64,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCreateRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -85,7 +85,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -102,7 +102,7 @@ class QuestionBoardControllerTest {
         // When&Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -122,7 +122,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
@@ -142,7 +142,7 @@ class QuestionBoardControllerTest {
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardModifyRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
@@ -210,5 +210,137 @@ class QuestionBoardControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_리스트_조회_성공() throws Exception {
+        // Given
+        Page<QuestionBoardDto> list = questionBoardService.questionBoardList(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 질문_게시글_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<QuestionBoardDto> list = questionBoardService.questionBoardList(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 내_질문_게시글_목록_조회_성공() throws Exception {
+        // Given
+        Page<QuestionBoardDto> my = questionBoardService.myQuestionBoardList(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 내_질문_게시글_목록_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<QuestionBoardDto> my = questionBoardService.myQuestionBoardList(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/main/question_board/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능_성공() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 좋아요_기능을_로그인하지_않고_누른_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능을_눌렀을_때_게시물이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(questionBoardService).questionBoardLike(any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 좋아요_기능을_눌렀을_때_이미_좋아요가_되어있는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.ALREADY_LIKED))
+                .when(questionBoardService).questionBoardLike(any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/main/question_board/1/like")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.ALREADY_LIKED.getStatus().value()));
     }
 }

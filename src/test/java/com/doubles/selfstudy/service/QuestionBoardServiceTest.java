@@ -1,11 +1,13 @@
 package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.entity.QuestionBoard;
+import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,8 @@ class QuestionBoardServiceTest {
     private QuestionBoardRepository questionBoardRepository;
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private QuestionBoardLikeRepository questionBoardLikeRepository;
 
     @Test
     void 질문_게시글_작성이_성공한_경우() {
@@ -195,7 +199,7 @@ class QuestionBoardServiceTest {
     }
 
     @Test
-    void 질문_게시판_리스트_조회가_성공한_경우() {
+    void 질문_게시글_리스트_조회가_성공한_경우() {
         // Given
         Pageable pageable = mock(Pageable.class);
 
@@ -218,5 +222,72 @@ class QuestionBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList("", pageable));
+    }
+
+    @Test
+    void 게시글_좋아요가_성공한_경우() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        UserAccount userAccount = UserAccountFixture.get(userId, password);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.questionBoardLike(userId, questionBoard.getId()));
+    }
+
+    @Test
+    void 게시글_좋아요시_게시글이_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        UserAccount userAccount = UserAccountFixture.get(userId, password);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> questionBoardService.questionBoardLike(userId, questionBoard.getId())
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 게시글_좋아요가_이미_있는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+
+        UserAccount userAccount = UserAccountFixture.get(userId, password);
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        QuestionBoardLike questionBoardLike = QuestionBoardLike.of(questionBoard, userAccount);
+
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
+        when(questionBoardLikeRepository.findByUserAccountAndQuestionBoard(userAccount, questionBoard))
+                .thenReturn(Optional.of(questionBoardLike));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> questionBoardService.questionBoardLike(userId, questionBoard.getId())
+        );
+
+        assertEquals(ErrorCode.ALREADY_LIKED, e.getErrorCode());
     }
 }

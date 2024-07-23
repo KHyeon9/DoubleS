@@ -33,7 +33,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         // header가 null이거나 토큰 값이 아닌 경우
         if (header == null || !header.startsWith("Bearer ")) {
-            log.error("헤더를 얻는 과정에서 에러 발생. 헤더가 null이거나 맞지 않습니다.");
+            log.error("헤더를 얻는 과정에서 에러 발생. 헤더가 null이거나 맞지 않습니다. URL: {}",
+                    request.getRequestURL());
             filterChain.doFilter(request, response);
             return;
         }

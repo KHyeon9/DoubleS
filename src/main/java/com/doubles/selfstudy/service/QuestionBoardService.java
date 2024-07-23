@@ -2,9 +2,11 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.entity.QuestionBoard;
+import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class QuestionBoardService {
 
     private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
+    private final QuestionBoardLikeRepository questionBoardLikeRepository;
     
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
@@ -91,6 +94,36 @@ public class QuestionBoardService {
         }
 
         questionBoardRepository.delete(questionBoard);
+    }
+
+    // 좋아요 기능
+    @Transactional
+    public void questionBoardLike(String userId, Long questionBoardId) {
+        // user exist
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // post exist
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        // like check
+        questionBoardLikeRepository.findByUserAccountAndQuestionBoard(userAccount, questionBoard)
+                .ifPresent(questionBoardLike -> {
+                    throw new DoubleSApplicationException(
+                            ErrorCode.ALREADY_LIKED,
+                            String.format("유저 %s는 $d번 게시글에 이미 좋아요를 눌렀습니다.", userId, questionBoardId)
+                    );
+                });
+
+        // like save
+        questionBoardLikeRepository.save(QuestionBoardLike.of(questionBoard, userAccount));
+    }
+    
+    // 좋아요 갯수 조회
+    public int questionBoardLikeCount(Long questionBoardId) {
+        // post exist
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        return questionBoardLikeRepository.countByQuestionBoard(questionBoard);
     }
 
     private UserAccount getUserAccountOrException(String userId) {
