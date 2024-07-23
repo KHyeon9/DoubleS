@@ -17,7 +17,7 @@ public class QuestionBoardLike {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "question_board_id")
     private QuestionBoard questionBoard;
 
     @ManyToOne
