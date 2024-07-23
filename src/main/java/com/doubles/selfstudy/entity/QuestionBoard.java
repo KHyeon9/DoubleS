@@ -18,22 +18,21 @@ public class QuestionBoard extends AuditingFields {
     private Long id;
 
     // UsreAccount와 연결 -> JoinColumn을 통해 user_id와 연결
-    @Setter
     @JoinColumn(name = "user_id")
     @ManyToOne
     private UserAccount userAccount; // 유저 정보
 
-    @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, name = "title")
     private String title; // 제목
 
-    @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, name = "content")
     private String content; // 내용
 
-    @Setter
     @Enumerated(EnumType.STRING)
     private QuestionBoardTag tag; // 태그
+
+    @Column(name = "view_count")
+    private Integer viewCount; // 조회수
 
     @PersistenceContext
     private transient EntityManager entityManager;
@@ -63,5 +62,9 @@ public class QuestionBoard extends AuditingFields {
         entityManager.createQuery(deleteLikeJpql)
                 .setParameter("boardId", this.id)
                 .executeUpdate();
+    }
+
+    public void plusViewCount() {
+        this.viewCount += 1;
     }
 }
