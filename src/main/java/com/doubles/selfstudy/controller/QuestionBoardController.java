@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.QuestionBoardCommentRequest;
 import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
@@ -83,6 +84,18 @@ public class QuestionBoardController {
             Authentication authentication
     ) {
         questionBoardService.deleteQuestionBoard(authentication.getName(), questionBoardId);
+
+        return Response.success();
+    }
+
+    @PostMapping("/{questionBoardId}/comment")
+    public Response<Void> createQuestionBoardComment(
+            @PathVariable Long questionBoardId,
+            @RequestBody QuestionBoardCommentRequest request,
+            Authentication authentication
+    ) {
+        questionBoardService.createQuestionBoardComment(
+                authentication.getName(), questionBoardId, request.getComment());
 
         return Response.success();
     }
