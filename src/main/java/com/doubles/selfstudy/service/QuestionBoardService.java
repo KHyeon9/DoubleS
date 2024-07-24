@@ -2,10 +2,12 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.entity.QuestionBoard;
+import com.doubles.selfstudy.entity.QuestionBoardComment;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -21,8 +23,9 @@ public class QuestionBoardService {
 
     private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
+    private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final QuestionBoardLikeRepository questionBoardLikeRepository;
-    
+
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
         return questionBoardRepository.findAll(pageable).map(QuestionBoardDto::fromEntity);
@@ -94,6 +97,20 @@ public class QuestionBoardService {
         }
 
         questionBoardRepository.delete(questionBoard);
+    }
+
+    // 질문 게시글 댓글 기능
+    @Transactional
+    public void createQuestionBoardComment(String userId, Long questionBoardId, String comment) {
+        // user find
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // question board find
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        // comment create
+        questionBoardCommentRepository.save(QuestionBoardComment.of(comment, userAccount, questionBoard));
+
     }
 
     // 좋아요 기능
