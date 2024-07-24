@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.post.QuestionBoardCommentDto;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardComment;
@@ -97,6 +98,15 @@ public class QuestionBoardService {
         }
 
         questionBoardRepository.delete(questionBoard);
+    }
+
+    // 질문 게시글 댓글 리스트 조회
+    public Page<QuestionBoardCommentDto> questionBoardCommentList(Long questionBoardId, Pageable pageable) {
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        return questionBoardCommentRepository
+                .findAllByQuestionBoard(questionBoard, pageable)
+                .map(QuestionBoardCommentDto::fromEntity);
     }
 
     // 질문 게시글 댓글 기능
