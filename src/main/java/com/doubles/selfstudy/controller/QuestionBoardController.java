@@ -1,6 +1,8 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.QuestionBoardCommentRequest;
 import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
+import com.doubles.selfstudy.controller.response.QuestionBoardCommentResponse;
 import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
 import com.doubles.selfstudy.dto.post.QuestionBoardDto;
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class QuestionBoardController {
 
     private final QuestionBoardService questionBoardService;
-
+    
+    // 게시글 리스트 조회
     @GetMapping
     public Response<Page<QuestionBoardResponse>> questionBoardList(
                 Pageable pageable,
@@ -30,7 +33,8 @@ public class QuestionBoardController {
                         .map(QuestionBoardResponse::fromQuetionBoardDto)
                 );
     }
-
+    
+    // 내 게시글 조회
     @GetMapping("/my")
     public Response<Page<QuestionBoardResponse>> myQuestionBoardList(
                  Pageable pageable,
@@ -43,12 +47,14 @@ public class QuestionBoardController {
                         .map(QuestionBoardResponse::fromQuetionBoardDto)
                 );
     }
-
+    
+    // 게시글 상세 조회
     @GetMapping("/{questionBoardId}")
     public void questionBoardDetail(@PathVariable Integer questionBoardId) {
         // question board detail data 반환
     }
-
+    
+    // 게시글 생성
     @PostMapping
     public Response<Void> createQuestionBoard(
                 @RequestBody QuestionBoardRequest request,
@@ -61,6 +67,7 @@ public class QuestionBoardController {
         return Response.success();
     }
 
+    // 게시글 수정
     @PutMapping("/{questionBoardId}")
     public Response<QuestionBoardResponse> modifyQuestionBoard(
                 @PathVariable Long questionBoardId,
@@ -76,7 +83,8 @@ public class QuestionBoardController {
 
         return Response.success(QuestionBoardResponse.fromQuetionBoardDto(questionBoard));
     }
-
+    
+    // 게시글 삭제
     @DeleteMapping("/{questionBoardId}")
     public Response<Void> deleteQuestionBoard(
             @PathVariable Long questionBoardId,
@@ -86,7 +94,57 @@ public class QuestionBoardController {
 
         return Response.success();
     }
+    
+    // 댓글 리스트
+    @GetMapping("/{questionBoardId}/comment")
+    public Response<Page<QuestionBoardCommentResponse>> questionBoardCommentList(
+            @PathVariable Long questionBoardId,
+            Pageable pageable,
+            Authentication authentication
+    ) {
 
+        return Response.success(
+                questionBoardService.questionBoardCommentList(questionBoardId, pageable)
+                        .map(QuestionBoardCommentResponse::fromQuestionBoardCommentDto)
+        );
+    }
+    
+    // 댓글 쓰기
+    @PostMapping("/{questionBoardId}/comment")
+    public Response<Void> createQuestionBoardComment(
+            @PathVariable Long questionBoardId,
+            @RequestBody QuestionBoardCommentRequest request,
+            Authentication authentication
+    ) {
+        questionBoardService.createQuestionBoardComment(
+                authentication.getName(), questionBoardId, request.getComment());
+
+        return Response.success();
+    }
+    
+    // 댓글 수정
+    @PutMapping("/{questionBoardId}/comment")
+    public Response<Void> updateQuestionBoardComment(
+            @PathVariable Long questionBoardId,
+            @RequestBody QuestionBoardCommentRequest request,
+            Authentication authentication
+    ) {
+
+
+        return Response.success();
+    }
+    
+    // 댓글 삭제
+    @DeleteMapping("/{questionBoardId}/comment")
+    public Response<Void> deleteQuestionBoardComment(
+
+    ) {
+
+
+        return Response.success();
+    }
+    
+    // 좋아요 기능
     @PostMapping("/{questionBoardId}/like")
     public Response<Void> questionBoardLike(
             @PathVariable Long questionBoardId,
@@ -96,7 +154,8 @@ public class QuestionBoardController {
 
         return Response.success();
     }
-
+    
+    // 좋아요 갯수 조회
     @GetMapping("/{questionBoardId}/like")
     public Response<Integer> questionBoardLikeCount(
             @PathVariable Long questionBoardId,
