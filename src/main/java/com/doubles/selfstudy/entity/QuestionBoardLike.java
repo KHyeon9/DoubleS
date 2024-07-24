@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Table(name = "like")
+@Table(name = "`like`")
 @Entity
 public class QuestionBoardLike {
 
