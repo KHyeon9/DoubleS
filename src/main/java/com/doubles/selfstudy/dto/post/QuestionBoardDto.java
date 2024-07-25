@@ -59,7 +59,7 @@ public class QuestionBoardDto {
                 entity.getTag(),
                 0L,
                 0L,
-                0,
+                entity.getViewCount(),
                 entity.getCreatedAt(),
                 entity.getCreatedBy(),
                 entity.getModifiedAt(),
