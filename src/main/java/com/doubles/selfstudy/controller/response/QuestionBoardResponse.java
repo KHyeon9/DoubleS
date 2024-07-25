@@ -16,20 +16,24 @@ public class QuestionBoardResponse {
     private String title; // 제목
     private String content; // 내용
     private QuestionBoardTag tag; // 태그
-    private Integer likes;
+    private Long likes; // 좋아요 수
+    private Long comments; // 댓글 수
+    private Integer viewCounts; // 조회수
     private LocalDateTime createdAt; // 생성 일시
     private String createdBy; // 생성자
     private LocalDateTime modifiedAt; // 수정 일시
     private String modifiedBy; // 수정자
 
-    public static QuestionBoardResponse fromQuetionBoardDto(QuestionBoardDto dto, Integer likes) {
+    public static QuestionBoardResponse fromQuetionBoardDto(QuestionBoardDto dto, Long like, Long comments) {
         return new QuestionBoardResponse(
                 dto.getId(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getTitle(),
                 dto.getContent(),
                 dto.getTag(),
-                likes,
+                like,
+                comments,
+                dto.getViewCounts(),
                 dto.getCreatedAt(),
                 dto.getCreatedBy(),
                 dto.getModifiedAt(),
@@ -45,7 +49,9 @@ public class QuestionBoardResponse {
                 dto.getTitle(),
                 dto.getContent(),
                 dto.getTag(),
-                0,
+                dto.getLikes(),
+                dto.getComments(),
+                dto.getViewCounts(),
                 dto.getCreatedAt(),
                 dto.getCreatedBy(),
                 dto.getModifiedAt(),
