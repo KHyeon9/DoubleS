@@ -49,4 +49,21 @@ public class QuestionBoardDto {
                 entity.getModifiedBy()
         );
     }
+
+    public static QuestionBoardDto fromEntity(QuestionBoard entity) {
+        return new QuestionBoardDto(
+                entity.getId(),
+                UserAccountDto.fromEntity(entity.getUserAccount()),
+                entity.getTitle(),
+                entity.getContent(),
+                entity.getTag(),
+                0L,
+                0L,
+                0,
+                entity.getCreatedAt(),
+                entity.getCreatedBy(),
+                entity.getModifiedAt(),
+                entity.getModifiedBy()
+        );
+    }
 }
