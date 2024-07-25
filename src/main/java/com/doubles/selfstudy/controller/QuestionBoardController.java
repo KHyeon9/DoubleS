@@ -48,8 +48,14 @@ public class QuestionBoardController {
     
     // 게시글 상세 조회
     @GetMapping("/{questionBoardId}")
-    public void questionBoardDetail(@PathVariable Integer questionBoardId) {
+    public Response<QuestionBoardResponse> questionBoardDetail(@PathVariable Long questionBoardId) {
         // question board detail data 반환
+
+        return Response.success(
+                QuestionBoardResponse.fromQuetionBoardDto(
+                        questionBoardService.questionBoardDetail(questionBoardId)
+                )
+        );
     }
     
     // 게시글 생성
@@ -106,7 +112,7 @@ public class QuestionBoardController {
     
     // 좋아요 갯수 조회
     @GetMapping("/{questionBoardId}/like")
-    public Response<Integer> questionBoardLikeCount(
+    public Response<Long> questionBoardLikeCount(
             @PathVariable Long questionBoardId,
             Authentication authentication
     ) {

@@ -22,12 +22,14 @@ public class QuestionBoardService {
 
     private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
-    private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final QuestionBoardLikeRepository questionBoardLikeRepository;
+    private final QuestionBoardCommentRepository questionBoardCommentRepository;
 
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
-        return questionBoardRepository.findAll(pageable).map(QuestionBoardDto::fromEntity);
+        Page<Object[]> results = questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable);
+
+        return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
     // 나의 질문 게시글 리스트
@@ -37,9 +39,19 @@ public class QuestionBoardService {
         return questionBoardRepository.findByUserAccount(userAccount, pageable).map(QuestionBoardDto::fromEntity);
     }
 
-    // 게시글 상세 조화
+    // 게시글 상세 조회
     public QuestionBoardDto questionBoardDetail(Long questionBoardId) {
-        return QuestionBoardDto.fromEntity(getQuestionBoardOrException(questionBoardId));
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        // 조회수 증가
+        questionBoard.plusViewCount(); 
+        questionBoardRepository.save(questionBoard);
+
+        // 좋아요와 댓글 갯수 가져오기
+        Long likes = questionBoardLikeRepository.countByQuestionBoard(questionBoard);
+        Long comments = questionBoardCommentRepository.countByQuestionBoard(questionBoard);
+
+        return QuestionBoardDto.fromEntity(questionBoard, likes, comments);
     }
 
     // 질문 게시글 생성
@@ -100,6 +112,8 @@ public class QuestionBoardService {
                 );
         }
 
+        questionBoardLikeRepository.deleteAllByQuestionBoardId(questionBoardId);
+        questionBoardCommentRepository.deleteAllByQuestionBoardId(questionBoardId);
         questionBoardRepository.delete(questionBoard);
     }
 
@@ -128,7 +142,7 @@ public class QuestionBoardService {
     }
     
     // 좋아요 갯수 조회
-    public int questionBoardLikeCount(Long questionBoardId) {
+    public Long questionBoardLikeCount(Long questionBoardId) {
         // post exist
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
