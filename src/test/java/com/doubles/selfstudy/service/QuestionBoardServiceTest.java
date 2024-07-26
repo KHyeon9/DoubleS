@@ -81,11 +81,11 @@ class QuestionBoardServiceTest {
 
         QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
         UserAccount userAccount = questionBoard.getUserAccount();
-        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId));
