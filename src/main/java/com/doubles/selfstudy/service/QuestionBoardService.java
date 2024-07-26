@@ -27,6 +27,7 @@ public class QuestionBoardService {
 
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
+        // 모든 질문 게시글들 가져오기
         Page<Object[]> results = questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
@@ -34,18 +35,18 @@ public class QuestionBoardService {
 
     // 나의 질문 게시글 리스트
     public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
-        // user 확인
+        // 유저 확인
         getUserAccountOrException(userId);
-
+        
+        // 나의 질문 게시글들 가져오기
         Page<Object[]> results = questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userId, pageable);
 
-        // return questionBoardRepository.findByUserAccount(userAccount, pageable).map(QuestionBoardDto::fromEntity);
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
     // 게시글 상세 조회
     public QuestionBoardDto questionBoardDetail(Long questionBoardId) {
-        // 게시글 확인
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
         // 조회수 증가
@@ -62,10 +63,10 @@ public class QuestionBoardService {
     // 질문 게시글 생성
     @Transactional
     public void createQuestionBoard(String title, String content, String userId) {
-        // user find
+        // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        // question board save
+        // 질문 게시글 저장
         questionBoardRepository.save(
                 QuestionBoard.of(userAccount, title, content)
         );
@@ -74,13 +75,13 @@ public class QuestionBoardService {
     // 질문 게시글 수정
     @Transactional
     public QuestionBoardDto modifyQuestionBoard(String title, String content, String userId, Long questionBoardId) {
-        // user find
+        // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        // question board find
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
-        // question board permission
+        // 질문 게시글 권한 확인
         if (questionBoard.getUserAccount() != userAccount) {
                 throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
@@ -90,7 +91,8 @@ public class QuestionBoardService {
                     )
                 );
         }
-
+        
+        // 변경 내용 수정
         questionBoard.setTitle(title);
         questionBoard.setContent(content);
 
@@ -100,13 +102,13 @@ public class QuestionBoardService {
     // 질문 게시글 삭제
     @Transactional
     public void deleteQuestionBoard(String userId, Long questionBoardId) {
-        // user find
+        // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        // question board find
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
-        // question board permission
+        // 질문 게시판 권한 확인
         if (questionBoard.getUserAccount() != userAccount) {
                 throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
@@ -116,7 +118,8 @@ public class QuestionBoardService {
                     )
                 );
         }
-
+        
+        // 게시글과 관련된 모든 것 삭제
         questionBoardLikeRepository.deleteAllByQuestionBoardId(questionBoardId);
         questionBoardCommentRepository.deleteAllByQuestionBoardId(questionBoardId);
         questionBoardRepository.delete(questionBoard);
@@ -127,13 +130,13 @@ public class QuestionBoardService {
     // 좋아요 기능
     @Transactional
     public void questionBoardLike(String userId, Long questionBoardId) {
-        // user exist
+        // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        // post exist
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
-        // like check
+        // 좋아요 확인
         questionBoardLikeRepository.findByUserAccountAndQuestionBoard(userAccount, questionBoard)
                 .ifPresent(questionBoardLike -> {
                     throw new DoubleSApplicationException(
@@ -142,26 +145,27 @@ public class QuestionBoardService {
                     );
                 });
 
-        // like save
+        // 좋아요 저장
         questionBoardLikeRepository.save(QuestionBoardLike.of(questionBoard, userAccount));
     }
     
     // 좋아요 갯수 조회
     public Long questionBoardLikeCount(Long questionBoardId) {
-        // post exist
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
         return questionBoardLikeRepository.countByQuestionBoard(questionBoard);
     }
 
     private UserAccount getUserAccountOrException(String userId) {
-        // find useraccount
+        // 유저 정보 가져오면서 못 찾는 경우 검사
         return userAccountRepository.findById(userId).orElseThrow(() ->
                     new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
                 );
     }
 
     private QuestionBoard getQuestionBoardOrException(Long questionBoardId) {
+        // 질문 게시글 가져오면서 못 찾는 경우 검사
         return questionBoardRepository.findById(questionBoardId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("게시글 번호: '%s' 를 찾지 못했습니다.", questionBoardId))
         );

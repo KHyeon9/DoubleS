@@ -25,6 +25,7 @@ public class QuestionBoardCommentService {
 
     // 질문 게시글 댓글 리스트 조회
     public Page<QuestionBoardCommentDto> questionBoardCommentList(Long questionBoardId, Pageable pageable) {
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
         return questionBoardCommentRepository
@@ -35,19 +36,18 @@ public class QuestionBoardCommentService {
     // 질문 게시글 댓글 기능
     @Transactional
     public void createQuestionBoardComment(String userId, Long questionBoardId, String comment) {
-        // user find
+        // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        // question board find
+        // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
-        // comment create
+        // 댓글 저장
         questionBoardCommentRepository.save(QuestionBoardComment.of(comment, userAccount, questionBoard));
 
     }
 
     private UserAccount getUserAccountOrException(String userId) {
-        // find user account
         return userAccountRepository.findById(userId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
         );
