@@ -43,9 +43,10 @@ public class UserAccount {
 
     protected UserAccount() {}
 
-    private UserAccount(String userId, String password, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private UserAccount(String userId, String password, RoleType roleType, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.userId = userId;
         this.password = password;
+        this.roleType = roleType;
         this.email = email;
         this.nickname = nickname;
         this.memo = memo;
@@ -54,11 +55,15 @@ public class UserAccount {
     }
 
     public static UserAccount of(String userId, String password, String email, String nickname, String memo) {
-        return UserAccount.of(userId, password, email, nickname, memo, null, null);
+        return UserAccount.of(userId, password, RoleType.USER, email, nickname, memo, null, null);
     }
 
-    public static UserAccount of(String userId, String password, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        return new UserAccount(userId, password, email, nickname, memo, createdAt, modifiedAt);
+    public static UserAccount of(String userId, String password, RoleType roleType, String email, String nickname, String memo) {
+        return UserAccount.of(userId, password, roleType, email, nickname, memo, null, null);
+    }
+
+    public static UserAccount of(String userId, String password, RoleType roleType, String email, String nickname, String memo, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        return new UserAccount(userId, password, roleType, email, nickname, memo, createdAt, modifiedAt);
     }
 
     @PrePersist

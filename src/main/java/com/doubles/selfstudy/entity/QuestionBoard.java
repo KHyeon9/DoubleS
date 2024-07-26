@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.entity;
 
-import com.doubles.selfstudy.dto.post.QuestionBoardTag;
+import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,10 +51,12 @@ public class QuestionBoard extends AuditingFields {
         return QuestionBoard.of(userAccount, title, content, null);
     }
 
+    @PrePersist
+    public void prePersist() {
+        this.viewCount = 0;
+     }
+
     public void plusViewCount() {
-        if (viewCount == null) {
-            viewCount = 0;
-        }
         this.viewCount += 1;
     }
 }

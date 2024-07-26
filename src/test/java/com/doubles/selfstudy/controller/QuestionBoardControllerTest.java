@@ -1,7 +1,7 @@
 package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
-import com.doubles.selfstudy.dto.post.QuestionBoardDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;

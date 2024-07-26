@@ -37,18 +37,13 @@ public class QuestionBoardComment extends AuditingFields {
 
     protected QuestionBoardComment() {}
 
-    private QuestionBoardComment(Long id, String comment, UserAccount userAccount, QuestionBoard questionBoard) {
-        this.id = id;
+    private QuestionBoardComment(String comment, UserAccount userAccount, QuestionBoard questionBoard) {
         this.comment = comment;
         this.userAccount = userAccount;
         this.questionBoard = questionBoard;
     }
 
     public static QuestionBoardComment of(String comment, UserAccount userAccount, QuestionBoard questionBoard) {
-        return QuestionBoardComment.of(null, comment, userAccount, questionBoard);
-    }
-
-    public static QuestionBoardComment of(Long id, String comment, UserAccount userAccount, QuestionBoard questionBoard) {
-        return new QuestionBoardComment(id, comment, userAccount, questionBoard);
+        return new QuestionBoardComment(comment, userAccount, questionBoard);
     }
 }

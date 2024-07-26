@@ -3,7 +3,7 @@ package com.doubles.selfstudy.controller;
 import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
-import com.doubles.selfstudy.dto.post.QuestionBoardDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardDto;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

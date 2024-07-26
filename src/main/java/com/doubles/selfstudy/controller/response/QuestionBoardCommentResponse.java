@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.controller.response;
 
-import com.doubles.selfstudy.dto.post.QuestionBoardCommentDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardCommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

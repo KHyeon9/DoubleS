@@ -81,11 +81,11 @@ class QuestionBoardServiceTest {
 
         QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
         UserAccount userAccount = questionBoard.getUserAccount();
-        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId));
@@ -204,7 +204,7 @@ class QuestionBoardServiceTest {
         Pageable pageable = mock(Pageable.class);
 
         // When
-        when(questionBoardRepository.findAll(pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardList(pageable));
@@ -218,10 +218,10 @@ class QuestionBoardServiceTest {
 
         // When
         when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
-        when(questionBoardRepository.findByUserAccount(userAccount, pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userAccount.getUserId(), pageable)).thenReturn(Page.empty());
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList("", pageable));
+        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList(userAccount.getUserId(), pageable));
     }
 
     @Test
