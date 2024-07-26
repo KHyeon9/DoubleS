@@ -218,10 +218,10 @@ class QuestionBoardServiceTest {
 
         // When
         when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
-        when(questionBoardRepository.findByUserAccount(userAccount, pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userAccount.getUserId(), pageable)).thenReturn(Page.empty());
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList("", pageable));
+        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList(userAccount.getUserId(), pageable));
     }
 
     @Test

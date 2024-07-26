@@ -34,13 +34,18 @@ public class QuestionBoardService {
 
     // 나의 질문 게시글 리스트
     public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
-        UserAccount userAccount = getUserAccountOrException(userId);
+        // user 확인
+        getUserAccountOrException(userId);
 
-        return questionBoardRepository.findByUserAccount(userAccount, pageable).map(QuestionBoardDto::fromEntity);
+        Page<Object[]> results = questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userId, pageable);
+
+        // return questionBoardRepository.findByUserAccount(userAccount, pageable).map(QuestionBoardDto::fromEntity);
+        return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
     // 게시글 상세 조회
     public QuestionBoardDto questionBoardDetail(Long questionBoardId) {
+        // 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
 
         // 조회수 증가

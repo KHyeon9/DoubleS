@@ -18,4 +18,11 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
             "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
             "FROM QuestionBoard q")
     Page<Object[]> findAllByWithLikeCountAndCommentCount(Pageable pageable);
+
+    @Query("SELECT q, " +
+            "(SELECT COUNT(qbl) FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = q.id), " +
+            "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
+            "FROM QuestionBoard q " +
+            "WHERE q.userAccount.userId = :userId")
+    Page<Object[]> findAllByMyBoardWithLikeCountAndCommentCount(String userId, Pageable pageable);
 }
