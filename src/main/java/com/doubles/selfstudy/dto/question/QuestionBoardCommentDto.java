@@ -1,4 +1,4 @@
-package com.doubles.selfstudy.dto.post;
+package com.doubles.selfstudy.dto.question;
 
 import com.doubles.selfstudy.entity.QuestionBoardComment;
 import lombok.AllArgsConstructor;

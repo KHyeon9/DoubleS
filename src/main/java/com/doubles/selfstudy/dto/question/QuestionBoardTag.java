@@ -1,4 +1,4 @@
-package com.doubles.selfstudy.dto.post;
+package com.doubles.selfstudy.dto.question;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

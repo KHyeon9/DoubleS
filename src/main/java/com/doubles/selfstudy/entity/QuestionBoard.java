@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.entity;
 
-import com.doubles.selfstudy.dto.post.QuestionBoardTag;
+import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

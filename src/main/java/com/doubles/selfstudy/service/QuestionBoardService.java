@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.service;
 
-import com.doubles.selfstudy.dto.post.QuestionBoardDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardDto;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;

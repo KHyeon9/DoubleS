@@ -1,4 +1,4 @@
-package com.doubles.selfstudy.dto.post;
+package com.doubles.selfstudy.dto.question;
 
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.QuestionBoard;
@@ -26,7 +26,7 @@ public class QuestionBoardDto {
     private String modifiedBy; // 수정자
 
     public static QuestionBoardDto of(UserAccountDto userAccountDto, String title, String content, QuestionBoardTag tag, Long likes, Long comments, Integer viewCounts) {
-        return new QuestionBoardDto(null, userAccountDto, title, content, tag, likes, comments, viewCounts, null, null, null, null);
+        return QuestionBoardDto.of(null, userAccountDto, title, content, tag, likes, comments, viewCounts, null, null, null, null);
     }
 
     public static QuestionBoardDto of(Long id, UserAccountDto userAccountDto, String title, String content, QuestionBoardTag tag, Long likes, Long comments, Integer viewCounts, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
