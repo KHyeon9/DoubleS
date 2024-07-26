@@ -204,7 +204,7 @@ class QuestionBoardServiceTest {
         Pageable pageable = mock(Pageable.class);
 
         // When
-        when(questionBoardRepository.findAll(pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardList(pageable));
