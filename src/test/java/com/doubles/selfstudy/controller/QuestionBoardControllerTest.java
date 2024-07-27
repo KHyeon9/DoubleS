@@ -79,7 +79,7 @@ class QuestionBoardControllerTest {
         String content = "content";
 
         // When
-        when(questionBoardService.modifyQuestionBoard(eq(title), eq(content), any(), eq(1L)))
+        when(questionBoardService.modifyQuestionBoard(any(), eq(1L), eq(title), eq(content)))
                 .thenReturn(QuestionBoardDto.fromEntity(QuestionBoardFixture.get("userId")));
 
         // Then
@@ -117,7 +117,7 @@ class QuestionBoardControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
-                .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
+                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content));
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
@@ -137,7 +137,7 @@ class QuestionBoardControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
-                .when(questionBoardService).modifyQuestionBoard(eq(title), eq(content), any(), eq(1L));
+                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content));
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1")

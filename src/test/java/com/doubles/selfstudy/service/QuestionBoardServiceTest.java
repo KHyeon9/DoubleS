@@ -48,7 +48,7 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.save(any())).thenReturn(mock(QuestionBoard.class));
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(title, content, userId));
+        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(userId, title, content));
     }
 
 
@@ -88,7 +88,7 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId));
+        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content));
     }
 
     @Test
@@ -108,7 +108,7 @@ class QuestionBoardServiceTest {
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                    questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId)
+                    questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content)
                 );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
@@ -131,7 +131,7 @@ class QuestionBoardServiceTest {
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                questionBoardService.modifyQuestionBoard(title, content, userId, questionBoardId)
+                questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content)
         );
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());

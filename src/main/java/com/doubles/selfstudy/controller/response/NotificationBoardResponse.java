@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.controller.response;
 
-import com.doubles.selfstudy.dto.question.QuestionBoardCommentDto;
+import com.doubles.selfstudy.dto.notification.NotificationBoardDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,23 +8,23 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class QuestionBoardCommentResponse {
+public class NotificationBoardResponse {
 
     private Long id;
-    private String comment; // 댓글
-    private UserResponse user; // 유저 id
-    private Long questionBoardId; // 게시글 id
+    private UserResponse user; // 유저 정보
+    private String title; // 제목
+    private String content; // 내용
     private LocalDateTime createdAt; // 생성 일시
     private String createdBy; // 생성자
     private LocalDateTime modifiedAt; // 수정 일시
     private String modifiedBy; // 수정자
 
-    public static QuestionBoardCommentResponse fromQuestionBoardCommentDto(QuestionBoardCommentDto dto) {
-        return new QuestionBoardCommentResponse(
+    public static NotificationBoardResponse fromNotificationBoardDto(NotificationBoardDto dto) {
+        return new NotificationBoardResponse(
                 dto.getId(),
-                dto.getComment(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
-                dto.getQuestionBoardId(),
+                dto.getTitle(),
+                dto.getContent(),
                 dto.getCreatedAt(),
                 dto.getCreatedBy(),
                 dto.getModifiedAt(),

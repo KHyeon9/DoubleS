@@ -21,28 +21,28 @@ public class QuestionBoardController {
     // 게시글 리스트 조회
     @GetMapping
     public Response<Page<QuestionBoardResponse>> questionBoardList(
-                Pageable pageable,
-                Authentication authentication
+                Authentication authentication,
+                Pageable pageable
     ) {
         // question board list 반환
         return Response.success(
                 questionBoardService
                         .questionBoardList(pageable)
-                        .map(QuestionBoardResponse::fromQuetionBoardDto)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
                 );
     }
     
     // 내 게시글 조회
     @GetMapping("/my")
     public Response<Page<QuestionBoardResponse>> myQuestionBoardList(
-                 Pageable pageable,
-                 Authentication authentication
+                 Authentication authentication,
+                 Pageable pageable
     ) {
         // my question board list 반환
         return Response.success(
                 questionBoardService
                         .myQuestionBoardList(authentication.getName(), pageable)
-                        .map(QuestionBoardResponse::fromQuetionBoardDto)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
                 );
     }
     
@@ -52,7 +52,7 @@ public class QuestionBoardController {
         // question board detail data 반환
 
         return Response.success(
-                QuestionBoardResponse.fromQuetionBoardDto(
+                QuestionBoardResponse.fromQuestionBoardDto(
                         questionBoardService.questionBoardDetail(questionBoardId)
                 )
         );
@@ -61,12 +61,12 @@ public class QuestionBoardController {
     // 게시글 생성
     @PostMapping
     public Response<Void> createQuestionBoard(
-                @RequestBody QuestionBoardRequest request,
-                Authentication authentication
+                Authentication authentication,
+                @RequestBody QuestionBoardRequest request
     ) {
         // create page 생성
         questionBoardService.createQuestionBoard(
-                request.getTitle(), request.getContent(), authentication.getName());
+                authentication.getName(), request.getTitle(), request.getContent());
 
         return Response.success();
     }
@@ -74,25 +74,26 @@ public class QuestionBoardController {
     // 게시글 수정
     @PutMapping("/{questionBoardId}")
     public Response<QuestionBoardResponse> modifyQuestionBoard(
+                Authentication authentication,
                 @PathVariable Long questionBoardId,
-                @RequestBody QuestionBoardRequest request,
-                Authentication authentication
+                @RequestBody QuestionBoardRequest request
     ) {
         QuestionBoardDto questionBoard = questionBoardService.modifyQuestionBoard(
-                request.getTitle(),
-                request.getContent(),
                 authentication.getName(),
-                questionBoardId
+                questionBoardId,
+                request.getTitle(),
+                request.getContent()
+
         );
 
-        return Response.success(QuestionBoardResponse.fromQuetionBoardDto(questionBoard));
+        return Response.success(QuestionBoardResponse.fromQuestionBoardDto(questionBoard));
     }
     
     // 게시글 삭제
     @DeleteMapping("/{questionBoardId}")
     public Response<Void> deleteQuestionBoard(
-            @PathVariable Long questionBoardId,
-            Authentication authentication
+            Authentication authentication,
+            @PathVariable Long questionBoardId
     ) {
         questionBoardService.deleteQuestionBoard(authentication.getName(), questionBoardId);
 
@@ -102,8 +103,8 @@ public class QuestionBoardController {
     // 좋아요 기능
     @PostMapping("/{questionBoardId}/like")
     public Response<Void> questionBoardLike(
-            @PathVariable Long questionBoardId,
-            Authentication authentication
+            Authentication authentication,
+            @PathVariable Long questionBoardId
     ) {
         questionBoardService.questionBoardLike(authentication.getName(), questionBoardId);
 
