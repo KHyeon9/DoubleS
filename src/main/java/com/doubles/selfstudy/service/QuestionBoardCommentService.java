@@ -33,7 +33,7 @@ public class QuestionBoardCommentService {
                 .map(QuestionBoardCommentDto::fromEntity);
     }
 
-    // 질문 게시글 댓글 기능
+    // 질문 게시글 댓글 작성 기능
     @Transactional
     public void createQuestionBoardComment(String userId, Long questionBoardId, String comment) {
         // 유저 확인
@@ -44,6 +44,15 @@ public class QuestionBoardCommentService {
 
         // 댓글 저장
         questionBoardCommentRepository.save(QuestionBoardComment.of(comment, userAccount, questionBoard));
+    }
+
+    // 질문 게시글 댓글 수정
+    public void updateQuestionBoardComment(String userId, Long questionBoardCommentId, String comment) {
+
+    }
+
+    // 질문 게시글 댓글 삭제
+    public void deleteQuestionBoardComment(String userId, Long questionBoardCommentId) {
 
     }
 
