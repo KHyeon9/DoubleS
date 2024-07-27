@@ -12,7 +12,7 @@ public class QuestionBoardCommentResponse {
 
     private Long id;
     private String comment; // 댓글
-    private String userId; // 유저 id
+    private UserResponse user; // 유저 id
     private Long questionBoardId; // 게시글 id
     private LocalDateTime createdAt; // 생성 일시
     private String createdBy; // 생성자
@@ -23,7 +23,7 @@ public class QuestionBoardCommentResponse {
         return new QuestionBoardCommentResponse(
                 dto.getId(),
                 dto.getComment(),
-                dto.getUserId(),
+                UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getQuestionBoardId(),
                 dto.getCreatedAt(),
                 dto.getCreatedBy(),
