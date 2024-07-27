@@ -20,9 +20,9 @@ public class QuestionBoardCommentController {
     // 댓글 리스트
     @GetMapping("/{questionBoardId}/comment")
     public Response<Page<QuestionBoardCommentResponse>> questionBoardCommentList(
+            Authentication authentication,
             @PathVariable Long questionBoardId,
-            Pageable pageable,
-            Authentication authentication
+            Pageable pageable
     ) {
 
         return Response.success(
@@ -34,9 +34,9 @@ public class QuestionBoardCommentController {
     // 댓글 쓰기
     @PostMapping("/{questionBoardId}/comment")
     public Response<Void> createQuestionBoardComment(
+            Authentication authentication,
             @PathVariable Long questionBoardId,
-            @RequestBody QuestionBoardCommentRequest request,
-            Authentication authentication
+            @RequestBody QuestionBoardCommentRequest request
     ) {
         questionBoardCommentService.createQuestionBoardComment(
                 authentication.getName(), questionBoardId, request.getComment());
@@ -47,9 +47,9 @@ public class QuestionBoardCommentController {
     // 댓글 수정
     @PutMapping("/{questionBoardId}/comment")
     public Response<Void> updateQuestionBoardComment(
+            Authentication authentication,
             @PathVariable Long questionBoardId,
-            @RequestBody QuestionBoardCommentRequest request,
-            Authentication authentication
+            @RequestBody QuestionBoardCommentRequest request
     ) {
 
 
@@ -59,9 +59,9 @@ public class QuestionBoardCommentController {
     // 댓글 삭제
     @DeleteMapping("/{questionBoardId}/comment")
     public Response<Void> deleteQuestionBoardComment(
-
+        Authentication authentication,
+        Long questionBoardCommentId
     ) {
-
 
         return Response.success();
     }
