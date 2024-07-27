@@ -50,10 +50,10 @@ public class NotificationBoardService {
         if (notificationBoard.getUserAccount() != userAccount) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
-                    "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
-                    userId,
-                    notificationBoardId
-                )
+                        "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
+                        userId,
+                        notificationBoardId
+                    )
             );
         }
 
@@ -76,10 +76,10 @@ public class NotificationBoardService {
         if (notificationBoard.getUserAccount() != userAccount) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
-                    "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
-                    userId,
-                    notificationBoardId
-                )
+                        "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
+                        userId,
+                        notificationBoardId
+                    )
             );
         }
 
