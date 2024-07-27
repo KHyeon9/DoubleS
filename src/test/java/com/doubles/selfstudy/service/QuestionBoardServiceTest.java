@@ -48,7 +48,7 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.save(any())).thenReturn(mock(QuestionBoard.class));
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(title, content, userId));
+        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(userId, title, content));
     }
 
 
