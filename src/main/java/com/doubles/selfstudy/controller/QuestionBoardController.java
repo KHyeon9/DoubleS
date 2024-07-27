@@ -28,7 +28,7 @@ public class QuestionBoardController {
         return Response.success(
                 questionBoardService
                         .questionBoardList(pageable)
-                        .map(QuestionBoardResponse::fromQuetionBoardDto)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
                 );
     }
     
@@ -42,7 +42,7 @@ public class QuestionBoardController {
         return Response.success(
                 questionBoardService
                         .myQuestionBoardList(authentication.getName(), pageable)
-                        .map(QuestionBoardResponse::fromQuetionBoardDto)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
                 );
     }
     
@@ -52,7 +52,7 @@ public class QuestionBoardController {
         // question board detail data 반환
 
         return Response.success(
-                QuestionBoardResponse.fromQuetionBoardDto(
+                QuestionBoardResponse.fromQuestionBoardDto(
                         questionBoardService.questionBoardDetail(questionBoardId)
                 )
         );
@@ -85,7 +85,7 @@ public class QuestionBoardController {
                 questionBoardId
         );
 
-        return Response.success(QuestionBoardResponse.fromQuetionBoardDto(questionBoard));
+        return Response.success(QuestionBoardResponse.fromQuestionBoardDto(questionBoard));
     }
     
     // 게시글 삭제

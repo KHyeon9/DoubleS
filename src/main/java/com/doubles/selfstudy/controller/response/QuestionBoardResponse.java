@@ -24,7 +24,7 @@ public class QuestionBoardResponse {
     private LocalDateTime modifiedAt; // 수정 일시
     private String modifiedBy; // 수정자
 
-    public static QuestionBoardResponse fromQuetionBoardDto(QuestionBoardDto dto, Long like, Long comments) {
+    public static QuestionBoardResponse fromQuestionBoardDto(QuestionBoardDto dto, Long like, Long comments) {
         return new QuestionBoardResponse(
                 dto.getId(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
@@ -42,7 +42,7 @@ public class QuestionBoardResponse {
 
     }
 
-    public static QuestionBoardResponse fromQuetionBoardDto(QuestionBoardDto dto) {
+    public static QuestionBoardResponse fromQuestionBoardDto(QuestionBoardDto dto) {
         return new QuestionBoardResponse(
                 dto.getId(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
@@ -57,6 +57,5 @@ public class QuestionBoardResponse {
                 dto.getModifiedAt(),
                 dto.getModifiedBy()
         );
-
     }
 }
