@@ -66,7 +66,7 @@ public class QuestionBoardController {
     ) {
         // create page 생성
         questionBoardService.createQuestionBoard(
-                request.getTitle(), request.getContent(), authentication.getName());
+                authentication.getName(), request.getTitle(), request.getContent());
 
         return Response.success();
     }
@@ -79,10 +79,11 @@ public class QuestionBoardController {
                 Authentication authentication
     ) {
         QuestionBoardDto questionBoard = questionBoardService.modifyQuestionBoard(
-                request.getTitle(),
-                request.getContent(),
                 authentication.getName(),
-                questionBoardId
+                questionBoardId,
+                request.getTitle(),
+                request.getContent()
+
         );
 
         return Response.success(QuestionBoardResponse.fromQuestionBoardDto(questionBoard));

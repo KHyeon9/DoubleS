@@ -62,7 +62,7 @@ public class QuestionBoardService {
 
     // 질문 게시글 생성
     @Transactional
-    public void createQuestionBoard(String title, String content, String userId) {
+    public void createQuestionBoard(String userId, String title, String content) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
@@ -74,7 +74,7 @@ public class QuestionBoardService {
 
     // 질문 게시글 수정
     @Transactional
-    public QuestionBoardDto modifyQuestionBoard(String title, String content, String userId, Long questionBoardId) {
+    public QuestionBoardDto modifyQuestionBoard(String userId, Long questionBoardId, String title, String content) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
