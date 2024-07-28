@@ -6,7 +6,7 @@ import QuestionBoardList from "../components/layout/main/QuestionBoardList.vue";
 import Home from "../components/layout/main/Home.vue";
 import Group from "../components/layout/main/Group.vue";
 import Chat from "../components/layout/main/Chat.vue";
-import Notification from "../components/layout/main/Notification.vue";
+import Notice from "../components/layout/main/Notice.vue";
 import UserAccount from "../components/UserAccount.vue";
 import Login from "../components/layout/user/Login.vue";
 import Regist from "../components/layout/user/Regist.vue";
@@ -29,8 +29,8 @@ const router = createRouter({
           component: Home,
         },
         {
-          path: 'notification',
-          component: Notification
+          path: 'notice',
+          component: Notice
         },
         {
           path: 'todo', 

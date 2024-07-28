@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NotificationBoardRequest {
+public class NoticeBoardRequest {
 
     private String title;
     private String content;

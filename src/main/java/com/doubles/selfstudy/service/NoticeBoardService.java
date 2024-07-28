@@ -1,12 +1,12 @@
 package com.doubles.selfstudy.service;
 
-import com.doubles.selfstudy.dto.notification.NotificationBoardDto;
+import com.doubles.selfstudy.dto.notice.NoticeBoardDto;
 import com.doubles.selfstudy.dto.user.RoleType;
-import com.doubles.selfstudy.entity.NotificationBoard;
+import com.doubles.selfstudy.entity.NoticeBoard;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
-import com.doubles.selfstudy.repository.NotificationBoardRepository;
+import com.doubles.selfstudy.repository.NoticeBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,72 +18,72 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
-public class NotificationBoardService {
+public class NoticeBoardService {
 
-    private final NotificationBoardRepository notificationBoardRepository;
+    private final NoticeBoardRepository noticeBoardRepository;
     private final UserAccountRepository userAccountRepository;
 
     // 공지사항 목록 조회
-    public Page<NotificationBoardDto> nofificationBoardList(Pageable pageable) {
-        return notificationBoardRepository.findAll(pageable).map(NotificationBoardDto::fromEntity);
+    public Page<NoticeBoardDto> noticeBoardList(Pageable pageable) {
+        return noticeBoardRepository.findAll(pageable).map(NoticeBoardDto::fromEntity);
     }
 
     // 공지사항 생성
     @Transactional
-    public void createNofificationBoard(String userId, String title, String content) {
+    public void createNoticeBoard(String userId, String title, String content) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
-        notificationBoardRepository.save(NotificationBoard.of(userAccount, title, content));
+        noticeBoardRepository.save(NoticeBoard.of(userAccount, title, content));
     }
 
     // 공지사항 수정
     @Transactional
-    public NotificationBoardDto updateNofificationBoard(String userId, Long notificationBoardId, String title, String content) {
+    public NoticeBoardDto updateNoticeBoard(String userId, Long noticeBoardId, String title, String content) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
         // 공지사항 글 가져오기
-        NotificationBoard notificationBoard = getNotificationBoardOrException(notificationBoardId);
+        NoticeBoard noticeBoard = getNoticeBoardOrException(noticeBoardId);
         
         // 권한 검사
-        if (notificationBoard.getUserAccount() != userAccount) {
+        if (noticeBoard.getUserAccount() != userAccount) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
                         userId,
-                        notificationBoardId
+                        noticeBoardId
                     )
             );
         }
 
         // 변경 내용 수정
-        notificationBoard.setTitle(title);
-        notificationBoard.setContent(content);
+        noticeBoard.setTitle(title);
+        noticeBoard.setContent(content);
 
-        return NotificationBoardDto.fromEntity(notificationBoardRepository.saveAndFlush(notificationBoard));
+        return NoticeBoardDto.fromEntity(noticeBoardRepository.saveAndFlush(noticeBoard));
     }
 
     // 공지사항 삭제
-    public void deleteNofificationBoard(String userId, Long notificationBoardId) {
+    public void deleteNoticeBoard(String userId, Long noticeBoardId) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
         // 공지사항 글 가져오기
-        NotificationBoard notificationBoard = getNotificationBoardOrException(notificationBoardId);
+        NoticeBoard noticeBoard = getNoticeBoardOrException(noticeBoardId);
 
         // 권한 검사
-        if (notificationBoard.getUserAccount() != userAccount) {
+        if (noticeBoard.getUserAccount() != userAccount) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
                         userId,
-                        notificationBoardId
+                        noticeBoardId
                     )
             );
         }
 
-        notificationBoardRepository.delete(notificationBoard);
+        noticeBoardRepository.delete(noticeBoard);
     }
 
     private UserAccount getUserAccountOrException(String userId) {
@@ -100,10 +100,10 @@ public class NotificationBoardService {
         return userAccount;
     }
 
-    private NotificationBoard getNotificationBoardOrException(Long notificationBoardId) {
+    private NoticeBoard getNoticeBoardOrException(Long noticeBoardId) {
         // 공지사항 글을 가져오면서 못 찾는 경우 검사
-        return notificationBoardRepository.findById(notificationBoardId).orElseThrow(() ->
-                    new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("공지사항 %d번을 찾지 못했습니다.", notificationBoardId)
+        return noticeBoardRepository.findById(noticeBoardId).orElseThrow(() ->
+                    new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("공지사항 %d번을 찾지 못했습니다.", noticeBoardId)
                 )
         );
     }

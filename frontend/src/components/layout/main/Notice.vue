@@ -1,6 +1,6 @@
 <template>
   <div>
-    Notification
+    Notice
   </div>
 </template>
 <script setup>
