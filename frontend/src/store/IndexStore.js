@@ -9,7 +9,7 @@ export const useIndexStore = defineStore('index', {
     changePage(payload) {
       const page_names = {
         '/main': 'Home',
-        '/main/notification': 'Notification',
+        '/main/notice': 'Notice',
         '/main/todo': 'Todo',
         '/main/question_board': 'Question Board',
         '/main/group': 'Study Group',

@@ -26,14 +26,14 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/notification') }]"
-            @click="store.changePage('/main/notification')"
-            to="/main/notification"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/notice') }]"
+            @click="store.changePage('/main/notice')"
+            to="/main/notice"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">priority_high</i>
             </div>
-            <span class="nav-link-text ms-1">Notification</span>
+            <span class="nav-link-text ms-1">Notice</span>
           </router-link>
         </li>
         <li class="nav-item">
