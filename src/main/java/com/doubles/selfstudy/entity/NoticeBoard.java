@@ -7,10 +7,10 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@Table(name = "notification_board")
+@Table(name = "notice_board")
 @ToString(callSuper = true)
 @Entity
-public class NotificationBoard extends AuditingFields{
+public class NoticeBoard extends AuditingFields{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +26,15 @@ public class NotificationBoard extends AuditingFields{
     @Column(nullable = false, name = "content")
     private String content; // 내용
 
-    protected NotificationBoard() {}
+    protected NoticeBoard() {}
 
-    private NotificationBoard(UserAccount userAccount, String title, String content) {
+    private NoticeBoard(UserAccount userAccount, String title, String content) {
         this.userAccount = userAccount;
         this.title = title;
         this.content = content;
     }
 
-    public static NotificationBoard of(UserAccount userAccount, String title, String content) {
-        return new NotificationBoard(userAccount, title, content);
+    public static NoticeBoard of(UserAccount userAccount, String title, String content) {
+        return new NoticeBoard(userAccount, title, content);
     }
 }

@@ -1,6 +1,6 @@
 package com.doubles.selfstudy.controller.response;
 
-import com.doubles.selfstudy.dto.notification.NotificationBoardDto;
+import com.doubles.selfstudy.dto.notice.NoticeBoardDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class NotificationBoardResponse {
+public class NoticeBoardResponse {
 
     private Long id;
     private UserResponse user; // 유저 정보
@@ -19,8 +19,8 @@ public class NotificationBoardResponse {
     private LocalDateTime modifiedAt; // 수정 일시
     private String modifiedBy; // 수정자
 
-    public static NotificationBoardResponse fromNotificationBoardDto(NotificationBoardDto dto) {
-        return new NotificationBoardResponse(
+    public static NoticeBoardResponse fromNoticeBoardDto(NoticeBoardDto dto) {
+        return new NoticeBoardResponse(
                 dto.getId(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getTitle(),

@@ -1,12 +1,12 @@
 package com.doubles.selfstudy.service;
 
-import com.doubles.selfstudy.entity.NotificationBoard;
+import com.doubles.selfstudy.entity.NoticeBoard;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
-import com.doubles.selfstudy.fixture.NotificationBoardFixture;
+import com.doubles.selfstudy.fixture.NoticeBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
-import com.doubles.selfstudy.repository.NotificationBoardRepository;
+import com.doubles.selfstudy.repository.NoticeBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +23,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class NotificationBoardServiceTest {
+class NoticeBoardServiceTest {
 
     @Autowired
-    private NotificationBoardService notificationBoardService;
+    private NoticeBoardService noticeBoardService;
 
     @MockBean
     private UserAccountRepository userAccountRepository;
     @MockBean
-    private NotificationBoardRepository notificationBoardRepository;
+    private NoticeBoardRepository noticeBoardRepository;
 
     @Test
     void 공지사항_작성이_성공한_경우() {
@@ -47,11 +47,11 @@ class NotificationBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.save(any()))
-                .thenReturn(mock(NotificationBoard.class));
+        when(noticeBoardRepository.save(any()))
+                .thenReturn(mock(NoticeBoard.class));
 
         // Then
-        assertDoesNotThrow(() -> notificationBoardService.createNofificationBoard(userId, title, content));
+        assertDoesNotThrow(() -> noticeBoardService.createNoticeBoard(userId, title, content));
     }
 
     @Test
@@ -65,13 +65,13 @@ class NotificationBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
-        when(notificationBoardRepository.save(any()))
-                .thenReturn(mock(NotificationBoard.class));
+        when(noticeBoardRepository.save(any()))
+                .thenReturn(mock(NoticeBoard.class));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService.createNofificationBoard(userId, title, content)
+                () -> noticeBoardService.createNoticeBoard(userId, title, content)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -90,13 +90,13 @@ class NotificationBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.save(any()))
-                .thenReturn(mock(NotificationBoard.class));
+        when(noticeBoardRepository.save(any()))
+                .thenReturn(mock(NoticeBoard.class));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService.createNofificationBoard(userId, title, content)
+                () -> noticeBoardService.createNoticeBoard(userId, title, content)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
@@ -106,25 +106,25 @@ class NotificationBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
 
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(userAccount);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
-        when(notificationBoardRepository.saveAndFlush(any()))
-                .thenReturn(notificationBoard);
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
+        when(noticeBoardRepository.saveAndFlush(any()))
+                .thenReturn(noticeBoard);
 
         // Then
-        assertDoesNotThrow(() -> notificationBoardService
-                .updateNofificationBoard(userId, notificationBoardId, title, content));
+        assertDoesNotThrow(() -> noticeBoardService
+                .updateNoticeBoard(userId, noticeBoardId, title, content));
     }
 
     @Test
@@ -132,7 +132,7 @@ class NotificationBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
@@ -142,14 +142,14 @@ class NotificationBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
+        when(noticeBoardRepository.findById(noticeBoardId))
                 .thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .updateNofificationBoard(userId, notificationBoardId, title, content)
+                () -> noticeBoardService
+                        .updateNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
@@ -160,24 +160,24 @@ class NotificationBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
 
         UserAccount writer = UserAccountFixture.getAdmin("writer", "password");
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(writer);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(writer);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .updateNofificationBoard(userId, notificationBoardId, title, content)
+                () -> noticeBoardService
+                        .updateNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -187,26 +187,26 @@ class NotificationBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
 
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
         UserAccount writer = UserAccountFixture.getAdmin("writer", "writer_password");
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(writer);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(writer);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .updateNofificationBoard(userId, notificationBoardId, title, content)
+                () -> noticeBoardService
+                        .updateNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
@@ -214,47 +214,47 @@ class NotificationBoardServiceTest {
     @Test
     void 공지사항_삭제가_성공한_경우() {
         // Given
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
 
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(userAccount);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
 
         // Then
-        assertDoesNotThrow(() -> notificationBoardService
-                .deleteNofificationBoard(userId, notificationBoardId));
+        assertDoesNotThrow(() -> noticeBoardService
+                .deleteNoticeBoard(userId, noticeBoardId));
     }
 
     @Test
     void 공지사항_삭제시_유저가_존재하지_않는_경우_에러_반환() {
         // Given
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
 
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(userAccount);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .deleteNofificationBoard(userId, notificationBoardId)
+                () -> noticeBoardService
+                        .deleteNoticeBoard(userId, noticeBoardId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -262,7 +262,7 @@ class NotificationBoardServiceTest {
     @Test
     void 공지사항_삭제시_게시글이_없는_경우_에러_반환() {
         // Given
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
@@ -272,14 +272,14 @@ class NotificationBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
+        when(noticeBoardRepository.findById(noticeBoardId))
                 .thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .deleteNofificationBoard(userId, notificationBoardId)
+                () -> noticeBoardService
+                        .deleteNoticeBoard(userId, noticeBoardId)
         );
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
@@ -287,26 +287,26 @@ class NotificationBoardServiceTest {
     @Test
     void 공지사항_삭제시_유저가_다른_경우_에러_반환() {
         // Given
-        Long notificationBoardId = 1L;
+        Long noticeBoardId = 1L;
 
         String userId = "userId";
         String password = "password";
 
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
         UserAccount writer = UserAccountFixture.getAdmin("writer", "writer_password");
-        NotificationBoard notificationBoard = NotificationBoardFixture.get(writer);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(writer);
 
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
-        when(notificationBoardRepository.findById(notificationBoardId))
-                .thenReturn(Optional.of(notificationBoard));
+        when(noticeBoardRepository.findById(noticeBoardId))
+                .thenReturn(Optional.of(noticeBoard));
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> notificationBoardService
-                        .deleteNofificationBoard(userId, notificationBoardId)
+                () -> noticeBoardService
+                        .deleteNoticeBoard(userId, noticeBoardId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
@@ -317,9 +317,9 @@ class NotificationBoardServiceTest {
         Pageable pageable = mock(Pageable.class);
 
         // When
-        when(notificationBoardRepository.findAll(pageable)).thenReturn(Page.empty());
+        when(noticeBoardRepository.findAll(pageable)).thenReturn(Page.empty());
 
         // Then
-        assertDoesNotThrow(() -> notificationBoardService.nofificationBoardList(pageable));
+        assertDoesNotThrow(() -> noticeBoardService.noticeBoardList(pageable));
     }
 }
