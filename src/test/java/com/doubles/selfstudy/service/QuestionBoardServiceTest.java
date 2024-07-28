@@ -7,6 +7,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -34,6 +35,8 @@ class QuestionBoardServiceTest {
     private UserAccountRepository userAccountRepository;
     @MockBean
     private QuestionBoardLikeRepository questionBoardLikeRepository;
+    @MockBean
+    private QuestionBoardCommentRepository questionBoardCommentRepository;
 
     @Test
     void 질문_게시글_작성이_성공한_경우() {
@@ -222,6 +225,44 @@ class QuestionBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList(userAccount.getUserId(), pageable));
+    }
+
+    @Test
+    void 질문_게시글_상세_조회가_성공한_경우() {
+        // Given
+        String userId = "userId";
+        Long questionBoardId = 1L;
+        Long likes = 1L;
+        Long comments = 0L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        questionBoard.plusViewCount();
+
+        // When
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardRepository.save(questionBoard)).thenReturn(questionBoard);
+        when(questionBoardLikeRepository.countByQuestionBoard(questionBoard)).thenReturn(likes);
+        when(questionBoardCommentRepository.countByQuestionBoard(questionBoard)).thenReturn(comments);
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.questionBoardDetail(questionBoardId));
+    }
+
+    @Test
+    void 질문_게시글_상세_조회시_게시글이_없는_경우_에러_반환() {
+        // Given
+        Long questionBoardId = 1L;
+
+        // When
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> questionBoardService.questionBoardDetail(questionBoardId)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
