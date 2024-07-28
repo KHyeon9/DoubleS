@@ -73,7 +73,7 @@ class QuestionBoardControllerTest {
 
     @Test
     @WithMockUser
-    void 포스트_수정_성공() throws Exception {
+    void 질문_게시글_수정_성공() throws Exception {
         // Given
         String title = "title";
         String content = "content";
@@ -94,7 +94,7 @@ class QuestionBoardControllerTest {
 
     @Test
     @WithAnonymousUser
-    void 포스트_수정시_로그인하지_않은_경우_에러_발생() throws Exception {
+    void 질문_게시글_수정시_로그인하지_않은_경우_에러_발생() throws Exception {
         // Given
         String title = "title";
         String content = "content";
@@ -110,7 +110,7 @@ class QuestionBoardControllerTest {
 
     @Test
     @WithMockUser
-    void 포스트_수정시_본인이_작성한_글이_아닌_경우_에러_발생() throws Exception {
+    void 질문_게시글_수정시_본인이_작성한_글이_아닌_경우_에러_발생() throws Exception {
         // Given
         String title = "title";
         String content = "content";
@@ -130,7 +130,7 @@ class QuestionBoardControllerTest {
 
     @Test
     @WithMockUser
-    void 포스트_수정시_작성한_글이_없는_경우_에러_발생() throws Exception {
+    void 질문_게시글_수정시_작성한_글이_없는_경우_에러_발생() throws Exception {
         // Given
         String title = "title";
         String content = "content";
