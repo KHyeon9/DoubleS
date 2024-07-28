@@ -36,19 +36,24 @@ public class QuestionBoard extends AuditingFields {
 
     protected QuestionBoard() {}
 
-    private QuestionBoard(UserAccount userAccount, String title, String content, QuestionBoardTag tag) {
+    private QuestionBoard(UserAccount userAccount, String title, String content, QuestionBoardTag tag, Integer viewCount) {
         this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.tag = tag;
+        this.viewCount = viewCount;
     }
 
-    public static QuestionBoard of(UserAccount userAccount, String title, String content, QuestionBoardTag tag) {
-        return new QuestionBoard(userAccount, title, content, tag);
+    public static QuestionBoard of(UserAccount userAccount, String title, String content, QuestionBoardTag tag, Integer viewCount) {
+        return new QuestionBoard(userAccount, title, content, tag, viewCount);
+    }
+
+    public static QuestionBoard of(UserAccount userAccount, String title, String content, Integer viewCount) {
+        return new QuestionBoard(userAccount, title, content, null, viewCount);
     }
 
     public static QuestionBoard of(UserAccount userAccount, String title, String content) {
-        return QuestionBoard.of(userAccount, title, content, null);
+        return QuestionBoard.of(userAccount, title, content, null, 0);
     }
 
     @PrePersist
