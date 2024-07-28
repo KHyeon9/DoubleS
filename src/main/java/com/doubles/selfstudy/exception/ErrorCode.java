@@ -15,6 +15,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not founded"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not founded"),
     ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "Permission is invalid"),
     ;
 
     private HttpStatus status;

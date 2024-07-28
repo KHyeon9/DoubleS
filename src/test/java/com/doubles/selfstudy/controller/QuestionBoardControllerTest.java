@@ -180,7 +180,7 @@ class QuestionBoardControllerTest {
 
     @Test
     @WithMockUser
-    void 질문_게시글_삭제시_작성자와_삭제_요청자가_다른_경우_에러_반환() throws Exception {
+    void 질문_게시글_삭제시_작성자와_삭제_요청자가_다른_경우_에러_발생() throws Exception {
         // Given
 
         // When

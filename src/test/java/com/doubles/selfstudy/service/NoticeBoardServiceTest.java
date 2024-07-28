@@ -124,7 +124,7 @@ class NoticeBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> noticeBoardService
-                .updateNoticeBoard(userId, noticeBoardId, title, content));
+                .modifyNoticeBoard(userId, noticeBoardId, title, content));
     }
 
     @Test
@@ -149,7 +149,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
@@ -177,7 +177,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -206,7 +206,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
@@ -321,5 +321,39 @@ class NoticeBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> noticeBoardService.noticeBoardList(pageable));
+    }
+
+    @Test
+    void 공지사항_상세_조회_성공() {
+        // Given
+        Long noticeBoardId = 1L;
+        String admin = "admin";
+        String password = "password";
+
+        UserAccount userAccount = UserAccountFixture.getAdmin(admin, password);
+        NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
+
+        // When
+        when(noticeBoardRepository.findById(noticeBoardId)).thenReturn(Optional.of(noticeBoard));
+
+        // Then
+        assertDoesNotThrow(() -> noticeBoardService.noticeBoardDetail(noticeBoardId));
+    }
+
+    @Test
+    void 공지사항_상세_조회시_게시글이_없는_경우_에러_반환() {
+        // Given
+        Long noticeBoardId = 1L;
+
+        // When
+        when(noticeBoardRepository.findById(noticeBoardId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> noticeBoardService.noticeBoardDetail(noticeBoardId)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
 }

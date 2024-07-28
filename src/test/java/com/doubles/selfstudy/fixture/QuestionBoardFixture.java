@@ -8,7 +8,7 @@ public class QuestionBoardFixture {
     public static QuestionBoard get(String userId) {
         UserAccount userAccount = UserAccount.of(userId, "test", "test", "test", null);
 
-        QuestionBoard questionBoard = QuestionBoard.of(userAccount, "title", "content", null);
+        QuestionBoard questionBoard = QuestionBoard.of(userAccount, "title", "content", 0);
 
         return questionBoard;
     }

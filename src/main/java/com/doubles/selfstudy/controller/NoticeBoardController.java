@@ -3,6 +3,7 @@ package com.doubles.selfstudy.controller;
 import com.doubles.selfstudy.controller.request.NoticeBoardRequest;
 import com.doubles.selfstudy.controller.response.NoticeBoardResponse;
 import com.doubles.selfstudy.controller.response.Response;
+import com.doubles.selfstudy.dto.notice.NoticeBoardDto;
 import com.doubles.selfstudy.service.NoticeBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,20 @@ public class NoticeBoardController {
             Pageable pageable
     ) {
         // 공지사항 리스트 반환
-        return Response.success(null);
+        return Response.success(
+                noticeBoardService.noticeBoardList(pageable)
+                        .map(NoticeBoardResponse::fromNoticeBoardDto)
+        );
+    }
+
+    // 공지사항 상세 조회
+    @GetMapping("/{noticeBoardId}")
+    public Response<NoticeBoardResponse> noticeBoardDetail(@PathVariable Long noticeBoardId) {
+        return Response.success(
+                NoticeBoardResponse.fromNoticeBoardDto(
+                        noticeBoardService.noticeBoardDetail(noticeBoardId)
+                )
+        );
     }
 
     // 공지사항 생성
@@ -33,26 +47,40 @@ public class NoticeBoardController {
             Authentication authentication,
             @RequestBody NoticeBoardRequest request
     ) {
+        noticeBoardService.createNoticeBoard(
+                authentication.getName(),
+                request.getTitle(),
+                request.getContent()
+        );
 
         return Response.success();
     }
     
     // 공지사항 수정
-    @PutMapping
-    public Response<Void> updateNoticeBoard(
+    @PutMapping("/{noticeBoardId}")
+    public Response<NoticeBoardResponse> modifyNoticeBoard(
             Authentication authentication,
-            @RequestBody NoticeBoardRequest request,
-            Long noticeBoardId
+            @PathVariable Long noticeBoardId,
+            @RequestBody NoticeBoardRequest request
     ) {
-        return Response.success();
+        NoticeBoardDto noticeBoardDto = noticeBoardService.modifyNoticeBoard(
+                authentication.getName(),
+                noticeBoardId,
+                request.getTitle(),
+                request.getContent()
+        );
+
+        return Response.success(NoticeBoardResponse.fromNoticeBoardDto(noticeBoardDto));
     }
 
     // 공지사항 삭제
-    @DeleteMapping
+    @DeleteMapping("/{noticeBoardId}")
     public Response<Void> deleteNoticeBoard(
             Authentication authentication,
-            Long noticeBoardId
+            @PathVariable Long noticeBoardId
     ) {
+        noticeBoardService.deleteNoticeBoard(authentication.getName(), noticeBoardId);
+
         return Response.success();
     }
 

@@ -46,7 +46,7 @@ public class QuestionBoardCommentController {
 
     // 댓글 수정
     @PutMapping("/{questionBoardId}/comment")
-    public Response<Void> updateQuestionBoardComment(
+    public Response<Void> modifyQuestionBoardComment(
             Authentication authentication,
             @PathVariable Long questionBoardId,
             @RequestBody QuestionBoardCommentRequest request

@@ -44,7 +44,7 @@ public class QuestionBoardService {
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
-    // 게시글 상세 조회
+    // 질문 게시글 상세 조회
     public QuestionBoardDto questionBoardDetail(Long questionBoardId) {
         // 질문 게시글 확인
         QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
@@ -141,7 +141,7 @@ public class QuestionBoardService {
                 .ifPresent(questionBoardLike -> {
                     throw new DoubleSApplicationException(
                             ErrorCode.ALREADY_LIKED,
-                            String.format("유저 %s는 $d번 게시글에 이미 좋아요를 눌렀습니다.", userId, questionBoardId)
+                            String.format("유저 %s는 %d번 게시글에 이미 좋아요를 눌렀습니다.", userId, questionBoardId)
                     );
                 });
 
