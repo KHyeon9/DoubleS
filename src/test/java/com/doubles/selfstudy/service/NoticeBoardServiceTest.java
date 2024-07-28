@@ -124,7 +124,7 @@ class NoticeBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> noticeBoardService
-                .updateNoticeBoard(userId, noticeBoardId, title, content));
+                .modifyNoticeBoard(userId, noticeBoardId, title, content));
     }
 
     @Test
@@ -149,7 +149,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
@@ -177,7 +177,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -206,7 +206,7 @@ class NoticeBoardServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> noticeBoardService
-                        .updateNoticeBoard(userId, noticeBoardId, title, content)
+                        .modifyNoticeBoard(userId, noticeBoardId, title, content)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }

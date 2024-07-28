@@ -46,7 +46,7 @@ public class NoticeBoardService {
 
     // 공지사항 수정
     @Transactional
-    public NoticeBoardDto updateNoticeBoard(String userId, Long noticeBoardId, String title, String content) {
+    public NoticeBoardDto modifyNoticeBoard(String userId, Long noticeBoardId, String title, String content) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 

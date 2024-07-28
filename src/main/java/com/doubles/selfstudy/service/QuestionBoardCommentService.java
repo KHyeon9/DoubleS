@@ -47,7 +47,7 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 수정
-    public void updateQuestionBoardComment(String userId, Long questionBoardCommentId, String comment) {
+    public void modifyQuestionBoardComment(String userId, Long questionBoardCommentId, String comment) {
 
     }
 
