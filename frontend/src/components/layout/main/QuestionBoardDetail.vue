@@ -20,15 +20,15 @@
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" >
               <li class="nav-item" role="presentation">
-                <a class="nav-link mb-0 px-0 py-1 " href="javascript:;">
-                  <i class="material-icons text-lg position-relative">email</i>
-                  <span class="ms-1">Messages</span>
+                <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false" tabindex="-1">
+                  <i class="material-icons text-lg position-relative">edit</i>
+                  <span class="ms-1">Edit</span>
                 </a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false" tabindex="-1">
-                  <i class="material-icons text-lg position-relative">settings</i>
-                  <span class="ms-1">Modify</span>
+                <a class="nav-link mb-0 px-0 py-1 " href="javascript:;">
+                  <i class="material-icons text-lg position-relative">email</i>
+                  <span class="ms-1">Messages</span>
                 </a>
               </li>
             </ul>
@@ -69,12 +69,16 @@
                     <div class="flex-grow-1 ms-3">
                       <h6 class="h5 mt-0">Michael Lewis</h6>
                       <p class="text-s">I always felt like I could do anything. That’s the main thing people are controlled by! Thoughts- their perception of themselves!</p>
-                      <p class="text-xs text-end">DateTime</p>  
-                      <div class="d-flex">
-                        <div>
-                          <i class="material-icons text-sm me-1 cursor-pointer">settings</i>
-                        </div>
-                        <span class="text-sm me-2">modify</span>
+                      <p class="text-xs text-end me-4">DateTime</p>
+                      <div class="ms-auto text-end" data-v-4fa5880f="">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" data-v-4fa5880f="">
+                          <i class="material-icons text-sm me-2" data-v-4fa5880f="">delete</i>
+                          Delete
+                        </a>
+                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;" data-v-4fa5880f="">
+                          <i class="material-icons text-sm me-2" data-v-4fa5880f="">edit</i>
+                          Edit
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -87,12 +91,16 @@
                     <div class="flex-grow-1 ms-3">
                       <h6 class="h5 mt-0">Jessica Stones</h6>
                       <p class="text-s">Society has put up so many boundaries, so many limitations on what’s right and wrong that it’s almost impossible to get a pure thought out. It’s like a little kid, a little boy.</p>
-                      <p class="text-xs text-end">DateTime</p>
-                      <div class="d-flex">
-                        <div>
-                          <i class="material-icons text-sm me-1 cursor-pointer">settings</i>
-                        </div>
-                        <span class="text-sm me-2">modify</span>
+                      <p class="text-xs text-end me-4">DateTime</p>
+                      <div class="ms-auto text-end" data-v-4fa5880f="">
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;" data-v-4fa5880f="">
+                          <i class="material-icons text-sm me-2" data-v-4fa5880f="">delete</i>
+                          Delete
+                        </a>
+                        <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;" data-v-4fa5880f="">
+                          <i class="material-icons text-sm me-2" data-v-4fa5880f="">edit</i>
+                          Edit
+                        </a>
                       </div>
                     </div>
                   </div>
