@@ -11,6 +11,7 @@ import UserAccount from "../components/UserAccount.vue";
 import Login from "../components/layout/user/Login.vue";
 import Regist from "../components/layout/user/Regist.vue";
 import QuestionBoardDetail from '../components/layout/main/QuestionBoardDetail.vue'
+import Alarm from "../components/layout/main/Alarm.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -54,7 +55,7 @@ const router = createRouter({
         },
         {
           path: 'alarm', 
-          component: Chat,
+          component: Alarm,
         },
         
       ]
