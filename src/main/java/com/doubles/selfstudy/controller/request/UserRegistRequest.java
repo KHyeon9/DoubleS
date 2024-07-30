@@ -8,7 +8,7 @@ import lombok.Getter;
 public class UserRegistRequest {
 
     private String userId;
-    private String password;
-    private String email;
     private String nickname;
+    private String email;
+    private String password;
 }

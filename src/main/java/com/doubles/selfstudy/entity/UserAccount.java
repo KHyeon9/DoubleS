@@ -33,7 +33,7 @@ public class UserAccount {
     private String nickname; // 닉네임
 
     @Column(name = "memo")
-    private String memo; // 메로(자기 소개 비슷하게 사용)
+    private String memo; // 메모 (자기 소개 비슷하게 사용)
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
