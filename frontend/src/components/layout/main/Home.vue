@@ -32,28 +32,22 @@
                   <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
                 </div>
               </li>
-              <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                 <div class="d-flex flex-column">
-                  <h6 class="mb-3 text-sm">Lucas Harper</h6>
-                  <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Stone Tech Zone</span></span>
-                  <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
-                  <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                  <h6 class="mb-3 text-sm">Title2</h6>
+                  <span class="mb-2 text-xs">content content content content content content content content</span>
                 </div>
                 <div class="ms-auto text-end">
-                  <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
                 </div>
               </li>
-              <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                 <div class="d-flex flex-column">
-                  <h6 class="mb-3 text-sm">Ethan James</h6>
-                  <span class="mb-2 text-xs">Company Name: <span class="text-dark font-weight-bold ms-sm-2">Fiber Notion</span></span>
-                  <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
-                  <span class="text-xs">VAT Number: <span class="text-dark ms-sm-2 font-weight-bold">FRB1235476</span></span>
+                  <h6 class="mb-3 text-sm">Title3</h6>
+                  <span class="mb-2 text-xs">content content content content content content content content</span>
                 </div>
                 <div class="ms-auto text-end">
-                  <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">delete</i>Delete</a>
-                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
                 </div>
               </li>
             </ul>
@@ -73,8 +67,8 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr class="table-header">
-                      <th class="text-uppercase text-secondary font-weight-bolder opacity-7 col-9">Title</th>
-                      <th class="text-center text-uppercase text-secondary font-weight-bolder opacity-7">Date</th>
+                      <th class="text-xs text-uppercase text-secondary font-weight-bolder opacity-7 col-9">Title</th>
+                      <th class="text-xs text-center text-uppercase text-secondary font-weight-bolder opacity-7">Date</th>
                     </tr>
                   </thead>
                   <tbody>
