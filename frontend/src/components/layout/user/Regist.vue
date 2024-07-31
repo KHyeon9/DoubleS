@@ -105,7 +105,6 @@
 
   const registSubmit = async () => {
     if (!validateForm()) {
-      console.log(errors);
       return;
     }
 
