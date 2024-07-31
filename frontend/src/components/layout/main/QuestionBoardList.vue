@@ -36,6 +36,7 @@
                     <div class="d-flex flex-column">
                         <div class="fw-bolder mb-3 fs-5">Title</div>
                         <span class="mb-2 text-s">content content content content content content content content</span>
+                        <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
                         <div class="ms-auto board_info">
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">thumb_up</i><span class="font-weight-bold">13</span></div>
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">mode_comment</i><span class="font-weight-bold">3</span></div>
@@ -48,6 +49,7 @@
                     <div class="d-flex flex-column">
                         <div class="fw-bolder mb-3 fs-5">Title2</div>
                         <span class="mb-2 text-s">content content content content content content content content</span>
+                        <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
                         <div class="ms-auto board_info">
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">thumb_up</i><span class="font-weight-bold">0</span></div>
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">mode_comment</i><span class="font-weight-bold">3</span></div>
@@ -60,6 +62,7 @@
                     <div class="d-flex flex-column">
                         <div class="fw-bolder mb-3 fs-5">Title3</div>
                         <span class="mb-2 text-s">content content content content content content content content</span>
+                        <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
                         <div class="ms-auto board_info">
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">thumb_up</i><span class="font-weight-bold">9</span></div>
                           <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">mode_comment</i><span class="font-weight-bold">2</span></div>
@@ -68,8 +71,16 @@
                   </router-link>
                 </li>
               </ul>
+              <nav class="mt-4 nav nav-bar d-flex justify-content-end" aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item"><a class="page-link" href="#">‹</a></li>
+                  <li class="page-item active"><a class="page-link " href="#" >1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">›</a></li>
+                </ul>
+              </nav>
             </div>
-            페이징
           </div>
         </div>
       </div>
@@ -85,4 +96,9 @@
   .board_info {
     display: flex;
   }
+
+  .active a {
+    color: white;
+  }
+
 </style>

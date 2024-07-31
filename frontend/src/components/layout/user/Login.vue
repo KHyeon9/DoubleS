@@ -8,8 +8,8 @@
             <div class="card z-index-0 fadeIn3 fadeInBottom">
               <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                  <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Sign in</h4>
-                  <div class="row mt-3">
+                  <h4 class="text-white font-weight-bolder text-center mt-2 mb-2">Login</h4>
+                  <!-- <div class="row mt-3">
                     <div class="col-2 text-center ms-auto">
                       <a class="btn btn-link px-3" href="javascript:;">
                         <i class="fa fa-facebook text-white text-lg"></i>
@@ -25,28 +25,28 @@
                         <i class="fa fa-google text-white text-lg"></i>
                       </a>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div class="card-body">
-                <form role="form" class="text-start">
+                <form @submit.prevent="loginSubmit" role="form" class="text-start">
                   <div class="input-group input-group-outline my-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control">
+                    <label class="form-label">ID</label>
+                    <input id="userId" v-model="userId" type="text" class="form-control">
                   </div>
                   <div class="input-group input-group-outline mb-3">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-control">
+                    <input id="password" v-model="password" type="password" class="form-control">
                   </div>
-                  <div class="form-check form-switch d-flex align-items-center mb-3">
+                  <!-- <div class="form-check form-switch d-flex align-items-center mb-3">
                     <input class="form-check-input" type="checkbox" id="rememberMe" checked>
                     <label class="form-check-label mb-0 ms-3" for="rememberMe">Remember me</label>
-                  </div>
+                  </div> -->
                   <div class="text-center">
-                    <button type="button" class="btn bg-gradient-primary w-100 my-4 mb-2">Sign in</button>
+                    <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">login</button>
                   </div>
                   <p class="mt-4 text-sm text-center">
-                    Don't have an account?
+                    회원가입이 필요한가요?
                     <router-link to="/regist" class="text-primary text-gradient font-weight-bold">Sign up</router-link>
                   </p>
                 </form>
@@ -82,7 +82,65 @@
   </main>
 </template>
 <script setup>
+  import { ref } from 'vue';
+  import axios from 'axios';
+  import { useRouter } from 'vue-router';
+  import { useAuthStore } from '../../../store/authStore';
 
+  const userId = ref('');
+  const password = ref('');
+  const router = useRouter();
+  const authStore = useAuthStore();
+
+  const validateForm = () => {
+
+    if (!userId.value) {
+      alert('ID가 입력되지 않았습니다.');
+      return false;
+    } else if (userId.value.length < 4) {
+      alert('ID는 최소 4자리 이상이어야 합니다.');
+      return false;
+    }
+
+    if (!password.value) {
+      alert('비밀번호가 입력되지 않았습니다.');
+      return false;
+    } else if (password.value.length < 6) {
+      alert('비밀번호는 최소 6자리 이상이어야 합니다.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const loginSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/login', {
+        userId: userId.value,
+        password: password.value
+      });
+      const token = response.data.result.token;
+
+      authStore.setToken(token);
+
+      router.push('/main');
+
+    } catch (error) {
+      console.error('로그인 실패', error.response.data.resultCode);
+
+      if (error.response && error.response.data.resultCode == 'USER_NOT_FOUND') {
+        alert('아이디가 존재하지 않습니다.');
+      } else if (error.response && error.response.data.resultCode == 'INVALID_PASSWORD') {
+        alert('비밀번호가 틀렸습니다.');
+      } else {
+        alert('로그인이 실패했습니다.');
+      }
+    }
+  }
 </script>
 <style scoped>
   
