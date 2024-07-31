@@ -23,30 +23,30 @@
                   <table class="table align-items-center justify-content-center mt-0 mb-0">
                     <thead>
                       <tr>
-                        <th class="col-1 text-uppercase text-secondary text-xs font-weight-bolder opacity-12">번호</th>
-                        <th class="col-6 text-uppercase text-secondary text-xs font-weight-bolder opacity-12">제목</th>
-                        <th class="col-3 text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성자</th>
-                        <th class="col-2 text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성일</th>
+                        <th class="col-1 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-12">번호</th>
+                        <th class="col-6 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-12">제목</th>
+                        <th class="col-3 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성자</th>
+                        <th class="col-2 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성일</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
-                              <h6 class="mb-0 text-sm">4</h6>
+                              <h6 class="mb-0 text-sm text-center">4</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">Title1</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <p class="text-sm font-weight-bold mb-0">Adm</p>
+                          <p class="text-sm text-center font-weight-bold mb-0">Adm</p>
                         </td>
                         <td>
                           <span class="text-xs font-weight-bold">2024-07-30</span>
@@ -54,21 +54,21 @@
                       </tr>
                       <tr>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">3</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
-                              <h6 class="mb-0 text-sm">Title1</h6>
+                              <h6 class="mb-0 text-sm ">Title1</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <p class="text-sm font-weight-bold mb-0">Adm</p>
+                          <p class="text-center text-sm font-weight-bold mb-0">Adm</p>
                         </td>
                         <td>
                           <span class="text-xs font-weight-bold">2024-07-30</span>
@@ -76,21 +76,21 @@
                       </tr>
                       <tr>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">2</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">Title1</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <p class="text-sm font-weight-bold mb-0">Adm</p>
+                          <p class="text-sm text-center font-weight-bold mb-0">Adm</p>
                         </td>
                         <td>
                           <span class="text-xs font-weight-bold">2024-07-30</span>
@@ -98,21 +98,21 @@
                       </tr>
                       <tr>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">1</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div class="d-flex px-2">
+                          <div class="text-center px-2">
                             <div class="my-auto">
                               <h6 class="mb-0 text-sm">Title1</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <p class="text-sm font-weight-bold mb-0">Adm</p>
+                          <p class="text-center text-sm font-weight-bold mb-0">Adm</p>
                         </td>
                         <td>
                           <span class="text-xs font-weight-bold">2024-07-30</span>
