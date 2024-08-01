@@ -5,16 +5,18 @@ import com.doubles.selfstudy.entity.QuestionBoardComment;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.QuestionBoardCommentFixture;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
-import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -96,5 +98,205 @@ class QuestionBoardCommentServiceTest {
         );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_수정_성공() {
+        // Given
+        String comment = "comment";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, "test");
+        UserAccount userAccount = questionBoardComment.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment));
+    }
+
+    @Test
+    void 질문_게시글_댓글_수정시_유저가_없는_경우_에러_반환() {
+        // Given
+        String comment = "comment";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+            questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment)
+        );
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_수정시_게시글이_없는_경우_에러_반환() {
+        // Given
+        String comment = "comment";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, "test");
+        UserAccount userAccount = questionBoardComment.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_수정시_권한이_없는_경우_에러_반환() {
+        // Given
+        String comment = "comment";
+        String userId = "userId";
+        Long questionBoardId = 1L;
+        Long questionBoardCommentId = 1L;
+
+        UserAccount modifyUser = UserAccountFixture.get(userId, "password");
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserID", questionBoard, "test");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(modifyUser));
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_삭제_성공() {
+        // Given
+        String userId = "userId";
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, "test");
+        UserAccount userAccount = questionBoardComment.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardCommentService
+                .deleteQuestionBoardComment(userId, questionBoardCommentId));
+    }
+
+    @Test
+    void 질문_게시글_댓글_삭제시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+        );
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_삭제시_댓글이_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardCommentId = 1L;
+
+        UserAccount userAccount = UserAccountFixture.get(userId, "password");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+        );
+
+        assertEquals(ErrorCode.COMMENT_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_삭제시_권한이_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
+        UserAccount deleteUser = UserAccountFixture.get(userId, "password");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(deleteUser));
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+        );
+
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_리스트_조회_성공() {
+        // Given
+        Pageable pageable = mock(Pageable.class);
+        Long qustionBoardId = 1L;
+        QuestionBoard questionBoard = mock(QuestionBoard.class);
+
+        // When
+        when(questionBoardRepository.findById(qustionBoardId)).thenReturn(Optional.of(questionBoard));
+        when(questionBoardCommentRepository.findAllByQuestionBoard(questionBoard, pageable))
+                .thenReturn(Page.empty());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardCommentService.questionBoardCommentList(qustionBoardId, pageable));
     }
 }

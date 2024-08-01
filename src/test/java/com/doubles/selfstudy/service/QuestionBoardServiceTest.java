@@ -125,8 +125,8 @@ class QuestionBoardServiceTest {
         String userId = "userId";
         Long questionBoardId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
-        UserAccount writer = UserAccountFixture.get("testUserId", "password");
+        QuestionBoard questionBoard = QuestionBoardFixture.get("testUserId");
+        UserAccount writer = UserAccountFixture.get(userId, "password");
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(writer));
