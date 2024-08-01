@@ -47,13 +47,52 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 수정
-    public void modifyQuestionBoardComment(String userId, Long questionBoardCommentId, String comment) {
+    public QuestionBoardCommentDto modifyQuestionBoardComment(String userId, Long questionBoardId, Long questionBoardCommentId,  String comment) {
+        // user 확인
+        UserAccount userAccount = getUserAccountOrException(userId);
 
+        // 게시글 확인
+        getQuestionBoardOrException(questionBoardId);
+
+        // 댓글 확인
+        QuestionBoardComment questionBoardComment = getQuestionBoardCommentOrException(questionBoardCommentId);
+
+        // 댓글 작성자 확인
+        if (questionBoardComment.getUserAccount() != userAccount) {
+                throw new DoubleSApplicationException(
+                        ErrorCode.INVALID_PERMISSION, String.format(
+                        "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
+                        userId,
+                        questionBoardCommentId
+                )
+            );
+        }
+
+        questionBoardComment.setComment(comment);
+
+        return QuestionBoardCommentDto.fromEntity(questionBoardCommentRepository.saveAndFlush(questionBoardComment));
     }
 
     // 질문 게시글 댓글 삭제
     public void deleteQuestionBoardComment(String userId, Long questionBoardCommentId) {
+        // user 확인
+        UserAccount userAccount = getUserAccountOrException(userId);
 
+        // 댓글 확인
+        QuestionBoardComment questionBoardComment = getQuestionBoardCommentOrException(questionBoardCommentId);
+
+        // 댓글 작성자 확인
+        if (questionBoardComment.getUserAccount() != userAccount) {
+                throw new DoubleSApplicationException(
+                        ErrorCode.INVALID_PERMISSION, String.format(
+                        "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
+                        userId,
+                        questionBoardCommentId
+                )
+            );
+        }
+
+        questionBoardCommentRepository.delete(questionBoardComment);
     }
 
     private UserAccount getUserAccountOrException(String userId) {
@@ -66,6 +105,13 @@ public class QuestionBoardCommentService {
         // find question board
         return questionBoardRepository.findById(questionBoardId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("게시글 번호: '%s' 를 찾지 못했습니다.", questionBoardId))
+        );
+    }
+
+    private QuestionBoardComment getQuestionBoardCommentOrException(Long questionBoardCommentId) {
+        // find question board
+        return questionBoardCommentRepository.findById(questionBoardCommentId).orElseThrow(() ->
+                new DoubleSApplicationException(ErrorCode.COMMENT_NOT_FOUND, String.format("댓글번호: '%s' 를 찾지 못했습니다.", questionBoardCommentId))
         );
     }
 }
