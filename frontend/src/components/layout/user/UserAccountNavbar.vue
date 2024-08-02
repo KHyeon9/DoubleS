@@ -19,19 +19,16 @@
               <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                   <router-link class="nav-link d-flex align-items-center me-2 active" aria-current="page" to="/main">
-                    <i class="fa fa-chart-pie opacity-6 text-dark me-1"></i>
                     Main Home
                   </router-link>
                 </li>
                 <li class="nav-item">
                   <router-link  class="nav-link me-2" to="/regist">
-                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
                     Sign Up
                   </router-link>
                 </li>
                 <li class="nav-item">
                   <router-link class="nav-link me-2" to="/login">
-                    <i class="fas fa-key opacity-6 text-dark me-1"></i>
                     Sign In
                   </router-link>
                 </li>
