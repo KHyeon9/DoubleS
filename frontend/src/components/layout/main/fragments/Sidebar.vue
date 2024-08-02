@@ -143,7 +143,13 @@
   const store = useIndexStore();
 
   const isActive = (path) => {
-    return route.path === path;
+    const nowPath = path.split('/');
+
+    if (nowPath.length == 2) {
+      return route.path === path;
+    }
+    
+    return  route.path.startsWith(path);
   };
 
 </script>
