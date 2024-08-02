@@ -23,31 +23,19 @@
           </div>
           <div class="card-body pt-4 p-3">
             <ul class="list-group">
-              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+              <li v-for="questionBoard in questionBoardList" :key="questionBoard.id" 
+                  class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                 <div class="d-flex flex-column">
-                  <h6 class="mb-3 text-sm">Title</h6>
-                  <span class="mb-2 text-xs">content content content content content content content content</span>
+                  <h6 class="mb-3 text-sm">{{ questionBoard.title }}</h6>
+                  <span class="mb-2 text-xs">{{ truncateText(questionBoard.content) }}</span>
                 </div>
                 <div class="ms-auto text-end">
-                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
-                </div>
-              </li>
-              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                <div class="d-flex flex-column">
-                  <h6 class="mb-3 text-sm">Title2</h6>
-                  <span class="mb-2 text-xs">content content content content content content content content</span>
-                </div>
-                <div class="ms-auto text-end">
-                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
-                </div>
-              </li>
-              <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-                <div class="d-flex flex-column">
-                  <h6 class="mb-3 text-sm">Title3</h6>
-                  <span class="mb-2 text-xs">content content content content content content content content</span>
-                </div>
-                <div class="ms-auto text-end">
-                  <a class="btn btn-link text-dark px-3 mb-0" href="javascript:;"><i class="material-icons text-sm me-2">play_arrow</i>Go</a>
+                  <router-link 
+                        :to= "`/main/question_board/${questionBoard.id}`"
+                        class="btn btn-link text-dark px-3 mb-0" 
+                      >
+                        <i class="material-icons text-sm me-2">play_arrow</i>Go
+                  </router-link>
                 </div>
               </li>
             </ul>
@@ -72,76 +60,16 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+                    <tr v-for="noticeBoard in noticeBoardList" :key="noticeBoard.id">
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">John Michael</h6>
+                            <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
                           </div>
                         </div>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">19/09/17</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Michael Levi</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">24/12/08</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Richard Gran</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">04/10/21</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">14/09/20</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -155,7 +83,45 @@
   </div>
 </template>
 <script setup>
+  import { ref, onMounted } from 'vue';
+  import apiClient from '../../../config/authConfig';
+  import moment from 'moment';
 
+  const noticeBoardList = ref([]);
+  const questionBoardList = ref([]);
+
+  const getData = async () => {
+    try {
+      const noticeBoardResponse = await apiClient.get('/notice_board_list');
+      const qeustionBoardResponse = await apiClient.get('/question_board_list');
+      
+      noticeBoardList.value = noticeBoardResponse.data.result;
+      questionBoardList.value = qeustionBoardResponse.data.result;
+      console.log(noticeBoardList.value);
+      console.log(questionBoardList.value);
+    } catch (error) {
+      console.log('데이터 가져오기 실패: ', error);
+      alert('데이터 가져오기를 실패했습니다.');
+    }
+  };
+
+  const formatDate = (date) => {
+    return moment(date).format('YYYY/MM/DD');
+  };
+
+  const truncateText = (text) => {
+    // 전체 길이가 maxLength보다 작으면 그대로 반환
+    if (text.length <= 20) {
+      return text;
+    }
+
+    return text.slice(0, 20) + '...';
+  };
+
+
+  onMounted(() => {
+    getData();
+  });
 </script>
 <style scoped>
   .table-header {

@@ -12,6 +12,7 @@ import Login from "../components/layout/user/Login.vue";
 import Regist from "../components/layout/user/Regist.vue";
 import QuestionBoardDetail from '../components/layout/main/QuestionBoardDetail.vue'
 import Alarm from "../components/layout/main/Alarm.vue";
+import { useAuthStore } from "../store/authStore";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -42,8 +43,10 @@ const router = createRouter({
           component: QuestionBoardList,
         },
         {
-          path: 'question_board/detail', 
+          path: 'question_board/:id', 
+          name: 'questionBoardId',
           component: QuestionBoardDetail,
+          props: true,
         },
         {
           path: 'group', 
@@ -80,12 +83,21 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const indexStore = useIndexStore();
+  const authStore = useAuthStore();
+
+  // 바디 클레스 변경 로직
   if (to.meta.bodyClass !== undefined) {
     indexStore.setBodyClass(to.meta.bodyClass);
   } else {
     indexStore.setBodyClass('');
   }
-  next();
+
+  // 인증 확인
+  if (to.meta.requiresAuth && !authStore.token) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;
