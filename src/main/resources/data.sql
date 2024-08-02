@@ -1,6 +1,6 @@
 -- admin 추가
 insert into user_account(user_id, password, role_type, email, nickname, memo, created_at, modified_at)
-values ('admin', '$2a$10$Lzkcz7888H3xaQLg/KzTUeO37mmlkuby1EABVNuTb4/lB6zkpqgSK', 'ADMIN', 'admin@email.com', 'admin', null, now(), now()),
+values ('admin', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'ADMIN', 'admin@email.com', 'admin', null, now(), now()),
        ('tester', '$2a$10$hIDJIM6ab.OoT07Ub5a0ve7pAlgG3EbHBNGJy69ewtPrV5e6BZLIa', 'USER', 'tester@email.com', 'tester', null, now(), now()),
        ('tester2', '$2a$10$hIDJIM6ab.OoT07Ub5a0ve7pAlgG3EbHBNGJy69ewtPrV5e6BZLIa', 'USER', 'tester@email.com', 'tester', null, now(), now());
 
