@@ -103,9 +103,11 @@
             </ul>
           </li>
           <li class="nav-item d-flex align-items-center">
-            <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
-              <i class="fa fa-user me-sm-1"></i>
-              <span class="d-sm-inline d-none">Sign In</span>
+            <a href="#" class="nav-link text-body font-weight-bold px-0">
+              <div class="text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="material-icons opacity-10 me-2">account_circle</i>
+                <span class="d-sm-inline d-none">UserName</span>
+              </div>
             </a>
           </li>
         </ul>
@@ -121,5 +123,4 @@
   const now_page = computed(() => store.now_page);
 </script>
 <style scoped>
-  
 </style>

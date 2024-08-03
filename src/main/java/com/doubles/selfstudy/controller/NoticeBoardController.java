@@ -8,6 +8,8 @@ import com.doubles.selfstudy.service.NoticeBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class NoticeBoardController {
     @GetMapping
     public Response<Page<NoticeBoardResponse>> noticeBoardList(
             Authentication authentication,
-            Pageable pageable
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 공지사항 리스트 반환
         return Response.success(
