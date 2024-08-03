@@ -8,6 +8,8 @@ import com.doubles.selfstudy.service.QuestionBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class QuestionBoardController {
     @GetMapping
     public Response<Page<QuestionBoardResponse>> questionBoardList(
                 Authentication authentication,
-                Pageable pageable
+                @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // question board list 반환
         return Response.success(
@@ -36,7 +38,7 @@ public class QuestionBoardController {
     @GetMapping("/my")
     public Response<Page<QuestionBoardResponse>> myQuestionBoardList(
                  Authentication authentication,
-                 Pageable pageable
+                 @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // my question board list 반환
         return Response.success(
