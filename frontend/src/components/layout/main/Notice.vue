@@ -30,92 +30,26 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr v-for="noticeBoard in noticeBoardList" :key="noticeBoard.id">
                         <td>
                           <div class="text-center px-2">
                             <div class="my-auto">
-                              <h6 class="mb-0 text-sm text-center">4</h6>
+                              <h6 class="mb-0 text-sm text-center">{{ noticeBoard.id }}</h6>
                             </div>
                           </div>
                         </td>
                         <td>
                           <div class="text-center px-2">
                             <div class="my-auto">
-                              <h6 class="mb-0 text-sm">Title1</h6>
+                              <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <p class="text-sm text-center font-weight-bold mb-0">Adm</p>
+                          <p class="text-sm text-center font-weight-bold mb-0">{{ noticeBoard.user.userId }}</p>
                         </td>
                         <td>
-                          <span class="text-xs font-weight-bold">2024-07-30</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">3</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm ">Title1</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <p class="text-center text-sm font-weight-bold mb-0">Adm</p>
-                        </td>
-                        <td>
-                          <span class="text-xs font-weight-bold">2024-07-30</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">2</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">Title1</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <p class="text-sm text-center font-weight-bold mb-0">Adm</p>
-                        </td>
-                        <td>
-                          <span class="text-xs font-weight-bold">2024-07-30</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">1</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">Title1</h6>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <p class="text-center text-sm font-weight-bold mb-0">Adm</p>
-                        </td>
-                        <td>
-                          <span class="text-xs font-weight-bold">2024-07-30</span>
+                          <span class="text-xs font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</span>
                         </td>
                       </tr>
                     </tbody>
@@ -125,11 +59,20 @@
               <!-- 페이징 -->
               <nav class="mt-4 nav nav-bar d-flex justify-content-end p-3" aria-label="Page navigation">
                 <ul class="pagination">
-                  <li class="page-item"><a class="page-link" href="#">‹</a></li>
-                  <li class="page-item active"><a class="page-link " href="#" >1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item"><a class="page-link" href="#">›</a></li>
+                  <li class="page-item" :class="{ disabled: page === 0}">
+                    <a class="page-link" @click.prevent="prevPage">‹</a>
+                  </li>
+                  <li 
+                    v-for="pageNumber in totalPages"
+                    :key="pageNumber"
+                    class="page-item"
+                    :class="{ active: pageNumber - 1 === page }"
+                  >
+                    <a class="page-link " @click.prevent="goToPage(pageNumber - 1)">{{ pageNumber }}</a>
+                  </li>
+                  <li class="page-item" :class="{ disabled: page === totalPages - 1 }">
+                    <a class="page-link" @click.prevent="nextPage">›</a>
+                  </li>
                 </ul>
               </nav>
             </div>
@@ -140,6 +83,57 @@
   </main>
 </template>
 <script setup>
+  import apiClient from '../../../config/authConfig';
+  import { ref, onMounted } from 'vue';
+  import moment from 'moment';
+
+  const noticeBoardList = ref([]);
+  const page = ref(0);
+  const totalPages = ref(0);
+
+  const getData = async () => {
+    try {
+      const response = await apiClient.get('/notice_board', {
+        params: {
+          page: page.value,
+        },
+      });
+
+      noticeBoardList.value = response.data.result.content;
+      totalPages.value = response.data.result.totalPages;
+
+      console.log(response.data);
+    } catch (error) {
+      console.log('오류 발생: ', error);
+    }
+  };
+
+  const nextPage = () => {
+    if (page.value < totalPages.value - 1) {
+      page.value += 1;
+      getData();
+    }
+  };
+
+  const prevPage = () => {
+    if (page.value > 0) {
+      page.value -= 1;
+      getData();
+    }
+  };
+
+  const goToPage = (pageNumber) => {
+    page.value = pageNumber;
+    getData();
+  };
+
+  const formatDate = (date) => {
+    return moment(date).format('YYYY/MM/DD');
+  };
+
+  onMounted(() => {
+    getData();
+  });
 
 </script>
 <style scoped>
