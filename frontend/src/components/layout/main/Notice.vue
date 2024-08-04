@@ -63,7 +63,7 @@
                     <a class="page-link" @click.prevent="prevPage">‹</a>
                   </li>
                   <li 
-                    v-for="pageNumber in totalPages"
+                    v-for="pageNumber in paginatedPageNumbers"
                     :key="pageNumber"
                     class="page-item"
                     :class="{ active: pageNumber - 1 === page }"
@@ -84,7 +84,7 @@
 </template>
 <script setup>
   import apiClient from '../../../config/authConfig';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import moment from 'moment';
 
   const noticeBoardList = ref([]);
@@ -130,6 +130,22 @@
   const formatDate = (date) => {
     return moment(date).format('YYYY/MM/DD');
   };
+
+  const paginatedPageNumbers = computed(() => {
+    const totalPageNumbers = 5;
+    let startPage = Math.max(1, page.value + 1 - Math.floor(totalPageNumbers / 2));
+    let endPage = Math.min(totalPages.value, startPage + totalPageNumbers - 1);
+
+    if (endPage - startPage < totalPageNumbers - 1) {
+      startPage = Math.max(1, endPage - totalPageNumbers + 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  });
 
   onMounted(() => {
     getData();
