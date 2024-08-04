@@ -60,7 +60,7 @@
               <nav class="mt-4 nav nav-bar d-flex justify-content-end p-3" aria-label="Page navigation">
                 <ul class="pagination">
                   <li class="page-item" :class="{ disabled: page === 0}">
-                    <a class="page-link" @click.prevent="prevPage">‹</a>
+                    <a class="page-link" @click.prevent="prevPageAndFetch">‹</a>
                   </li>
                   <li 
                     v-for="pageNumber in paginatedPageNumbers"
@@ -68,10 +68,10 @@
                     class="page-item"
                     :class="{ active: pageNumber - 1 === page }"
                   >
-                    <a class="page-link " @click.prevent="goToPage(pageNumber - 1)">{{ pageNumber }}</a>
+                    <a class="page-link " @click.prevent="goToPageAndFetch(pageNumber - 1)">{{ pageNumber }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: page === totalPages - 1 }">
-                    <a class="page-link" @click.prevent="nextPage">›</a>
+                    <a class="page-link" @click.prevent="nextPageAndFetch">›</a>
                   </li>
                 </ul>
               </nav>
@@ -84,12 +84,20 @@
 </template>
 <script setup>
   import apiClient from '../../../config/authConfig';
-  import { ref, onMounted, computed } from 'vue';
-  import moment from 'moment';
+  import { ref, onMounted } from 'vue';
+  import { usePagination } from '../../../utils/pagination';
 
   const noticeBoardList = ref([]);
-  const page = ref(0);
-  const totalPages = ref(0);
+  
+  const { 
+    page, 
+    totalPages, 
+    nextPage, 
+    prevPage, 
+    goToPage, 
+    formatDate, 
+    paginatedPageNumbers 
+  } = usePagination();
 
   const getData = async () => {
     try {
@@ -108,45 +116,21 @@
     }
   };
 
-  const nextPage = () => {
-    if (page.value < totalPages.value - 1) {
-      page.value += 1;
-      getData();
-    }
-  };
-
-  const prevPage = () => {
-    if (page.value > 0) {
-      page.value -= 1;
-      getData();
-    }
-  };
-
-  const goToPage = (pageNumber) => {
-    page.value = pageNumber;
+  const nextPageAndFetch = () => {
+    nextPage();
     getData();
   };
 
-  const formatDate = (date) => {
-    return moment(date).format('YYYY/MM/DD');
+  const prevPageAndFetch = () => {
+    prevPage();
+    getData();
   };
 
-  const paginatedPageNumbers = computed(() => {
-    const totalPageNumbers = 5;
-    let startPage = Math.max(1, page.value + 1 - Math.floor(totalPageNumbers / 2));
-    let endPage = Math.min(totalPages.value, startPage + totalPageNumbers - 1);
-
-    if (endPage - startPage < totalPageNumbers - 1) {
-      startPage = Math.max(1, endPage - totalPageNumbers + 1);
-    }
-
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    return pages;
-  });
-
+  const goToPageAndFetch = (pageNumber) => {
+    goToPage(pageNumber);
+    getData();
+  };
+  
   onMounted(() => {
     getData();
   });
