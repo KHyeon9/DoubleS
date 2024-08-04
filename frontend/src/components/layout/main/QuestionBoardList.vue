@@ -35,12 +35,30 @@
                     class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <router-link class="col-12" :to="`/main/question_board/${questionBoard.id}`">
                     <div class="d-flex flex-column">
-                        <div class="fw-bolder mb-3 fs-5">{{ questionBoard.title }}</div>
+                        <div class="mb-3">
+                          <div class="fw-bolder fs-5 mb-1">{{ questionBoard.title }}</div>
+                          <div class="boardCreateInfo">
+                            <span>{{ questionBoard.user.userId }}</span>  
+                            <span>{{ formatDate(questionBoard.createdAt) }}</span>
+                          </div>
+                        </div>
                         <span class="mb-2 text-s">{{ questionBoard.content }}</span>
-                        <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
-                        <div class="ms-auto board_info">
-                          <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">thumb_up</i><span class="font-weight-bold">13</span></div>
-                          <div class="text-dark px-3 mb-0"><i class="material-icons text-sm me-2">mode_comment</i><span class="font-weight-bold">3</span></div>
+                        <div class="boardInfo">
+                          <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
+                          <div class="ms-auto boardCount">
+                            <div class="text-dark px-3 mb-0">
+                              <i class="material-icons text-sm me-2">visibility</i>
+                              <span class="font-weight-bold">{{ questionBoard.viewCounts }}</span>
+                            </div>
+                            <div class="text-dark px-3 mb-0">
+                              <i class="material-icons text-sm me-2">thumb_up</i>
+                              <span class="font-weight-bold">{{ questionBoard.likes }}</span>
+                            </div>
+                            <div class="text-dark px-3 mb-0">
+                              <i class="material-icons text-sm me-2">mode_comment</i>
+                              <span class="font-weight-bold">{{ questionBoard.comments }}</span>
+                            </div>
+                          </div>
                         </div>
                     </div>
                   </router-link>
@@ -50,7 +68,7 @@
               <nav class="mt-4 nav nav-bar d-flex justify-content-end" aria-label="Page navigation">
                 <ul class="pagination">
                   <li class="page-item" :class="{ disabled: page === 0}">
-                    <a class="page-link" @click.prevent="prevPage">‹</a>
+                    <a class="page-link" @click.prevent="prevPageAndFetch">‹</a>
                   </li>
                   <li 
                     v-for="pageNumber in paginatedPageNumbers"
@@ -58,10 +76,10 @@
                     class="page-item"
                     :class="{ active: pageNumber - 1 === page }"
                   >
-                    <a class="page-link " @click.prevent="goToPage(pageNumber - 1)">{{ pageNumber }}</a>
+                    <a class="page-link " @click.prevent="goToPageAndFetch(pageNumber - 1)">{{ pageNumber }}</a>
                   </li>
                   <li class="page-item" :class="{ disabled: page === totalPages - 1 }">
-                    <a class="page-link" @click.prevent="nextPage">›</a>
+                    <a class="page-link" @click.prevent="nextPageAndFetch">›</a>
                   </li>
                 </ul>
               </nav>
@@ -74,12 +92,20 @@
 </template>
 <script setup>
   import apiClient from '../../../config/authConfig';
-  import { ref, onMounted, computed } from 'vue';
-  import moment from 'moment';
+  import { ref, onMounted } from 'vue';
+  import { usePagination } from '../../../utils/pagination';
 
   const questionBoardList = ref([]);
-  const page = ref(0);
-  const totalPages = ref(0);
+  const { 
+    page, 
+    totalPages, 
+    nextPage, 
+    prevPage, 
+    goToPage, 
+    formatDate, 
+    paginatedPageNumbers 
+  } = usePagination();
+
 
   const getData = async () => {
     try {
@@ -98,52 +124,49 @@
     }
   };
 
-  const nextPage = () => {
-    if (page.value < totalPages.value - 1) {
-      page.value += 1;
-      getData();
-    }
-  };
-
-  const prevPage = () => {
-    if (page.value > 0) {
-      page.value -= 1;
-      getData();
-    }
-  };
-
-  const goToPage = (pageNumber) => {
-    page.value = pageNumber;
+  const nextPageAndFetch = () => {
+    nextPage();
     getData();
   };
 
-  const formatDate = (date) => {
-    return moment(date).format('YYYY/MM/DD');
+  const prevPageAndFetch = () => {
+    prevPage();
+    getData();
   };
 
-  const paginatedPageNumbers = computed(() => {
-    const totalPageNumbers = 5;
-    let startPage = Math.max(1, page.value + 1 - Math.floor(totalPageNumbers / 2));
-    let endPage = Math.min(totalPages.value, startPage + totalPageNumbers - 1);
-
-    if (endPage - startPage < totalPageNumbers - 1) {
-      startPage = Math.max(1, endPage - totalPageNumbers + 1);
-    }
-
-    const pages = [];
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    return pages;
-  });
-
+  const goToPageAndFetch = (pageNumber) => {
+    goToPage(pageNumber);
+    getData();
+  };
+  
   onMounted(() => {
     getData();
   });
-
 </script>
 <style scoped>
   .active a {
     color: white;
+  }
+
+  .boardCreateInfo, .boardInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+  }
+
+  .boardCount {
+    display: flex; 
+    flex-direction: row; 
+    align-items: center;
+  }
+
+  .boardCreateInfo {
+    font-size: 15px;
+    font-weight: 200;
+  }
+
+  .dropdown-menu {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   }
 </style>
