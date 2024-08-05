@@ -104,12 +104,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="d-flex mt-4">
-                    <div class="flex-shrink-0">
-                      
-                    </div>
-                    <div class="flex-grow-1 my-auto">
-                      <div class="input-group input-group-static">
+                <div class="d-flex mt-4">
+                  <div class="flex-grow-1 my-auto">
+                    <div class="input-group input-group-static">
                       <textarea class="form-control" placeholder="Write your comment" rows="4" spellcheck="false"></textarea>
                     </div>
                   </div>
