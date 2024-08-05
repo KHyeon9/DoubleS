@@ -61,7 +61,25 @@
     postTag.value = tag;
   };
 
+  const validateForm = () => {
+    if (!postTitle.value) {
+      alert('제목이 입력되지 않았습니다.');
+      return false;
+    }
+
+    if (!postContent.value) {
+      alert('내용이 입력되지 않았습니다.');
+      return false;
+    }
+
+    return true;
+  };
+
   const createPost = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const response = await apiClient.post('/question_board', {
         title: postTitle.value,
@@ -75,6 +93,8 @@
       console.log('에러 발생', error);
     }
   }
+
+  
   
 </script>
 <style scoped>
