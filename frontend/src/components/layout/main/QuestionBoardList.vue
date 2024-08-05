@@ -3,9 +3,9 @@
     <div class="container-fluid py-4">
       <div class="d-sm-flex justify-content-between">
         <div>
-          <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
+          <router-link to="/main/question_board/new" class="btn btn-icon bg-gradient-primary">
             New Post
-          </a>
+          </router-link>
         </div>
         <div class="d-flex">
           <div class="d-inline">
