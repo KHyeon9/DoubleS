@@ -3,19 +3,21 @@
     <div class="container-fluid py-4">
       <div class="d-sm-flex justify-content-between">
         <div>
-          <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
+          <router-link to="/main/question_board/new" class="btn btn-icon bg-gradient-primary">
             New Post
-          </a>
+          </router-link>
         </div>
         <div class="d-flex">
           <div class="d-inline">
             <button href="javascript:;" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2" aria-expanded="false">
-              Filters
+              {{ postTagName || 'Tag Filter' }}
             </button>
             <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" style="">
-              <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Paid</a></li>
-              <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Refunded</a></li>
-              <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Canceled</a></li>
+              <li v-for="tag in tags" :key="tag.key">
+                <a class="dropdown-item border-radius-md" @click="selectTag(tag)">
+                  {{ tag.value }}
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -44,7 +46,10 @@
                         </div>
                         <span class="mb-2 text-s">{{ questionBoard.content }}</span>
                         <div class="boardInfo">
-                          <div class="text-dark mb-0 mt-1"><i class="material-icons text-sm me-2">sell</i>Tag</div>
+                          <div class="text-dark mb-0 mt-1">
+                            <i class="material-icons text-sm me-2">sell</i>
+                            {{ questionBoard.tag.value }}
+                          </div>
                           <div class="ms-auto boardCount">
                             <div class="text-dark px-3 mb-0">
                               <i class="material-icons text-sm me-2">visibility</i>
@@ -96,6 +101,9 @@
   import { usePagination } from '../../../utils/pagination';
 
   const questionBoardList = ref([]);
+  const tags = ref([]);
+  const postTag = ref('');
+  const postTagName = ref('');
   const { 
     page, 
     totalPages, 
@@ -105,6 +113,11 @@
     formatDate, 
     paginatedPageNumbers 
   } = usePagination();
+
+  const selectTag = (tag) => {
+    postTagName.value = tag.value;
+    postTag.value = tag.key
+  };
 
 
   const getData = async () => {
@@ -121,6 +134,18 @@
       console.log(response.data);
     } catch (error) {
       console.log('에러 발생', error);
+    }
+  };
+
+  const getTags = async () => {
+    try {
+      const response = await apiClient.get('/question_board/tags');
+      const tagResponse = response.data.result;
+      tags.value = [{ key: 'All', value: '전체' }, ...tagResponse];
+      
+      console.log(response.data)
+    } catch (error) {
+      console.log('태그를 가져오지 못했습니다.', error);
     }
   };
 
@@ -141,6 +166,7 @@
   
   onMounted(() => {
     getData();
+    getTags();
   });
 </script>
 <style scoped>

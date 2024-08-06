@@ -2,8 +2,10 @@ package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.QuestionBoardRequest;
 import com.doubles.selfstudy.controller.response.QuestionBoardResponse;
+import com.doubles.selfstudy.controller.response.QuestionBoardTagResponse;
 import com.doubles.selfstudy.controller.response.Response;
 import com.doubles.selfstudy.dto.question.QuestionBoardDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/main/question_board")
@@ -68,7 +74,7 @@ public class QuestionBoardController {
     ) {
         // create page 생성
         questionBoardService.createQuestionBoard(
-                authentication.getName(), request.getTitle(), request.getContent());
+                authentication.getName(), request.getTitle(), request.getContent(), request.getTag());
 
         return Response.success();
     }
@@ -120,5 +126,15 @@ public class QuestionBoardController {
             Authentication authentication
     ) {
         return Response.success(questionBoardService.questionBoardLikeCount(questionBoardId));
+    }
+
+    @GetMapping("/tags")
+    public Response<List<QuestionBoardTagResponse>> getTags() {
+        return Response.success(Arrays.stream(QuestionBoardTag.values())
+                .map(tag ->
+                        QuestionBoardTagResponse.of(
+                                tag.name(), tag.getTagName()))
+                .collect(Collectors.toList())
+        );
     }
 }

@@ -52,8 +52,8 @@ public class QuestionBoard extends AuditingFields {
         return new QuestionBoard(userAccount, title, content, null, viewCount);
     }
 
-    public static QuestionBoard of(UserAccount userAccount, String title, String content) {
-        return QuestionBoard.of(userAccount, title, content, null, 0);
+    public static QuestionBoard of(UserAccount userAccount, String title, String content, QuestionBoardTag tag) {
+        return QuestionBoard.of(userAccount, title, content, tag, 0);
     }
 
     @PrePersist

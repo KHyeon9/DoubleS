@@ -13,6 +13,7 @@ import Regist from "../components/layout/user/Regist.vue";
 import QuestionBoardDetail from '../components/layout/main/QuestionBoardDetail.vue'
 import Alarm from "../components/layout/main/Alarm.vue";
 import { useAuthStore } from "../store/authStore";
+import CreateQuestionBoard from "../components/layout/main/CreateQuestionBoard.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -47,6 +48,10 @@ const router = createRouter({
           name: 'questionBoardId',
           component: QuestionBoardDetail,
           props: true,
+        },
+        {
+          path: 'question_board/new', 
+          component: CreateQuestionBoard,
         },
         {
           path: 'group', 

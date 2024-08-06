@@ -1,6 +1,7 @@
 package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.question.QuestionBoardDto;
+import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
@@ -62,13 +63,13 @@ public class QuestionBoardService {
 
     // 질문 게시글 생성
     @Transactional
-    public void createQuestionBoard(String userId, String title, String content) {
+    public void createQuestionBoard(String userId, String title, String content, String tag) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
-
+        QuestionBoardTag questionBoardTag = QuestionBoardTag.fromString(tag);
         // 질문 게시글 저장
         questionBoardRepository.save(
-                QuestionBoard.of(userAccount, title, content)
+                QuestionBoard.of(userAccount, title, content, questionBoardTag)
         );
     }
 
