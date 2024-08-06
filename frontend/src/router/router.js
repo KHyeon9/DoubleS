@@ -45,9 +45,7 @@ const router = createRouter({
         },
         {
           path: 'question_board/:id', 
-          name: 'questionBoardId',
           component: QuestionBoardDetail,
-          props: true,
         },
         {
           path: 'question_board/new', 

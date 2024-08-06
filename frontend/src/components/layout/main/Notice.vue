@@ -49,7 +49,7 @@
                           <p class="text-sm text-center font-weight-bold mb-0">{{ noticeBoard.user.userId }}</p>
                         </td>
                         <td>
-                          <span class="text-xs font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</span>
+                          <p class="text-xs text-center font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</p>
                         </td>
                       </tr>
                     </tbody>

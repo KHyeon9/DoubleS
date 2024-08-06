@@ -6,13 +6,13 @@
         <div class="col-auto my-auto">
           <div class="h-100 ms-4">
             <h3 class="mt-2 mb-2">
-              Title
+              {{ board.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              UserNickname
+              {{ board.user.userId }}
             </p>
             <p class="mb-0 font-weight-normal text-sm">
-              Date
+              {{ formatDate(board.createdAt) }}
             </p>
           </div>
         </div>
@@ -42,18 +42,18 @@
               <hr class="dark horizontal">
               <div class="card-body pt-3">
                 <p class="post_content mb-4">
-                  Personal profiles are the perfect way for you to grab their attention and persuade recruiters to continue reading your CV because you’re telling them from the off exactly why they should hire you.
+                  {{ board.content }}
                 </p>
                 <div class="row align-items-center px-2 mt-4 mb-2">
                   <div class="col-sm-6">
                     <div class="d-flex">
                       <div class="d-flex align-items-center">
                         <i class="material-icons text-sm me-1 cursor-pointer">thumb_up</i>
-                        <span class="text-sm me-3 ">150</span>
+                        <span class="text-sm me-3 ">{{ board.likes }}</span>
                       </div>
                       <div class="d-flex align-items-center">
                         <i class="material-icons text-sm me-1 cursor-pointer">mode_comment</i>
-                        <span class="text-sm me-3">36</span>
+                        <span class="text-sm me-3">{{ board.comments }}</span>
                       </div>
                     </div>
                   </div>
@@ -121,8 +121,36 @@
     </div>
   </div>
 </template>
-<script>
+<script setup>
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import apiClient from '../../../config/authConfig';
+  import moment from 'moment';
 
+  const route = useRoute();
+  const board = ref({});
+
+  const getBoardData = async (id) => {
+    try {
+      const response = await apiClient.get(`/question_board/${id}`);
+      board.value = response.data.result
+
+      console.log( board.value);
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+    }
+  };
+
+  const formatDate = (date) => {
+    return moment(date).format('YYYY/MM/DD');
+  };
+
+
+  onMounted(() => {
+    const boardId = route.params.id;
+    console.log(boardId);
+    getBoardData(boardId);
+  });
 </script>
 <style scoped>
   .post_content {
