@@ -9,4 +9,5 @@ public class QuestionBoardRequest {
 
     private String title;
     private String content;
+    private String tag;
 }

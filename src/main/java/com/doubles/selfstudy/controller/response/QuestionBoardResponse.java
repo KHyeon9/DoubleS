@@ -15,7 +15,7 @@ public class QuestionBoardResponse {
     private UserResponse user; // 유저 정보
     private String title; // 제목
     private String content; // 내용
-    private QuestionBoardTag tag; // 태그
+    private QuestionBoardTagResponse tag; // 태그
     private Long likes; // 좋아요 수
     private Long comments; // 댓글 수
     private Integer viewCounts; // 조회수
@@ -30,7 +30,7 @@ public class QuestionBoardResponse {
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getTitle(),
                 dto.getContent(),
-                dto.getTag(),
+                QuestionBoardTagResponse.of(dto.getTag().name(), dto.getTag().getTagName()),
                 like,
                 comments,
                 dto.getViewCounts(),
@@ -48,7 +48,7 @@ public class QuestionBoardResponse {
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getTitle(),
                 dto.getContent(),
-                dto.getTag(),
+                QuestionBoardTagResponse.of(dto.getTag().name(), dto.getTag().getTagName()),
                 dto.getLikes(),
                 dto.getComments(),
                 dto.getViewCounts(),
