@@ -28,12 +28,14 @@
             <div class="d-flex">
               <div class="d-inline">
                 <button href="javascript:;" class="btn bg-gradient-dark dropdown-toggle mb-5" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2" aria-expanded="false">
-                  Tag
+                  {{ postTagName || 'Tag' }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" style="">
-                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Tag1</a></li>
-                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Tag2</a></li>
-                  <li><a class="dropdown-item border-radius-md" href="javascript:;">Tag3</a></li>
+                  <li v-for="tag in tags" :key="tag.key">
+                    <a class="dropdown-item border-radius-md" @click="selectTag(tag)">
+                      {{ tag.value }}
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -48,17 +50,20 @@
   </div>
 </template>
 <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import apiClient from '../../../config/authConfig';
   import { useRouter } from 'vue-router';
   
   const router = useRouter();
+  const tags = ref([]);
   const postTitle = ref('');
   const postContent = ref('');
-  const postTag = ref('');
+  const postTag = ref('Free');
+  const postTagName = ref('자유');
 
   const selectTag = (tag) => {
-    postTag.value = tag;
+    postTagName.value = tag.value;
+    postTag.value = tag.key
   };
 
   const validateForm = () => {
@@ -75,6 +80,16 @@
     return true;
   };
 
+  const getTags = async () => {
+    try {
+      const response = await apiClient.get('/question_board/tags');
+      tags.value = response.data.result;
+      console.log(response.data)
+    } catch (error) {
+      console.log('태그를 가져오지 못했습니다.', error);
+    }
+  };
+
   const createPost = async () => {
     if (!validateForm()) {
       return;
@@ -84,6 +99,7 @@
       const response = await apiClient.post('/question_board', {
         title: postTitle.value,
         content: postContent.value,
+        tag: postTag.value
       });
 
       console.log('게시글 생성 성공', response.data);
@@ -92,9 +108,11 @@
     } catch (error) {
       console.log('에러 발생', error);
     }
-  }
+  };
 
-  
+  onMounted(() => {
+    getTags();
+  });
   
 </script>
 <style scoped>
