@@ -2,9 +2,7 @@ package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
-import com.doubles.selfstudy.controller.response.Response;
-import com.doubles.selfstudy.controller.response.UserLoginResponse;
-import com.doubles.selfstudy.controller.response.UserRegistResponse;
+import com.doubles.selfstudy.controller.response.*;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,13 @@ public class UserController {
                 request.getUserId(), request.getPassword(), request.getEmail(), request.getNickname());
 
         return Response.success(UserRegistResponse.fromDto(userAccountDto));
+    }
+
+    @PostMapping("/user_info")
+    public Response<UserInfoResponse> getUserInfo(@RequestBody UserLoginRequest request) {
+        UserAccountDto userAccountDto = userAccountService.getUserInfo(request.getUserId());
+
+        return Response.success(UserInfoResponse.fromUserAccountDto(userAccountDto));
     }
 
     @GetMapping("/profile")

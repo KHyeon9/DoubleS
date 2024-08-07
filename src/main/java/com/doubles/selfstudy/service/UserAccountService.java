@@ -41,10 +41,7 @@ public class UserAccountService {
 
     public String login(String userId, String password) {
         // 회원 가입 체크
-        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow(() ->
-                new DoubleSApplicationException(
-                        ErrorCode.USER_NOT_FOUND, String.format("'%s' 를 찾지 못했습니다.", userId))
-        );
+        UserAccount userAccount = getUserAccountOrException(userId);
 
         // 비밀 번호 체크
         if (!encoder.matches(password, userAccount.getPassword())) {
@@ -55,6 +52,20 @@ public class UserAccountService {
         String token = JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
 
         return token;
+    }
+
+    public UserAccountDto getUserInfo(String userId) {
+        // 아이디 가져옴
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        return UserAccountDto.fromEntity(userAccount);
+    }
+
+    private UserAccount getUserAccountOrException(String userId) {
+        // 유저 정보 가져오면서 못 찾는 경우 검사
+        return userAccountRepository.findById(userId).orElseThrow(() ->
+                new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
+        );
     }
     
     // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
