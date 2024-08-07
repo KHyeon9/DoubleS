@@ -122,7 +122,7 @@
 
   const getData = async () => {
     try {
-      const response = await apiClient.get('/question_board', {
+      const response = await apiClient.get('/main/question_board', {
         params: {
           page: page.value,
         },
@@ -139,7 +139,7 @@
 
   const getTags = async () => {
     try {
-      const response = await apiClient.get('/question_board/tags');
+      const response = await apiClient.get('/main/question_board/tags');
       const tagResponse = response.data.result;
       tags.value = [{ key: 'All', value: '전체' }, ...tagResponse];
       

@@ -83,7 +83,7 @@
 </template>
 <script setup>
   import { ref } from 'vue';
-  import axios from 'axios';
+  import apiClient from '../../../config/authConfig';
   import { useRouter } from 'vue-router';
   import { useAuthStore } from '../../../store/authStore';
 
@@ -119,13 +119,23 @@
     }
 
     try {
-      const response = await axios.post('/api/login', {
+      const tokenResponse = await apiClient.post('/login', {
         userId: userId.value,
         password: password.value
       });
-      const token = response.data.result.token;
 
+      const token = tokenResponse.data.result.token;
       authStore.setToken(token);
+
+
+      const userInfoResponse = await apiClient.post('/user_info', {
+        userId: userId.value,
+        password: password.value
+      });
+
+      const userInfo = userInfoResponse.data.result;
+      authStore.setUserInfo(userInfo);
+      console.log(userInfo);
 
       router.push('/main');
 
