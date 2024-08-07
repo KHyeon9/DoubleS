@@ -132,7 +132,7 @@
 
   const getBoardData = async (id) => {
     try {
-      const response = await apiClient.get(`/question_board/${id}`);
+      const response = await apiClient.get(`/main/question_board/${id}`);
       board.value = response.data.result
 
       console.log( board.value);

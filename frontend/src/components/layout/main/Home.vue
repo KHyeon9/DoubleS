@@ -92,8 +92,8 @@
 
   const getData = async () => {
     try {
-      const noticeBoardResponse = await apiClient.get('/notice_board_list');
-      const qeustionBoardResponse = await apiClient.get('/question_board_list');
+      const noticeBoardResponse = await apiClient.get('/main/notice_board_list');
+      const qeustionBoardResponse = await apiClient.get('/main/question_board_list');
       
       noticeBoardList.value = noticeBoardResponse.data.result;
       questionBoardList.value = qeustionBoardResponse.data.result;

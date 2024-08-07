@@ -82,7 +82,7 @@
 
   const getTags = async () => {
     try {
-      const response = await apiClient.get('/question_board/tags');
+      const response = await apiClient.get('/main/question_board/tags');
       tags.value = response.data.result;
       console.log(response.data)
     } catch (error) {
@@ -96,7 +96,7 @@
     }
 
     try {
-      const response = await apiClient.post('/question_board', {
+      const response = await apiClient.post('/main/question_board', {
         title: postTitle.value,
         content: postContent.value,
         tag: postTag.value
