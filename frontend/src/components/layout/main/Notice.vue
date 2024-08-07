@@ -3,9 +3,9 @@
     <div class="container-fluid py-4">
       <div v-if="isAdmin" class="d-sm-flex justify-content-between">
         <div>
-          <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
+          <router-link to="/main/notice/new" class="btn btn-icon bg-gradient-primary">
             New Notice
-          </a>
+          </router-link>
         </div>
       </div>
       <div class="row">
