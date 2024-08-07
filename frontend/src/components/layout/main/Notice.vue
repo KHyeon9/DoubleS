@@ -1,7 +1,7 @@
 <template>
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ps ps--active-y">
     <div class="container-fluid py-4">
-      <div class="d-sm-flex justify-content-between">
+      <div v-if="isAdmin" class="d-sm-flex justify-content-between">
         <div>
           <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
             New Notice
@@ -84,10 +84,13 @@
 </template>
 <script setup>
   import apiClient from '../../../config/authConfig';
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import { usePagination } from '../../../utils/pagination';
+  import { useAuthStore } from '../../../store/authStore';
 
   const noticeBoardList = ref([]);
+  const authStore = useAuthStore();
+  const isAdmin = computed(() => authStore.isAdmin);
   
   const { 
     page, 
@@ -101,7 +104,7 @@
 
   const getData = async () => {
     try {
-      const response = await apiClient.get('/notice_board', {
+      const response = await apiClient.get('/main/notice_board', {
         params: {
           page: page.value,
         },
@@ -130,7 +133,7 @@
     goToPage(pageNumber);
     getData();
   };
-  
+
   onMounted(() => {
     getData();
   });
