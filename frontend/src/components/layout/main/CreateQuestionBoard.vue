@@ -107,6 +107,7 @@
       router.push('/main/question_board');
     } catch (error) {
       console.log('에러 발생', error);
+      alert('질문 게시글 생성에 실패했습니다.');
     }
   };
 
