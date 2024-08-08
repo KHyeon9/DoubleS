@@ -35,7 +35,7 @@
   </div>
 </template>
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref } from 'vue';
   import apiClient from '../../../config/authConfig';
   import { useRouter } from 'vue-router';
 
@@ -58,9 +58,26 @@
   };
 
   const createNotice = async () => {
+    if (!validateForm()) {
+      return;
+    }
 
+    try {
+      const response = await apiClient.post('/main/notice_board', {
+        title: noticeTitle.value,
+        content: noticeContent.value,
+      });
+
+      console.log(response);
+
+      router.push('/main/notice');
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('공지사항 생성에 실패했습니다.');
+    }
   };
+
 </script>
 <style scoped>
-  
+
 </style>
