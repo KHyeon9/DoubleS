@@ -3,9 +3,9 @@
     <div class="container-fluid py-4">
       <div v-if="isAdmin" class="d-sm-flex justify-content-between">
         <div>
-          <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
+          <router-link to="/main/notice/new" class="btn btn-icon bg-gradient-primary">
             New Notice
-          </a>
+          </router-link>
         </div>
       </div>
       <div class="row">
@@ -39,11 +39,13 @@
                           </div>
                         </td>
                         <td>
-                          <div class="text-center px-2">
-                            <div class="my-auto">
-                              <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
+                          <router-link :to="`/main/notice/${noticeBoard.id}`">
+                            <div class="text-center px-2">
+                              <div class="my-auto">
+                                <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
+                              </div>
                             </div>
-                          </div>
+                          </router-link>
                         </td>
                         <td>
                           <p class="text-sm text-center font-weight-bold mb-0">{{ noticeBoard.user.userId }}</p>
@@ -57,7 +59,7 @@
                 </div>
               </div>
               <!-- 페이징 -->
-              <nav class="mt-4 nav nav-bar d-flex justify-content-end p-3" aria-label="Page navigation">
+              <nav class="mt-4 me-3 nav nav-bar d-flex justify-content-end" aria-label="Page navigation">
                 <ul class="pagination">
                   <li class="page-item" :class="{ disabled: page === 0}">
                     <a class="page-link" @click.prevent="prevPageAndFetch">‹</a>
