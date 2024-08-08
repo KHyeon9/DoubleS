@@ -15,6 +15,8 @@ import Alarm from "../components/layout/main/Alarm.vue";
 import { useAuthStore } from "../store/authStore";
 import CreateQuestionBoard from "../components/layout/main/CreateQuestionBoard.vue";
 import CreateNotice from "../components/layout/main/CreateNotice.vue";
+import NoticeDetail from "../components/layout/main/NoticeDetail.vue";
+import ModifyNotice from "../components/layout/main/ModifyNotice.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,6 +37,14 @@ const router = createRouter({
         {
           path: 'notice',
           component: Notice
+        },
+        {
+          path: 'notice/:id',
+          component: NoticeDetail
+        },
+        {
+          path: 'notice/modify/:id',
+          component: ModifyNotice
         },
         {
           path: 'notice/new', 
