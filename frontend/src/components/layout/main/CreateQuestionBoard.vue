@@ -7,28 +7,29 @@
             <div class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
               <i class="material-icons opacity-10">article</i>
             </div>
-            <h6 class="mb-0">New Post</h6>
+            <h6 class="mb-0">New Question Board</h6>
           </div>
           <div class="card-body pt-2">
             <div class="input-group input-group-dynamic">
-              <input v-model="postTitle" type="text" class="form-control" id="postTitle" placeholder="Title">
+              <input v-model="questionBoardTitle" type="text" class="form-control" id="questionBoardTitle" placeholder="Title">
             </div>
             <div class="row mt-4">
               <div class="col-12 col-md-12">
                 <label class="mb-2 form-label">Content</label>
                 <div class="input-group input-group-static">
-                  <textarea v-model="postContent"
+                  <textarea v-model="questionBoardContent"
                             class="form-control" 
                             placeholder="Write your Content"
-                             rows="14" spellcheck="false"></textarea>
+                             rows="14" spellcheck="false">
+                  </textarea>
                 </div>
               </div>
             </div>
-            <label class="mt-4 mb-2 form-label">Post Tags</label>
+            <label class="mt-4 mb-2 form-label">Question Board Tags</label>
             <div class="d-flex">
               <div class="d-inline">
                 <button href="javascript:;" class="btn bg-gradient-dark dropdown-toggle mb-5" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2" aria-expanded="false">
-                  {{ postTagName || 'Tag' }}
+                  {{ questionBoardTagName || 'Tag' }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" style="">
                   <li v-for="tag in tags" :key="tag.key">
@@ -41,7 +42,7 @@
             </div>
             <div class="d-flex justify-content-end mt-4">
               <router-link to="/main/question_board" class="btn btn-light m-0">Cancel</router-link>
-              <button type="button"  @click="createPost" name="button" class="btn bg-gradient-dark m-0 ms-2">Create Post</button>
+              <button type="button"  @click="createQuestionBoard" name="button" class="btn bg-gradient-dark m-0 ms-2">Create Board</button>
             </div>
           </div>
         </div>
@@ -56,23 +57,23 @@
   
   const router = useRouter();
   const tags = ref([]);
-  const postTitle = ref('');
-  const postContent = ref('');
-  const postTag = ref('Free');
-  const postTagName = ref('자유');
+  const questionBoardTitle = ref('');
+  const questionBoardContent = ref('');
+  const questionBoardTag = ref('Free');
+  const questionBoardTagName = ref('자유');
 
   const selectTag = (tag) => {
-    postTagName.value = tag.value;
-    postTag.value = tag.key
+    questionBoardTagName.value = tag.value;
+    questionBoardTag.value = tag.key
   };
 
   const validateForm = () => {
-    if (!postTitle.value) {
+    if (!questionBoardTitle.value) {
       alert('제목이 입력되지 않았습니다.');
       return false;
     }
 
-    if (!postContent.value) {
+    if (!questionBoardContent.value) {
       alert('내용이 입력되지 않았습니다.');
       return false;
     }
@@ -90,16 +91,16 @@
     }
   };
 
-  const createPost = async () => {
+  const createQuestionBoard = async () => {
     if (!validateForm()) {
       return;
     }
 
     try {
       const response = await apiClient.post('/main/question_board', {
-        title: postTitle.value,
-        content: postContent.value,
-        tag: postTag.value
+        title: questionBoardTitle.value,
+        content: questionBoardContent.value,
+        tag: questionBoardTag.value
       });
 
       console.log('게시글 생성 성공', response.data);
