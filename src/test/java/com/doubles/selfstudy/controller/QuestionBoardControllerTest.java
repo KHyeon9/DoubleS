@@ -44,11 +44,12 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -60,11 +61,12 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When&Then
         mockMvc.perform(post("/api/main/question_board")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -77,15 +79,16 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When
-        when(questionBoardService.modifyQuestionBoard(any(), eq(1L), eq(title), eq(content)))
+        when(questionBoardService.modifyQuestionBoard(any(), eq(1L), eq(title), eq(content), eq(tag)))
                 .thenReturn(QuestionBoardDto.fromEntity(QuestionBoardFixture.get("userId")));
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -98,11 +101,12 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When&Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -114,15 +118,16 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
-                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content));
+                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content), eq(tag));
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
@@ -134,15 +139,16 @@ class QuestionBoardControllerTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
-                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content));
+                .when(questionBoardService).modifyQuestionBoard(any(), eq(1L), eq(title), eq(content), eq(tag));
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content)))
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardRequest(title, content, tag)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));

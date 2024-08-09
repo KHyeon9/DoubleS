@@ -88,8 +88,7 @@ public class QuestionBoardService {
                     ErrorCode.INVALID_PERMISSION, String.format(
                             "%s는 권한이 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
                             userId,
-                            questionBoardId,
-                            tag
+                            questionBoardId
                     )
                 );
         }

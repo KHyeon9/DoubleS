@@ -43,6 +43,7 @@ class QuestionBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
         String userId = "userId";
 
         // When
@@ -51,7 +52,7 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.save(any())).thenReturn(mock(QuestionBoard.class));
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(userId, title, content));
+        assertDoesNotThrow(() -> questionBoardService.createQuestionBoard(userId, title, content, tag));
     }
 
 
@@ -60,6 +61,7 @@ class QuestionBoardServiceTest {
         // Given
         String title = "title";
         String content = "content";
+        String tag = "Free";
         String userId = "userId";
 
         // When
@@ -69,7 +71,7 @@ class QuestionBoardServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> questionBoardService.createQuestionBoard(title, content, userId)
+                () -> questionBoardService.createQuestionBoard(userId, title, content, tag)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -79,6 +81,7 @@ class QuestionBoardServiceTest {
         // Given
         String title = "modifiy_title";
         String content = "modifiy_content";
+        String tag = "Free";
         String userId = "userId";
         Long questionBoardId = 1L;
 
@@ -91,7 +94,7 @@ class QuestionBoardServiceTest {
         when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content));
+        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content, tag));
     }
 
     @Test
@@ -99,6 +102,7 @@ class QuestionBoardServiceTest {
         // Given
         String title = "modifiy_title";
         String content = "modifiy_content";
+        String tag = "Free";
         String userId = "userId";
         Long questionBoardId = 1L;
 
@@ -111,7 +115,7 @@ class QuestionBoardServiceTest {
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                    questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content)
+                    questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content, tag)
                 );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
@@ -122,6 +126,7 @@ class QuestionBoardServiceTest {
         // Given
         String title = "modifiy_title";
         String content = "modifiy_content";
+        String tag = "Free";
         String userId = "userId";
         Long questionBoardId = 1L;
 
@@ -134,7 +139,7 @@ class QuestionBoardServiceTest {
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content)
+                questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content, tag)
         );
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
