@@ -11,13 +11,13 @@
           </div>
           <div class="card-body pt-2">
             <div class="input-group input-group-dynamic">
-              <input v-model="noticeTitle" type="text" class="form-control" id="noticeTitle" placeholder="Title">
+              <input v-model="noticeBoardTitle" type="text" class="form-control" id="noticeBoardTitle" placeholder="Title">
             </div>
             <div class="row mt-4">
               <div class="col-12 col-md-12">
                 <label class="mb-2 form-label">Content</label>
                 <div class="input-group input-group-static">
-                  <textarea v-model="noticeContent"
+                  <textarea v-model="noticeBoardContent"
                             class="form-control" 
                             placeholder="Write your Content"
                             rows="14" spellcheck="false">
@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="d-flex justify-content-end mt-4">
-              <router-link to="/main/notice" class="btn btn-light m-0">Cancel</router-link>
+              <router-link :to="`/main/notice/${noticeBoard.id}`" class="btn btn-light m-0">Cancel</router-link>
               <button type="button"  @click="modifyNotice" name="button" class="btn bg-gradient-dark m-0 ms-2">Modify Notice</button>
             </div>
           </div>
@@ -42,17 +42,17 @@
 
   const route = useRoute();
   const router = useRouter();
-  const notice = ref({});
-  const noticeTitle = ref('');
-  const noticeContent = ref('');
+  const noticeBoard = ref({});
+  const noticeBoardTitle = ref('');
+  const noticeBoardContent = ref('');
 
   const validateForm = () => {
-    if (!noticeTitle.value) {
+    if (!noticeBoardTitle.value) {
       alert('제목이 입력되지 않았습니다.');
       return false;
     }
 
-    if (!noticeContent.value) {
+    if (!noticeBoardContent.value) {
       alert('내용이 입력되지 않았습니다.');
       return false;
     }
@@ -66,9 +66,14 @@
     }
     
     try {
-      console.log('수정 버튼 클릭');
+      const response = await apiClient.put(`/main/notice_board/${noticeBoard.value.id}`, {
+        title: noticeBoardTitle.value,
+        content: noticeBoardContent.value,
+      });
 
-      router.push(`/main/notice/${notice.id}`);
+      console.log(response);
+
+      router.push(`/main/notice/${noticeBoard.value.id}`);
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);
       alert('공지사항 수정을 실패했습니다.');
@@ -78,12 +83,12 @@
   const getNotice = async (id) => {
     try {
       const response = await apiClient.get(`/main/notice_board/${id}`);
-      notice.value = response.data.result;
+      noticeBoard.value = response.data.result;
 
       console.log(response.data.result);
 
-      noticeTitle.value = response.data.result.title;
-      noticeContent.value = response.data.result.content;
+      noticeBoardTitle.value = response.data.result.title;
+      noticeBoardContent.value = response.data.result.content;
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('공지사항 데이터를 가져오지 못했습니다.');

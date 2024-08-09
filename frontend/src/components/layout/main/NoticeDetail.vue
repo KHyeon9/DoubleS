@@ -15,9 +15,9 @@
             </p>
           </div>
         </div>
-        <div class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+        <div v-if="isAdmin" class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
           <div class="nav-wrapper position-relative end-0">
-            <ul  v-if="isAdmin" class="nav nav-pills nav-fill p-1" >
+            <ul class="nav nav-pills nav-fill p-1" >
               <li class="nav-item" role="presentation">
                 <router-link :to="`/main/notice/modify/${notice.id}`"  class="nav-link mb-0 px-0 py-1">
                   <i class="material-icons text-lg position-relative">edit</i>
@@ -76,9 +76,12 @@
 
   const deleteNotice = async () => {
     try {
-      const response = await apiClient.delete(`/main/notice_board/${notice.value.id}`);
-      console.log('삭제되었습니다.')
-      router.push('/main/notice');
+      if (confirm('정말 삭제하시겠습니까?')) {
+        const response = await apiClient.delete(`/main/notice_board/${notice.value.id}`);
+        console.log(response);
+
+        router.push('/main/notice');
+      }
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);
       alert('삭제 실패했습니다.');

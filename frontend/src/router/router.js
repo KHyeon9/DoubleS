@@ -17,6 +17,7 @@ import CreateQuestionBoard from "../components/layout/main/CreateQuestionBoard.v
 import CreateNotice from "../components/layout/main/CreateNotice.vue";
 import NoticeDetail from "../components/layout/main/NoticeDetail.vue";
 import ModifyNotice from "../components/layout/main/ModifyNotice.vue";
+import ModifyQuestionBoard from "../components/layout/main/ModifyQuestionBoard.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -61,6 +62,10 @@ const router = createRouter({
         {
           path: 'question_board/:id', 
           component: QuestionBoardDetail,
+        },
+        {
+          path: 'question_board/modify/:id', 
+          component: ModifyQuestionBoard,
         },
         {
           path: 'question_board/new', 

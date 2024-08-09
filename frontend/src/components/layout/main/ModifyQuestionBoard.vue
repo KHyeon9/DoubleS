@@ -7,7 +7,7 @@
             <div class="icon icon-lg icon-shape bg-gradient-dark shadow text-center border-radius-xl mt-n4 me-3 float-start">
               <i class="material-icons opacity-10">article</i>
             </div>
-            <h6 class="mb-0">New Question Board</h6>
+            <h6 class="mb-0">Modify Question Board</h6>
           </div>
           <div class="card-body pt-2">
             <div class="input-group input-group-dynamic">
@@ -41,8 +41,8 @@
               </div>
             </div>
             <div class="d-flex justify-content-end mt-4">
-              <router-link to="/main/question_board" class="btn btn-light m-0">Cancel</router-link>
-              <button type="button"  @click="createQuestionBoard" name="button" class="btn bg-gradient-dark m-0 ms-2">Create Board</button>
+              <router-link :to="`/main/question_board/${questionBoard.id}`" class="btn btn-light m-0">Cancel</router-link>
+              <button type="button"  @click="modifyQuestionBoard" name="button" class="btn bg-gradient-dark m-0 ms-2">Modify Board</button>
             </div>
           </div>
         </div>
@@ -53,19 +53,16 @@
 <script setup>
   import { ref, onMounted } from 'vue';
   import apiClient from '../../../config/authConfig';
-  import { useRouter } from 'vue-router';
-  
+  import { useRoute, useRouter } from 'vue-router';
+
+  const route = useRoute();
   const router = useRouter();
   const tags = ref([]);
+  const questionBoard = ref({});
   const questionBoardTitle = ref('');
   const questionBoardContent = ref('');
-  const questionBoardTag = ref('Free');
-  const questionBoardTagName = ref('자유');
-
-  const selectTag = (tag) => {
-    questionBoardTagName.value = tag.value;
-    questionBoardTag.value = tag.key
-  };
+  const questionBoardTag = ref('');
+  const questionBoardTagName = ref('');
 
   const validateForm = () => {
     if (!questionBoardTitle.value) {
@@ -81,6 +78,45 @@
     return true;
   };
 
+  const modifyQuestionBoard = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      const response = await apiClient.put(`/main/question_board/${questionBoard.value.id}`, {
+        title: questionBoardTitle.value,
+        content: questionBoardContent.value,
+        tag: questionBoardTag.value
+      });
+
+      console.log('게시글 수정 성공', response.data);
+
+      router.push(`/main/question_board/${questionBoard.value.id}`);
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      alert('질문 게시글을 수정하는 데 실패했습니다.')
+    }
+  };
+
+
+  const getQuestionBoard = async (id) => {
+    try {
+      const response = await apiClient.get(`/main/question_board/${id}`);
+      questionBoard.value = response.data.result;
+
+      console.log(response.data.result);
+
+      questionBoardTitle.value = response.data.result.title;
+      questionBoardContent.value = response.data.result.content;
+      questionBoardTag.value = response.data.result.tag.key;
+      questionBoardTagName.value = response.data.result.tag.value;
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      alert('질문 게시글을 가져오는 데 실패했습니다.')
+    }
+  };
+
   const getTags = async () => {
     try {
       const response = await apiClient.get('/main/question_board/tags');
@@ -91,34 +127,17 @@
     }
   };
 
-  const createQuestionBoard = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    try {
-      const response = await apiClient.post('/main/question_board', {
-        title: questionBoardTitle.value,
-        content: questionBoardContent.value,
-        tag: questionBoardTag.value
-      });
-
-      console.log('게시글 생성 성공', response.data);
-
-      router.push('/main/question_board');
-    } catch (error) {
-      console.log('에러 발생', error);
-      alert('질문 게시글 생성에 실패했습니다.');
-    }
+  const selectTag = (tag) => {
+    questionBoardTagName.value = tag.value;
+    questionBoardTag.value = tag.key
   };
 
   onMounted(() => {
+    const questionBoardId = route.params.id;
+    getQuestionBoard(questionBoardId);
     getTags();
   });
-  
 </script>
 <style scoped>
-  .dropdown-menu {
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  }
+  
 </style>
