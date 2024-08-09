@@ -75,7 +75,7 @@ public class QuestionBoardService {
 
     // 질문 게시글 수정
     @Transactional
-    public QuestionBoardDto modifyQuestionBoard(String userId, Long questionBoardId, String title, String content) {
+    public QuestionBoardDto modifyQuestionBoard(String userId, Long questionBoardId, String title, String content, String tag) {
         // 유저 확인
         UserAccount userAccount = getUserAccountOrException(userId);
 
@@ -88,7 +88,8 @@ public class QuestionBoardService {
                     ErrorCode.INVALID_PERMISSION, String.format(
                             "%s는 권한이 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
                             userId,
-                            questionBoardId
+                            questionBoardId,
+                            tag
                     )
                 );
         }
@@ -96,6 +97,7 @@ public class QuestionBoardService {
         // 변경 내용 수정
         questionBoard.setTitle(title);
         questionBoard.setContent(content);
+        questionBoard.setTag(QuestionBoardTag.fromString(tag));
 
         return QuestionBoardDto.fromEntity(questionBoardRepository.saveAndFlush(questionBoard));
     }

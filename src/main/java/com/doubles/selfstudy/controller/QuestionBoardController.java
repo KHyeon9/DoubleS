@@ -90,8 +90,8 @@ public class QuestionBoardController {
                 authentication.getName(),
                 questionBoardId,
                 request.getTitle(),
-                request.getContent()
-
+                request.getContent(),
+                request.getTag()
         );
 
         return Response.success(QuestionBoardResponse.fromQuestionBoardDto(questionBoard));
