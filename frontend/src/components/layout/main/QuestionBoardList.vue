@@ -4,13 +4,13 @@
       <div class="d-sm-flex justify-content-between">
         <div>
           <router-link to="/main/question_board/new" class="btn btn-icon bg-gradient-primary">
-            New Post
+            New Question
           </router-link>
         </div>
         <div class="d-flex">
           <div class="d-inline">
             <button href="javascript:;" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2" aria-expanded="false">
-              {{ postTagName || 'Tag Filter' }}
+              {{ questionBoardTagName || 'Tag Filter' }}
             </button>
             <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" style="">
               <li v-for="tag in tags" :key="tag.key">
@@ -102,8 +102,8 @@
 
   const questionBoardList = ref([]);
   const tags = ref([]);
-  const postTag = ref('');
-  const postTagName = ref('');
+  const questionBoardTag = ref('');
+  const questionBoardTagName = ref('');
   const { 
     page, 
     totalPages, 
@@ -115,12 +115,12 @@
   } = usePagination();
 
   const selectTag = (tag) => {
-    postTagName.value = tag.value;
-    postTag.value = tag.key
+    questionBoardTagName.value = tag.value;
+    questionBoardTag.value = tag.key
   };
 
 
-  const getData = async () => {
+  const getQuestionBoard = async () => {
     try {
       const response = await apiClient.get('/main/question_board', {
         params: {
@@ -134,6 +134,7 @@
       console.log(response.data);
     } catch (error) {
       console.log('에러 발생', error);
+      alert('질문 게시글 리스트를 가져오지 못했습니다.');
     }
   };
 
@@ -151,21 +152,21 @@
 
   const nextPageAndFetch = () => {
     nextPage();
-    getData();
+    getQuestionBoard();
   };
 
   const prevPageAndFetch = () => {
     prevPage();
-    getData();
+    getQuestionBoard();
   };
 
   const goToPageAndFetch = (pageNumber) => {
     goToPage(pageNumber);
-    getData();
+    getQuestionBoard();
   };
   
   onMounted(() => {
-    getData();
+    getQuestionBoard();
     getTags();
   });
 </script>

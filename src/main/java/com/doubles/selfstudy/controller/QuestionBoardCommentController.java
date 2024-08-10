@@ -7,6 +7,7 @@ import com.doubles.selfstudy.service.QuestionBoardCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class QuestionBoardCommentController {
     public Response<Page<QuestionBoardCommentResponse>> questionBoardCommentList(
             Authentication authentication,
             @PathVariable Long questionBoardId,
-            Pageable pageable
+            @PageableDefault(size = 10) Pageable pageable
     ) {
 
         return Response.success(
@@ -45,23 +46,35 @@ public class QuestionBoardCommentController {
     }
 
     // 댓글 수정
-    @PutMapping("/{questionBoardId}/comment")
+    @PutMapping("/{questionBoardId}/comment/{questionBoardCommentId}")
     public Response<Void> modifyQuestionBoardComment(
             Authentication authentication,
             @PathVariable Long questionBoardId,
+            @PathVariable Long questionBoardCommentId,
             @RequestBody QuestionBoardCommentRequest request
     ) {
-
+        questionBoardCommentService.modifyQuestionBoardComment(
+                authentication.getName(),
+                questionBoardId,
+                questionBoardCommentId,
+                request.getComment()
+        );
 
         return Response.success();
     }
 
     // 댓글 삭제
-    @DeleteMapping("/{questionBoardId}/comment")
+    @DeleteMapping("/{questionBoardId}/comment/{questionBoardCommentId}")
     public Response<Void> deleteQuestionBoardComment(
         Authentication authentication,
-        Long questionBoardCommentId
+        @PathVariable Long questionBoardId,
+        @PathVariable Long questionBoardCommentId
     ) {
+        questionBoardCommentService.deleteQuestionBoardComment(
+                authentication.getName(),
+                questionBoardId,
+                questionBoardCommentId
+        );
 
         return Response.success();
     }

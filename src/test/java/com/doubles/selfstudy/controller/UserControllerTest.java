@@ -49,7 +49,7 @@ class UserControllerTest {
         // Then
         mockMvc.perform(post("/api/regist")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, password, email, nickname)))
+                    .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, nickname, email, password)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -64,13 +64,13 @@ class UserControllerTest {
         String nickname = "nickname";
 
         // When
-        when(userAccountService.regist(userId, password, email, nickname))
+        when(userAccountService.regist(userId, password , email, nickname))
                 .thenThrow(new DoubleSApplicationException(ErrorCode.DUPLICATED_USER_ID));
 
         // Then
         mockMvc.perform(post("/api/regist")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, password, email, nickname)))
+                    .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, nickname, email, password)))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.DUPLICATED_USER_ID.getStatus().value()));

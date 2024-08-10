@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,6 +76,106 @@ class QuestionBoardCommentControllerTest {
 
         // Then
         mockMvc.perform(post("/api/main/question_board/1/comment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_댓글_수정_성공() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(put("/api/main/question_board/1/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 질문_게시글_댓글_수정시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(put("/api/main/question_board/1/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_댓글_수정시_게시글이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(questionBoardCommentService).modifyQuestionBoardComment(any(), any(), any(), any());
+
+        // Then
+        mockMvc.perform(put("/api/main/question_board/1/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_댓글_삭제_성공() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 질문_게시글_댓글_삭제시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1/comment/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 질문_게시글_댓글_삭제시_게시글이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(questionBoardCommentService).deleteQuestionBoardComment(any(), any(), any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/question_board/1/comment/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new QuestionBoardCommentRequest("comment")))
                 )
