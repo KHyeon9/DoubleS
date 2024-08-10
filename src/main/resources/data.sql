@@ -2,7 +2,7 @@
 insert into user_account(user_id, password, role_type, email, nickname, memo, created_at, modified_at)
 values ('admin', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'ADMIN', 'admin@email.com', 'admin', null, now(), now()),
        ('tester', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', 'tester', null, now(), now()),
-       ('tester2', '$2a$10$hIDJIM6ab.OoT07Ub5a0ve7pAlgG3EbHBNGJy69ewtPrV5e6BZLIa', 'USER', 'tester@email.com', 'tester', null, now(), now());
+       ('tester2', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', 'tester', null, now(), now());
 
 -- 공지사항
 insert into notice_board(user_id, title, content, created_by, created_at, modified_by, modified_at)
@@ -72,7 +72,7 @@ values ('admin', 'title1', 'content1', 'admin', now() - interval '23 day', 'admi
        ('admin', 'title64', 'content64', 'admin', now() - interval '2 day', 'admin', now() - interval '2 day'),
        ('admin', 'title65', 'content65', 'admin', now(), 'admin', now());
 
--- 질문 게시판
+-- 질문 게시글
 insert into question_board(user_id, title, content, tag, view_count, created_by, created_at, modified_by, modified_at)
 values ('tester', 'question title', 'content', 'Free', 0, 'tester', now() - interval '12 day', 'tester', now() - interval '12 day'),
        ('tester', 'question title2', 'content2', 'Free', 0, 'tester', now() - interval '12 day', 'tester', now() - interval '12 day'),
@@ -98,3 +98,26 @@ values ('tester', 'question title', 'content', 'Free', 0, 'tester', now() - inte
        ('tester', 'question title22', 'content22', 'IT', 0, 'tester', now() - interval '2 day', 'tester', now() - interval '2 day'),
        ('tester', 'question title23', 'content23', 'IT', 0, 'tester', now() - interval '1 day', 'tester', now() - interval '1 day'),
        ('tester', 'question title24', 'content content content content content content content content content content content content', 'Free', 0, 'tester', now(), 'tester', now());
+
+-- 질문 게시글 댓글
+insert into question_board_comment(user_id, comment, question_board_id, created_by, created_at, modified_by, modified_at)
+values ('tester2', 'comment1', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment2', 24, 'tester2', now(), 'tester2', now()),
+       ('tester', 'comment3', 24, 'tester2', now(), 'tester2', now()),
+       ('tester', 'comment4', 24, 'tester2', now(), 'tester2', now()),
+       ('tester', 'comment5', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment6', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment7', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment8', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment9', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment10', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment11', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment12', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment13', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment14', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment15', 24, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment16', 23, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment17', 23, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment18', 23, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment19', 23, 'tester2', now(), 'tester2', now()),
+       ('tester2', 'comment20', 23, 'tester2', now(), 'tester2', now());
