@@ -74,9 +74,12 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 삭제
-    public void deleteQuestionBoardComment(String userId, Long questionBoardCommentId) {
+    public void deleteQuestionBoardComment(String userId, Long questionBoardId, Long questionBoardCommentId) {
         // user 확인
         UserAccount userAccount = getUserAccountOrException(userId);
+
+        // 게시글 확인
+        getQuestionBoardOrException(questionBoardId);
 
         // 댓글 확인
         QuestionBoardComment questionBoardComment = getQuestionBoardCommentOrException(questionBoardCommentId);

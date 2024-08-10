@@ -67,10 +67,12 @@ public class QuestionBoardCommentController {
     @DeleteMapping("/{questionBoardId}/comment/{questionBoardCommentId}")
     public Response<Void> deleteQuestionBoardComment(
         Authentication authentication,
+        @PathVariable Long questionBoardId,
         @PathVariable Long questionBoardCommentId
     ) {
         questionBoardCommentService.deleteQuestionBoardComment(
                 authentication.getName(),
+                questionBoardId,
                 questionBoardCommentId
         );
 

@@ -211,12 +211,13 @@ class QuestionBoardCommentServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
         when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
 
         // Then
         assertDoesNotThrow(() -> questionBoardCommentService
-                .deleteQuestionBoardComment(userId, questionBoardCommentId));
+                .deleteQuestionBoardComment(userId, questionBoard.getId(), questionBoardCommentId));
     }
 
     @Test
@@ -234,12 +235,35 @@ class QuestionBoardCommentServiceTest {
         when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
 
         // Then
-        // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoard.getId(), questionBoardCommentId)
         );
 
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 질문_게시글_댓글_삭제시_질문_게시글이_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        Long questionBoardCommentId = 1L;
+
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
+        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
+        UserAccount userAccount = questionBoardComment.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.empty());
+        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoard.getId(), questionBoardCommentId)
+        );
+
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
@@ -249,14 +273,16 @@ class QuestionBoardCommentServiceTest {
         Long questionBoardCommentId = 1L;
 
         UserAccount userAccount = UserAccountFixture.get(userId, "password");
+        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoard.getId(), questionBoardCommentId)
         );
 
         assertEquals(ErrorCode.COMMENT_NOT_FOUND, e.getErrorCode());
@@ -274,11 +300,12 @@ class QuestionBoardCommentServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(deleteUser));
+        when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoardCommentId)
+                questionBoardCommentService.deleteQuestionBoardComment(userId, questionBoard.getId(), questionBoardCommentId)
         );
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
