@@ -14,7 +14,7 @@
 * Spring Security
 * Spring Boot DevTools
 * Lombok
-* Postgresql
+* MySQL8
 * JWT 0.12.5
 * Vue3 + Vite 
 
