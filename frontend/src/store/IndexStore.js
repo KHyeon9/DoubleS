@@ -16,6 +16,7 @@ export const useIndexStore = defineStore('index', {
         '/main/chat': 'Chatting',
         '/main/alarm': 'Alarm',
         '/main/question_board/detail': 'Question Board Detail',
+        '/main/profile': 'Profile',
       };
       console.log(payload, 'payload');
       this.now_page = page_names[payload];
