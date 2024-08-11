@@ -18,11 +18,6 @@
             <div class="navbar-nav d-lg-flex d-none" id="navigation">
               <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                  <router-link class="nav-link d-flex align-items-center me-2 active" aria-current="page" to="/main">
-                    Main Home
-                  </router-link>
-                </li>
-                <li class="nav-item">
                   <router-link  class="nav-link me-2" to="/regist">
                     Sign Up
                   </router-link>

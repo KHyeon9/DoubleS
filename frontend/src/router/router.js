@@ -18,6 +18,8 @@ import CreateNotice from "../components/layout/main/CreateNotice.vue";
 import NoticeDetail from "../components/layout/main/NoticeDetail.vue";
 import ModifyNotice from "../components/layout/main/ModifyNotice.vue";
 import ModifyQuestionBoard from "../components/layout/main/ModifyQuestionBoard.vue";
+import Profile from "../components/layout/user/Profile.vue";
+import ModifiyProfile from "../components/layout/user/ModifiyProfile.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -83,7 +85,14 @@ const router = createRouter({
           path: 'alarm', 
           component: Alarm,
         },
-        
+        {
+          path: 'profile/:userId', 
+          component: Profile,
+        },
+        {
+          path: 'profile/modify/:userId', 
+          component: ModifiyProfile,
+        },
       ]
     },
     { 

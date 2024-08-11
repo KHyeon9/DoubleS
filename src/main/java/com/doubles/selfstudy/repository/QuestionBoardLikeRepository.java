@@ -15,6 +15,7 @@ public interface QuestionBoardLikeRepository extends JpaRepository<QuestionBoard
 
     Optional<QuestionBoardLike> findByUserAccountAndQuestionBoard(UserAccount userAccount, QuestionBoard questionBoard);
     Long countByQuestionBoard(QuestionBoard questionBoard);
+    void deleteByQuestionBoardAndUserAccount(QuestionBoard questionBoard, UserAccount userAccount);
 
 
     @Modifying // db 변경을 명시

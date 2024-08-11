@@ -64,8 +64,8 @@
                         <i class="material-icons text-md me-2">mode_comment</i>
                         <span class="text-md">{{ questionBoard.comments }}</span>
                       </div>
-                      <div class="d-flex align-items-center me-3">
-                        <i class="material-icons text-md me-2 cursor-pointer">thumb_up</i>
+                      <div @click="like" class="d-flex align-items-center me-3 cursor-pointer">
+                        <i class="material-icons text-md me-2">thumb_up</i>
                         <span class="text-md">{{ questionBoard.likes }}</span>
                       </div>
                     </div>
@@ -295,11 +295,32 @@
 
         await getQuestionBoardComment(questionBoard.value.id);
 
-        alert('댓글이 삭제되었습니다.')
+        alert('댓글이 삭제되었습니다.');
       }
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);
       alert('댓글 삭제에 실패했습니다.');
+    }
+  };
+
+  const like = async () => {
+    try {
+      const response = await apiClient.post(`/main/question_board/${questionBoard.value.id}/like`);
+
+      questionBoard.value.likes += 1;
+
+      alert('좋아요가 반영되었습니다.');
+
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      if (error.response.data.resultCode === 'ALREADY_LIKED') {
+        if (confirm("이미 '좋아요'를 누른 글입니다. 취소하시겠습니까?")) {
+          await apiClient.delete(`/main/question_board/${questionBoard.value.id}/like`);
+          questionBoard.value.likes -= 1;
+        }
+      } else {
+        alert('좋아요 처리에 실패했습니다.');
+      }
     }
   };
 

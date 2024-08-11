@@ -150,6 +150,19 @@ public class QuestionBoardService {
         // 좋아요 저장
         questionBoardLikeRepository.save(QuestionBoardLike.of(questionBoard, userAccount));
     }
+
+    // 좋아요 삭제
+    @Transactional
+    public void questionBoardDisLike(String userId, Long questionBoardId) {
+        // 유저 확인
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // 질문 게시글 확인
+        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+
+        // 좋아요 저장
+        questionBoardLikeRepository.deleteByQuestionBoardAndUserAccount(questionBoard, userAccount);
+    }
     
     // 좋아요 갯수 조회
     public Long questionBoardLikeCount(Long questionBoardId) {
