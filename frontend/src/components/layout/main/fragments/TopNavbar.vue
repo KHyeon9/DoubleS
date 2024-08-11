@@ -125,7 +125,7 @@
   const now_page = computed(() => indexStore.now_page);
 
   const authStore = useAuthStore();
-  const nickname = computed(() => authStore.nickname)
+  const nickname = computed(() => authStore.nickname);
 </script>
 <style scoped>
   .dropdown-menu::before {
