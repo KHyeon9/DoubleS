@@ -12,7 +12,7 @@
               {{ questionBoard.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              {{ questionBoard.user.userId }}
+              {{ questionBoard.user.nickname }} ( {{ questionBoard.user.userId }} ) 
             </p>
             <p class="mb-0 font-weight-normal text-sm">
               {{ formatDate(questionBoard.createdAt) }}
@@ -80,7 +80,11 @@
                       </i>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                      <h6 class="h5 mt-0">{{ quesionBoardComment.user.userId }}</h6>
+                      <h6 class="h5 mt-0">{{ quesionBoardComment.user.nickname }} 
+                        <span class="text-sm text font-weight-normal">
+                          ( {{ quesionBoardComment.user.userId }} )
+                        </span>
+                      </h6>
                       <!-- 댓글 내용이 수정 중이면 textarea로 변경 -->
                       <div v-if="editingCommentId === quesionBoardComment.id">
                         <div class="flex-grow-1 my-auto">
