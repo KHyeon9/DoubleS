@@ -40,7 +40,7 @@
                         <div class="mb-3">
                           <div class="fw-bolder fs-5 mb-1">{{ questionBoard.title }}</div>
                           <div class="boardCreateInfo">
-                            <span>{{ questionBoard.user.userId }}</span>  
+                            <span>{{ questionBoard.user.nickname }}</span>  
                             <span>{{ formatDate(questionBoard.createdAt) }}</span>
                           </div>
                         </div>
