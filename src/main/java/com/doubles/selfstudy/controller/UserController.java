@@ -33,15 +33,18 @@ public class UserController {
     }
 
     @PostMapping("/user_info")
-    public Response<UserInfoResponse> getUserInfo(@RequestBody UserLoginRequest request) {
+    public Response<LoginUserInfoResponse> getLoginUserInfo(@RequestBody UserLoginRequest request) {
         UserAccountDto userAccountDto = userAccountService.getUserInfo(request.getUserId());
 
-        return Response.success(UserInfoResponse.fromUserAccountDto(userAccountDto));
+        return Response.success(LoginUserInfoResponse.fromUserAccountDto(userAccountDto));
     }
 
     @GetMapping("/profile")
-    public void profile() {
+    public Response<ProfileResponse> profile(@PathVariable String userId) {
         // profile get
+        UserAccountDto userAccountDto = userAccountService.getUserInfo(userId);
+
+        return Response.success(ProfileResponse.fromUserAccountDto(userAccountDto));
     }
 
     @GetMapping("/alarm")
