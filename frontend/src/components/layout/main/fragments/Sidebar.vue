@@ -2,12 +2,16 @@
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
+      <router-link 
+        class="navbar-brand m-0"  
+        @click="indexStore.changePage('/main')"
+        to="/main"
+      >
         <div class="text-white text-center me-5 d-flex align-items-center justify-content-center">
           <i id="side-logo" class="material-icons opacity-10">import_contacts</i> 
           <span id="side-title" class="ms-3 font-weight-bold text-white">DoubleS</span>
         </div>
-      </a>
+      </router-link>
     </div>
     <hr class="horizontal light mt-0 mb-2">
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
@@ -15,7 +19,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main') }]"
-            @click="store.changePage('/main')"
+            @click="indexStore.changePage('/main')"
             to="/main"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -27,7 +31,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/notice') }]"
-            @click="store.changePage('/main/notice')"
+            @click="indexStore.changePage('/main/notice')"
             to="/main/notice"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -39,7 +43,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/todo') }]" 
-            @click="store.changePage('/main/todo')"
+            @click="indexStore.changePage('/main/todo')"
             to="/main/todo"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -51,7 +55,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/question_board') }]" 
-            @click="store.changePage('/main/question_board')"
+            @click="indexStore.changePage('/main/question_board')"
             to="/main/question_board"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -63,7 +67,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/group') }]" 
-            @click="store.changePage('/main/group')"
+            @click="indexStore.changePage('/main/group')"
             to="/main/group"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -75,7 +79,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/chat') }]" 
-            @click="store.changePage('/main/chat')"
+            @click="indexStore.changePage('/main/chat')"
             to="/main/chat"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -87,7 +91,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/alarm') }]" 
-            @click="store.changePage('/main/alarm')"
+            @click="indexStore.changePage('/main/alarm')"
             to="/main/alarm"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -100,28 +104,24 @@
           <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Account pages</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white " href="../pages/profile.html">
+          <router-link 
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/profile') }]"
+            :to="`/main/profile/${userId}`"
+             @click="indexStore.changePage('/main/profile')"
+          >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">person</i>
             </div>
             <span class="nav-link-text ms-1">Profile</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link text-white " to="/login">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">login</i>
-            </div>
-            <span class="nav-link-text ms-1">Sign In</span>
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link text-white " to="/regist">
+          <a @click="logout" class="nav-link text-white">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">assignment</i>
             </div>
-            <span class="nav-link-text ms-1">Sign Up</span>
-          </router-link>
+            <span class="nav-link-text ms-1">Logout</span>
+          </a>
         </li>
       </ul>
     </div>
@@ -137,10 +137,15 @@
   </aside>
 </template>
 <script setup>
-  import { useRoute } from 'vue-router';
+  import { useRoute, useRouter } from 'vue-router';
   import { useIndexStore } from '../../../../store/IndexStore.js';
+  import { useAuthStore } from '../../../../store/authStore.js';
+  import { computed } from 'vue';
   const route = useRoute();
-  const store = useIndexStore();
+  const router = useRouter();
+  const indexStore = useIndexStore();
+  const authStore = useAuthStore();
+  const userId = computed(() => authStore.userId);
 
   const isActive = (path) => {
     const nowPath = path.split('/');
@@ -151,6 +156,13 @@
     
     return  route.path.startsWith(path);
   };
+
+  const logout = () => {
+    authStore.clearToken();
+    authStore.clearUserInfo();
+
+    router.push('/');
+  }
 
 </script>
 <style scoped>
