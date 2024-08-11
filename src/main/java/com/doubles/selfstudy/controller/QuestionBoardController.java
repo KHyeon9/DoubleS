@@ -118,6 +118,17 @@ public class QuestionBoardController {
 
         return Response.success();
     }
+
+    // 좋아요 삭제 기능
+    @DeleteMapping("/{questionBoardId}/like")
+    public Response<Void> questionBoardDisLike(
+            Authentication authentication,
+            @PathVariable Long questionBoardId
+    ) {
+        questionBoardService.questionBoardDisLike(authentication.getName(), questionBoardId);
+
+        return Response.success();
+    }
     
     // 좋아요 갯수 조회
     @GetMapping("/{questionBoardId}/like")
