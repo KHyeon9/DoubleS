@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
@@ -216,6 +217,19 @@ class QuestionBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardList(pageable));
+    }
+
+    @Test
+    void 태그를_통한_질문_게시글_리스트_조회가_성공한_경우() {
+        // Given
+        Pageable pageable = mock(Pageable.class);
+        QuestionBoardTag tag = QuestionBoardTag.Free;
+
+        // When
+        when(questionBoardRepository.findAllByTagWithLikeCountAndCommentCount(tag, pageable)).thenReturn(Page.empty());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.questionBoardListByTag(tag.name(), pageable));
     }
 
     @Test
