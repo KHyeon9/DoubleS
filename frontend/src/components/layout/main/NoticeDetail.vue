@@ -40,7 +40,7 @@
             <div class="card card-plain">
               <hr class="dark horizontal">
               <div class="card-body pt-3">
-                <p class="noticeContent mb-4" v-html="formattedContent"></p>
+                <p class="noticeContent mb-4" v-html="formattedContent(notice.content)"></p>
               </div>
             </div>
           </div>
@@ -54,13 +54,17 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useAuthStore } from '../../../store/authStore';
   import apiClient from '../../../config/authConfig';
-  import moment from 'moment';
+  import { useFormat } from '../../../utils/format';
 
   const route = useRoute();
   const router = useRouter();
   const notice = ref({});
   const authStore = useAuthStore();
   const isAdmin = computed(() => authStore.isAdmin);
+  const {
+    formattedContent,
+    formatDate
+  } = useFormat();
 
   const getNotice = async (id) => {
     try {
@@ -87,15 +91,6 @@
       alert('삭제 실패했습니다.');
     }
   };
-
-  const formatDate = (date) => {
-    return moment(date).format('YYYY/MM/DD');
-  };
-
-  // computed를 사용해 content의 줄바꿈을 <br>로 바꿔서 저장
-  const formattedContent = computed(() => {
-    return notice.value.content ? notice.value.content.replace(/\n/g, '<br>') : '';
-  });
 
   onMounted(() => {
     const noticeId = route.params.id;
