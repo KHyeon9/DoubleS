@@ -40,11 +40,11 @@
                         <div class="mb-3">
                           <div class="fw-bolder fs-5 mb-1">{{ questionBoard.title }}</div>
                           <div class="boardCreateInfo">
-                            <span>{{ questionBoard.user.userId }}</span>  
+                            <span>{{ questionBoard.user.nickname }}</span>  
                             <span>{{ formatDate(questionBoard.createdAt) }}</span>
                           </div>
                         </div>
-                        <span class="mb-2 text-s">{{ questionBoard.content }}</span>
+                        <span class="mb-2 text-s" v-html="formattedContent(questionBoard.content)"></span>
                         <div class="boardInfo">
                           <div class="text-dark mb-0 mt-1">
                             <i class="material-icons text-sm me-2">sell</i>
@@ -99,30 +99,59 @@
   import apiClient from '../../../config/authConfig';
   import { ref, onMounted } from 'vue';
   import { usePagination } from '../../../utils/pagination';
+  import { useFormat } from '../../../utils/format';
 
   const questionBoardList = ref([]);
   const tags = ref([]);
   const questionBoardTag = ref('');
   const questionBoardTagName = ref('');
+  const {
+    formattedContent,
+    formatDate
+  } = useFormat();
   const { 
     page, 
     totalPages, 
     nextPage, 
     prevPage, 
     goToPage, 
-    formatDate, 
     paginatedPageNumbers 
   } = usePagination();
 
   const selectTag = (tag) => {
     questionBoardTagName.value = tag.value;
     questionBoardTag.value = tag.key
+
+    if (tag.value == '전체') {
+      getQuestionBoard();
+      return;
+    }
+
+    getQuestionBoardByTag(tag.key);
   };
 
 
   const getQuestionBoard = async () => {
     try {
       const response = await apiClient.get('/main/question_board', {
+        params: {
+          page: page.value,
+        },
+      });
+
+      questionBoardList.value = response.data.result.content;
+      totalPages.value = response.data.result.totalPages;
+
+      console.log(response.data);
+    } catch (error) {
+      console.log('에러 발생', error);
+      alert('질문 게시글 리스트를 가져오지 못했습니다.');
+    }
+  };
+
+  const getQuestionBoardByTag = async (tag) => {
+    try {
+      const response = await apiClient.get(`/main/question_board/tag/${tag}`, {
         params: {
           page: page.value,
         },

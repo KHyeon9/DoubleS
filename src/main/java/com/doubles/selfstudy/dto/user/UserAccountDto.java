@@ -22,7 +22,7 @@ public class UserAccountDto implements UserDetails {
     private RoleType roleType; // roleType
     private String email; // 이메일
     private String nickname; // 닉네임
-    private String memo; // 메로(자기 소개 비슷하게 사용)
+    private String memo; // 메모(자기 소개 비슷하게 사용)
     private LocalDateTime createdAt; // 생성 일시
     private LocalDateTime modifiedAt; // 수정 일시
 

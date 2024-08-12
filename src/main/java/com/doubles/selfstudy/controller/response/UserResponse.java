@@ -9,10 +9,12 @@ import lombok.Getter;
 public class UserResponse {
 
     private String userId;
+    private String nickname;
 
     public static UserResponse fromUserAccountDto(UserAccountDto dto) {
         return new UserResponse(
-                dto.getUserId()
+                dto.getUserId(),
+                dto.getNickname()
         );
     }
 }

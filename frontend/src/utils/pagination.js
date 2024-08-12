@@ -22,10 +22,6 @@ export const usePagination = () => {
     page.value = pageNumber;
   };
 
-  const formatDate = (date) => {
-    return moment(date).format('YYYY/MM/DD');
-  };
-
   const paginatedPageNumbers = computed(() => {
     const totalPageNumbers = 5;
     let startPage = Math.max(1, page.value + 1 - Math.floor(totalPageNumbers / 2));
@@ -48,7 +44,6 @@ export const usePagination = () => {
     nextPage,
     prevPage,
     goToPage,
-    formatDate,
     paginatedPageNumbers,
   };
 };

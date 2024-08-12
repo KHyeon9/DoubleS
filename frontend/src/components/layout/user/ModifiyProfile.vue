@@ -24,27 +24,15 @@
             <div class="row">
               <div class="col-6">
                 <div class="input-group input-group-static">
-                  <label>First Name</label>
-                  <input type="text" class="form-control" placeholder="Alec" onfocus="focused(this)" onfocusout="defocused(this)">
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="input-group input-group-static">
-                  <label>Last Name</label>
-                  <input type="text" class="form-control" placeholder="Thompson" onfocus="focused(this)" onfocusout="defocused(this)">
+                  <label class="font-weight-bolder">닉네임</label>
+                  <input type="text" class="form-control" placeholder="닉네임" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
               </div>
             </div>
             <div class="row mt-4">
               <div class="col-6">
                 <div class="input-group input-group-static">
-                  <label>Email</label>
-                  <input type="email" class="form-control" placeholder="example@email.com" onfocus="focused(this)" onfocusout="defocused(this)">
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="input-group input-group-static">
-                  <label>Confirm Email</label>
+                  <label class="font-weight-bolder">Email</label>
                   <input type="email" class="form-control" placeholder="example@email.com" onfocus="focused(this)" onfocusout="defocused(this)">
                 </div>
               </div>
@@ -52,11 +40,17 @@
             <div class="row mt-4">
               <div class="col-6">
                 <div class="input-group input-group-static">
-                  <label>Your location</label>
-                  <input type="text" class="form-control" placeholder="Sydney, A" onfocus="focused(this)" onfocusout="defocused(this)">
+                  <label class="font-weight-bolder">자기소개</label>
+                  <textarea type="text" class="form-control" 
+                            placeholder="자기소개를 입력해주세요." 
+                            rows="2"
+                            onfocus="focused(this)" onfocusout="defocused(this)"
+                  >
+                  </textarea>
                 </div>
               </div>
             </div>
+            <button class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0">Update Info</button>
           </div>
         </div>
         <div class="card mt-4" id="password">

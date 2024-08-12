@@ -12,7 +12,7 @@
               {{ questionBoard.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              {{ questionBoard.user.userId }}
+              {{ questionBoard.user.nickname }} ( {{ questionBoard.user.userId }} ) 
             </p>
             <p class="mb-0 font-weight-normal text-sm">
               {{ formatDate(questionBoard.createdAt) }}
@@ -50,9 +50,7 @@
             <div class="card card-plain">
               <hr class="dark horizontal">
               <div class="card-body pt-3">
-                <p class="postContent mb-4">
-                  {{ questionBoard.content }}
-                </p>
+                <p class="postContent mb-4" v-html="formattedContent(questionBoard.content)"></p>
                 <div class="row align-items-center px-2 mt-4 mb-2">
                   <div class="col-sm-6 px-0">
                     <div class="d-flex">
@@ -80,7 +78,11 @@
                       </i>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                      <h6 class="h5 mt-0">{{ quesionBoardComment.user.userId }}</h6>
+                      <h6 class="h5 mt-0">{{ quesionBoardComment.user.nickname }} 
+                        <span class="text-sm text font-weight-normal">
+                          ( {{ quesionBoardComment.user.userId }} )
+                        </span>
+                      </h6>
                       <!-- 댓글 내용이 수정 중이면 textarea로 변경 -->
                       <div v-if="editingCommentId === quesionBoardComment.id">
                         <div class="flex-grow-1 my-auto">
@@ -167,6 +169,7 @@
   import { useAuthStore } from '../../../store/authStore';
   import { computed } from 'vue';
   import { usePagination } from '../../../utils/pagination';
+  import { useFormat } from '../../../utils/format';
   import apiClient from '../../../config/authConfig';
 
   const route = useRoute();
@@ -179,13 +182,17 @@
   const editingCommentId = ref(null);
   const editingCommentText = ref('');
   const totalElememts = ref(0);
+  const {
+    formattedContent,
+    formatDate
+  } = useFormat();
+
   const { 
     page, 
     totalPages, 
     nextPage, 
     prevPage, 
     goToPage, 
-    formatDate, 
     paginatedPageNumbers 
   } = usePagination();
 

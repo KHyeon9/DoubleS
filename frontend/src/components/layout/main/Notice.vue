@@ -89,10 +89,12 @@
   import { ref, onMounted, computed } from 'vue';
   import { usePagination } from '../../../utils/pagination';
   import { useAuthStore } from '../../../store/authStore';
+  import { useFormat } from '../../../utils/format';
 
   const noticeBoardList = ref([]);
   const authStore = useAuthStore();
   const isAdmin = computed(() => authStore.isAdmin);
+  const { formatDate } = useFormat();
   
   const { 
     page, 
@@ -100,7 +102,6 @@
     nextPage, 
     prevPage, 
     goToPage, 
-    formatDate, 
     paginatedPageNumbers 
   } = usePagination();
 
