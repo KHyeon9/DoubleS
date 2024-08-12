@@ -39,6 +39,20 @@ public class QuestionBoardController {
                         .map(QuestionBoardResponse::fromQuestionBoardDto)
                 );
     }
+
+    // 태그를 통한 게시글 리스트 조회
+    @GetMapping("/tag/{tag}")
+    public Response<Page<QuestionBoardResponse>> questionBoardListByTag(
+            Authentication authentication,
+            @PathVariable String tag,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return Response.success(
+                questionBoardService
+                        .questionBoardListByTag(tag, pageable)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
+        );
+    }
     
     // 내 게시글 조회
     @GetMapping("/my")

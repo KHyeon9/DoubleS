@@ -34,6 +34,14 @@ public class QuestionBoardService {
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
+    // 질문 게시글 태그 검색
+    public Page<QuestionBoardDto> questionBoardListByTag(String tag, Pageable pageable) {
+        QuestionBoardTag tagValue = QuestionBoardTag.fromString(tag);
+        Page<Object[]> results = questionBoardRepository.findAllByTagWithLikeCountAndCommentCount(tagValue, pageable);
+
+        return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
+    }
+
     // 나의 질문 게시글 리스트
     public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
         // 유저 확인
