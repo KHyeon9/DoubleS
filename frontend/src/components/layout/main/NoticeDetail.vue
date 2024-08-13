@@ -21,13 +21,13 @@
               <li class="nav-item" role="presentation">
                 <router-link :to="`/main/notice/modify/${notice.id}`"  class="nav-link mb-0 px-0 py-1">
                   <i class="material-icons text-lg position-relative">edit</i>
-                  <span class="ms-1">Edit</span>
+                  <span class="ms-1">수정</span>
                 </router-link>
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link mb-0 px-0 py-1" @click="deleteNotice">
                   <i class="material-icons text-lg position-relative">delete</i>
-                  <span class="ms-1">Delete</span>
+                  <span class="ms-1">삭제</span>
                 </button>
               </li>
             </ul>
@@ -41,6 +41,15 @@
               <hr class="dark horizontal">
               <div class="card-body pt-3">
                 <p class="noticeContent mb-4" v-html="formattedContent(notice.content)"></p>
+              </div>
+              <div class="row align-items-center px-2 mt-4 mb-2">
+                <div class="col-sm-12 px-0">
+                  <div class="d-flex">
+                    <div class="d-flex ms-auto align-items-center">
+                      <router-link to="/main/notice"  class="btn bg-gradient-dark btn-sm">공지사항 목록</router-link >
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
