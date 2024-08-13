@@ -25,7 +25,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">home</i>
             </div>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">홈</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -37,7 +37,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">priority_high</i>
             </div>
-            <span class="nav-link-text ms-1">Notice</span>
+            <span class="nav-link-text ms-1">공지사항</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -61,7 +61,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">table_view</i>
             </div>
-            <span class="nav-link-text ms-1">Question Board</span>
+            <span class="nav-link-text ms-1">질문 게시판</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -73,7 +73,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">group</i>
             </div>
-            <span class="nav-link-text ms-1">Study Group</span>
+            <span class="nav-link-text ms-1">스터디 그룹</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -85,7 +85,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">chat</i>
             </div>
-            <span class="nav-link-text ms-1">Chatting</span>
+            <span class="nav-link-text ms-1">채팅</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -97,7 +97,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">notifications</i>
             </div>
-            <span class="nav-link-text ms-1">Alarm</span>
+            <span class="nav-link-text ms-1">알람</span>
           </router-link>
         </li>
         <li class="nav-item mt-3">
@@ -112,7 +112,19 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">person</i>
             </div>
-            <span class="nav-link-text ms-1">Profile</span>
+            <span class="nav-link-text ms-1">내 정보</span>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link 
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/my_question_board') }]" 
+            @click="indexStore.changePage('/main/my_question_board')"
+            to="/main/my_question_board"
+          >
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">table_view</i>
+            </div>
+            <span class="nav-link-text ms-1">내 질문 게시글</span>
           </router-link>
         </li>
         <li class="nav-item">
@@ -161,7 +173,7 @@
     authStore.clearToken();
     authStore.clearUserInfo();
 
-    router.push('/');
+    router.push('/login');
   }
 
 </script>
