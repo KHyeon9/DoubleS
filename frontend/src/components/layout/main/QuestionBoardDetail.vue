@@ -25,19 +25,19 @@
               <li v-if="userId == questionBoard.user.userId" class="nav-item" role="presentation">
                 <router-link :to="`/main/question_board/modify/${questionBoard.id}`"  class="nav-link mb-0 px-0 py-1 " role="tab">
                   <i class="material-icons text-lg position-relative">edit</i>
-                  <span class="ms-1">Edit</span>
+                  <span class="ms-1">수정</span>
                 </router-link>
               </li>
               <li v-if="userId == questionBoard.user.userId" class="nav-item" role="presentation">
                 <button @click="deleteQuestionBoard" class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">delete</i>
-                  <span class="ms-1">Delete</span>
+                  <span class="ms-1">삭제</span>
                 </button>
               </li>
               <li v-if="userId != questionBoard.user.userId" class="nav-item" role="presentation">
                 <a class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">email</i>
-                  <span class="ms-1">Messages</span>
+                  <span class="ms-1">메세지</span>
                 </a>
               </li>
             </ul>
@@ -52,7 +52,7 @@
               <div class="card-body pt-3">
                 <p class="postContent mb-4" v-html="formattedContent(questionBoard.content)"></p>
                 <div class="row align-items-center px-2 mt-4 mb-2">
-                  <div class="col-sm-6 px-0">
+                  <div class="col-sm-12 px-0">
                     <div class="d-flex">
                       <div class="d-flex align-items-center me-3">
                         <i class="material-icons text-md me-2">visibility</i>
@@ -65,10 +65,13 @@
                       <div @click="like" class="d-flex align-items-center me-3 cursor-pointer">
                         <i class="material-icons text-md me-2">thumb_up</i>
                         <span class="text-md">{{ questionBoard.likes }}</span>
+                      </div>  
+                      <div class="d-flex ms-auto align-items-center">
+                        <router-link to="/main/question_board"  class="btn bg-gradient-dark btn-sm">질문 게시글 목록</router-link >
                       </div>
                     </div>
                   </div>
-                  <hr class="horizontal dark my-3">
+                  <hr ref="commentsStart" class="horizontal dark my-3">
                 </div>
                 <div class="mb-1">
                   <div v-for="quesionBoardComment in questionBoardComments" class="d-flex mt-3">
@@ -93,11 +96,11 @@
                         <div class="ms-auto text-end">
                           <button @click="modifyComment(quesionBoardComment.id)" class="btn btn-link text-dark px-3 mb-0">
                             <i class="material-icons text-sm me-2">edit</i>
-                            Update
+                            수정
                           </button>
                           <button @click="cancelEdit" class="btn btn-link text-danger text-gradient px-3 mb-0">
                             <i class="material-icons text-sm me-2">cancel</i>
-                            Cancel
+                            삭제
                           </button>
                         </div>
                       </div>
@@ -164,7 +167,7 @@
   </div>
 </template>
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted ,nextTick } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { useAuthStore } from '../../../store/authStore';
   import { computed } from 'vue';
@@ -182,6 +185,7 @@
   const editingCommentId = ref(null);
   const editingCommentText = ref('');
   const totalElememts = ref(0);
+  const commentsStart = ref(null);
   const {
     formattedContent,
     formatDate
@@ -331,6 +335,13 @@
     }
   };
 
+  const scrollToFirstComment = async () => {
+    await nextTick(); // DOM이 업데이트된 후에 실행되도록 nextTick 사용
+    if (commentsStart.value) {
+      commentsStart.value.scrollIntoView();
+    }
+  };
+
   const editComment = (commentId, commentText) => {
     editingCommentId.value = commentId;
     editingCommentText.value = commentText;
@@ -344,16 +355,19 @@
   const nextPageAndFetch = () => {
     nextPage();
     getQuestionBoardComment(questionBoard.value.id);
+    scrollToFirstComment();
   };
 
   const prevPageAndFetch = () => {
     prevPage();
     getQuestionBoardComment(questionBoard.value.id);
+    scrollToFirstComment();
   };
 
   const goToPageAndFetch = (pageNumber) => {
     goToPage(pageNumber);
     getQuestionBoardComment(questionBoard.value.id);
+    scrollToFirstComment();
   };
 
 

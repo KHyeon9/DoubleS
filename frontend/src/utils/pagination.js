@@ -37,6 +37,10 @@ export const usePagination = () => {
     }
     return pages;
   });
+  
+  const pageScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return {
     page,
@@ -44,6 +48,7 @@ export const usePagination = () => {
     nextPage,
     prevPage,
     goToPage,
+    pageScrollTop,
     paginatedPageNumbers,
   };
 };
