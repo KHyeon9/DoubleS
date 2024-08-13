@@ -8,11 +8,11 @@
 
         <div class="col-auto my-auto">
           <div class="h-100">
-            <h5 class="mb-1">
-              Richard Davis
-            </h5>
-            <p class="mb-0 font-weight-normal text-sm">
-              CEO / Co-Founder
+            <h4 class="mb-1">
+              nickname
+            </h4>
+            <p class="mb-0 font-weight-normal text-md">
+              userId
             </p>
           </div>
         </div>
@@ -45,7 +45,7 @@
               <div class="card-header pb-0 p-3">
                 <div class="row">
                   <div class="col-md-8 d-flex align-items-center">
-                    <h6 class="mb-0">Profile Information</h6>
+                    <h6 class="mb-0">유저 정보</h6>
                   </div>
                   <div class="col-md-4 text-end">
                     <a href="javascript:;">
@@ -55,29 +55,90 @@
                 </div>
               </div>
               <div class="card-body p-3">
-                <p class="text-sm">
-                  Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality).
+                <p class="text-md">
+                  user memo 띄우고 줄바꿈 가능하게
                 </p>
                 <hr class="horizontal gray-light my-4">
                 <ul class="list-group">
-                  <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full Name:</strong> &nbsp; Alec M. Thompson</li>
-                  <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Mobile:</strong> &nbsp; (44) 123 1234 123</li>
-                  <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp; alecthompson@mail.com</li>
-                  <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Location:</strong> &nbsp; USA</li>
-                  <li class="list-group-item border-0 ps-0 pb-0">
-                    <strong class="text-dark text-sm">Social:</strong> &nbsp;
-                    <a class="btn btn-facebook btn-simple mb-0 ps-1 pe-2 py-0" href="javascript:;">
-                      <i class="fab fa-facebook fa-lg"></i>
-                    </a>
-                    <a class="btn btn-twitter btn-simple mb-0 ps-1 pe-2 py-0" href="javascript:;">
-                      <i class="fab fa-twitter fa-lg"></i>
-                    </a>
-                    <a class="btn btn-instagram btn-simple mb-0 ps-1 pe-2 py-0" href="javascript:;">
-                      <i class="fab fa-instagram fa-lg"></i>
-                    </a>
-                  </li>
+                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">Email:</strong> &nbsp; alecthompson@mail.com</li>
+                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">스터디 그룹 여부:</strong> &nbsp; 참여중</li>
                 </ul>
               </div>
+              <div class="col-12 mt-4">
+              <div class="mb-3 ps-3">
+                <h6 class="mb-1">최근 게시물</h6>
+              </div>
+              <div class="row">
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                  <div class="card card-blog card-plain">
+                    <div class="card-body p-3">
+                      <a href="javascript:;">
+                        <h6>
+                          title 글자 수 제한 둬야 할거 같음
+                        </h6>
+                      </a>
+                      <p class="mb-4 text-sm">
+                        content 글자 수 제한 둬야 할거 같음
+                      </p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                  <div class="card card-blog card-plain">
+                    <div class="card-body p-3">
+                      <a href="javascript:;">
+                        <h6>
+                          title 글자 수 제한 둬야 할거 같음
+                        </h6>
+                      </a>
+                      <p class="mb-4 text-sm">
+                        content 글자 수 제한 둬야 할거 같음
+                      </p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                  <div class="card card-blog card-plain">
+                    <div class="card-body p-3">
+                      <a href="javascript:;">
+                        <h6>
+                          title 글자 수 제한 둬야 할거 같음
+                        </h6>
+                      </a>
+                      <p class="mb-4 text-sm">
+                        content 글자 수 제한 둬야 할거 같음
+                      </p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                  <div class="card card-blog card-plain">
+                    <div class="card-body p-3">
+                      <a href="javascript:;">
+                        <h6>
+                          title 글자 수 제한 둬야 할거 같음
+                        </h6>
+                      </a>
+                      <p class="mb-4 text-sm">
+                        content 글자 수 제한 둬야 할거 같음
+                      </p>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             </div>
           </div>
         </div>

@@ -213,7 +213,7 @@ class QuestionBoardServiceTest {
         Pageable pageable = mock(Pageable.class);
 
         // When
-        when(questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllQuestionBoardWithCounts(pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardList(pageable));
@@ -226,7 +226,7 @@ class QuestionBoardServiceTest {
         QuestionBoardTag tag = QuestionBoardTag.Free;
 
         // When
-        when(questionBoardRepository.findAllByTagWithLikeCountAndCommentCount(tag, pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllQuestionBoardWithCountsByTag(tag, pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardListByTag(tag.name(), pageable));
@@ -240,7 +240,7 @@ class QuestionBoardServiceTest {
 
         // When
         when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
-        when(questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userAccount.getUserId(), pageable)).thenReturn(Page.empty());
+        when(questionBoardRepository.findAllMyQuestionBoardWithCounts(userAccount.getUserId(), pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.myQuestionBoardList(userAccount.getUserId(), pageable));

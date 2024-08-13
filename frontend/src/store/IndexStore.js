@@ -12,10 +12,11 @@ export const useIndexStore = defineStore('index', {
         '/main/notice': 'Notice',
         '/main/todo': 'Todo',
         '/main/question_board': 'Question Board',
+        '/main/question_board/detail': 'Question Board Detail',
+        '/main/my_question_board': 'My Question Board',
         '/main/group': 'Study Group',
         '/main/chat': 'Chatting',
         '/main/alarm': 'Alarm',
-        '/main/question_board/detail': 'Question Board Detail',
         '/main/profile': 'Profile',
       };
       console.log(payload, 'payload');

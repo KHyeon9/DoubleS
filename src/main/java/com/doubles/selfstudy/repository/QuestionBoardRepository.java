@@ -21,14 +21,14 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
             "(SELECT COUNT(qbl) FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = q.id), " +
             "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
             "FROM QuestionBoard q")
-    Page<Object[]> findAllByWithLikeCountAndCommentCount(Pageable pageable);
+    Page<Object[]> findAllQuestionBoardWithCounts(Pageable pageable);
 
     @Query("SELECT q, " +
             "(SELECT COUNT(qbl) FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = q.id), " +
             "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
             "FROM QuestionBoard q " +
             "WHERE q.tag = :tag")
-    Page<Object[]> findAllByTagWithLikeCountAndCommentCount(QuestionBoardTag tag, Pageable pageable);
+    Page<Object[]> findAllQuestionBoardWithCountsByTag(QuestionBoardTag tag, Pageable pageable);
 
     // 좋아요 갯수와 댓글 갯수를 포함한 내 질문 게시글 조회
     @Query("SELECT q, " +
@@ -36,5 +36,13 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
             "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
             "FROM QuestionBoard q " +
             "WHERE q.userAccount.userId = :userId")
-    Page<Object[]> findAllByMyBoardWithLikeCountAndCommentCount(String userId, Pageable pageable);
+    Page<Object[]> findAllMyQuestionBoardWithCounts(String userId, Pageable pageable);
+
+    // 좋아요 갯수와 댓글 갯수를 포함한 내 질문 게시글 태그 조회
+    @Query("SELECT q, " +
+            "(SELECT COUNT(qbl) FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = q.id), " +
+            "(SELECT COUNT(qbc) FROM QuestionBoardComment qbc WHERE qbc.questionBoard.id = q.id) " +
+            "FROM QuestionBoard q " +
+            "WHERE q.userAccount.userId = :userId AND q.tag = :tag" )
+    Page<Object[]> findAllMyQuestionBoardWithCountsByTag(String userId, QuestionBoardTag tag, Pageable pageable);
 }
