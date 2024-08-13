@@ -30,13 +30,27 @@
               </div>
               <div class="card-body">
                 <form @submit.prevent="loginSubmit" role="form" class="text-start">
-                  <div class="input-group input-group-outline my-3">
+                  <div :class="['input-group input-group-outline my-3', { 'is-focused': isUserIdFocused || userId }]">
                     <label class="form-label">ID</label>
-                    <input id="userId" v-model="userId" type="text" class="form-control">
+                    <input 
+                      id="userId" 
+                      v-model="userId" 
+                      type="text" 
+                      class="form-control"
+                      @focus="handleUserIdFocus"
+                      @blur="handleUserIdBlur"
+                    >
                   </div>
-                  <div class="input-group input-group-outline mb-3">
+                  <div :class="['input-group input-group-outline mb-3', { 'is-focused': isPasswordFocused || password }]">
                     <label class="form-label">Password</label>
-                    <input id="password" v-model="password" type="password" class="form-control">
+                    <input 
+                      id="password" 
+                      v-model="password" 
+                      type="password" 
+                      class="form-control"
+                      @focus="handlePasswordFocus"
+                      @blur="handlePasswordBlur"
+                    >
                   </div>
                   <!-- <div class="form-check form-switch d-flex align-items-center mb-3">
                     <input class="form-check-input" type="checkbox" id="rememberMe" checked>
@@ -86,6 +100,9 @@
   import apiClient from '../../../config/authConfig';
   import { useRouter } from 'vue-router';
   import { useAuthStore } from '../../../store/authStore';
+  
+  const isUserIdFocused = ref(false);
+  const isPasswordFocused = ref(false);
 
   const userId = ref('');
   const password = ref('');
@@ -150,7 +167,23 @@
         alert('로그인이 실패했습니다.');
       }
     }
-  }
+  };
+
+  const handleUserIdFocus = () => {
+    isUserIdFocused.value = true;
+  };
+
+  const handleUserIdBlur = () => {
+    isUserIdFocused.value = false;
+  };
+
+  const handlePasswordFocus = () => {
+    isPasswordFocused.value = true;
+  };
+
+  const handlePasswordBlur = () => {
+    isPasswordFocused.value = false;
+  };
 </script>
 <style scoped>
   
