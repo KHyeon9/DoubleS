@@ -247,6 +247,21 @@ class QuestionBoardServiceTest {
     }
 
     @Test
+    void 태그를_통해_내_게시글_목록_조회가_성공한_경우() {
+        // Given
+        Pageable pageable = mock(Pageable.class);
+        UserAccount userAccount = mock(UserAccount.class);
+        QuestionBoardTag tag = QuestionBoardTag.Free;
+
+        // When
+        when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findAllMyQuestionBoardWithCountsByTag(userAccount.getUserId(), tag, pageable)).thenReturn(Page.empty());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.myQuestionBoardListByTag(userAccount.getUserId(), tag.name(), pageable));
+    }
+
+    @Test
     void 질문_게시글_상세_조회가_성공한_경우() {
         // Given
         String userId = "userId";
