@@ -110,6 +110,7 @@
     nextPage, 
     prevPage, 
     goToPage, 
+    pageScrollTop,
     paginatedPageNumbers 
   } = usePagination();
 
@@ -174,22 +175,25 @@
 
   const nextPageAndFetch = () => {
     nextPage();
-    getQuestionBoard();
+    getMyQuestionBoard();
   };
 
   const prevPageAndFetch = () => {
     prevPage();
-    getQuestionBoard();
+    getMyQuestionBoard();
+    pageScrollTop();
   };
 
   const goToPageAndFetch = (pageNumber) => {
     goToPage(pageNumber);
-    getQuestionBoard();
+    getMyQuestionBoard();
+    pageScrollTop();
   };
   
   onMounted(() => {
     getMyQuestionBoard();
     getTags();
+    pageScrollTop();
   });
 </script>
 <style scoped>
