@@ -42,13 +42,27 @@ public class QuestionBoardService {
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
-    // 나의 질문 게시글 리스트
+    // 나의 질문 게시글 리스트 조회
     public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
         // 유저 확인
         getUserAccountOrException(userId);
         
         // 나의 질문 게시글들 가져오기
         Page<Object[]> results = questionBoardRepository.findAllMyQuestionBoardWithCounts(userId, pageable);
+
+        return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
+    }
+
+    // 나의 질문 게시글 리스트 태그로 조회
+    public Page<QuestionBoardDto> myQuestionBoardListByTag(String userId, String tag, Pageable pageable) {
+        // 유저 확인
+        getUserAccountOrException(userId);
+
+        // 태그 변환
+        QuestionBoardTag tagValue = QuestionBoardTag.fromString(tag);
+
+        // 나의 질문 게시글들 가져오기
+        Page<Object[]> results = questionBoardRepository.findAllMyQuestionBoardWithCountsByTag(userId, tagValue, pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }

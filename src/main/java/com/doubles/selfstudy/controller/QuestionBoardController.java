@@ -76,7 +76,11 @@ public class QuestionBoardController {
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // my question board list 반환
-        return Response.success(Page.empty());
+        return Response.success(
+                questionBoardService
+                        .myQuestionBoardListByTag(authentication.getName(), tag, pageable)
+                        .map(QuestionBoardResponse::fromQuestionBoardDto)
+        );
     }
     
     // 게시글 상세 조회
