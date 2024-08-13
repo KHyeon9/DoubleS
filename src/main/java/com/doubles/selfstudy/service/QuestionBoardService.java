@@ -29,7 +29,7 @@ public class QuestionBoardService {
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
         // 모든 질문 게시글들 가져오기
-        Page<Object[]> results = questionBoardRepository.findAllByWithLikeCountAndCommentCount(pageable);
+        Page<Object[]> results = questionBoardRepository.findAllQuestionBoardWithCounts(pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
@@ -37,7 +37,7 @@ public class QuestionBoardService {
     // 질문 게시글 태그 검색
     public Page<QuestionBoardDto> questionBoardListByTag(String tag, Pageable pageable) {
         QuestionBoardTag tagValue = QuestionBoardTag.fromString(tag);
-        Page<Object[]> results = questionBoardRepository.findAllByTagWithLikeCountAndCommentCount(tagValue, pageable);
+        Page<Object[]> results = questionBoardRepository.findAllQuestionBoardWithCountsByTag(tagValue, pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
@@ -48,7 +48,7 @@ public class QuestionBoardService {
         getUserAccountOrException(userId);
         
         // 나의 질문 게시글들 가져오기
-        Page<Object[]> results = questionBoardRepository.findAllByMyBoardWithLikeCountAndCommentCount(userId, pageable);
+        Page<Object[]> results = questionBoardRepository.findAllMyQuestionBoardWithCounts(userId, pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
