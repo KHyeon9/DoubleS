@@ -109,4 +109,18 @@ class UserAccountServiceTest {
         // Then
         assertThrows(DoubleSApplicationException.class, () -> userAccountService.login(userId, wrongPassword));
     }
+
+    @Test
+    void 유저_정보_조회_성공() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+        UserAccount fixture = get(userId, password);
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.getUserInfo(userId));
+    }
 }

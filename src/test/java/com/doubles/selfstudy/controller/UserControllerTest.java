@@ -2,9 +2,12 @@ package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
+import com.doubles.selfstudy.controller.response.ProfileResponse;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.service.QuestionBoardService;
 import com.doubles.selfstudy.service.UserAccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,10 +16,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +42,8 @@ class UserControllerTest {
 
     @MockBean
     private UserAccountService userAccountService;
+    @MockBean
+    private QuestionBoardService questionBoardService;
 
     @Test
     void 회원가입_정상_작동() throws Exception {
@@ -131,4 +142,43 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PASSWORD.getStatus().value()));
     }
+
+    @Test
+    @WithMockUser
+    void 회원_정보_조회_성공() throws Exception {
+        // Given
+        UserAccountDto userAccountDto =  UserAccountDto
+                .fromEntity(UserAccountFixture.get("userId", "password"));
+
+        // When
+        when(userAccountService.getUserInfo(any()))
+                .thenReturn(userAccountDto);
+        when(questionBoardService.profileQuestionBoardList(any()))
+                .thenReturn(List.of());
+
+        // Then
+        mockMvc.perform(get("/api/main/profile")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper
+                        .writeValueAsBytes(ProfileResponse
+                                .fromUserAccountDtoAndQuestionBoardListDto(userAccountDto, List.of())
+                        )
+                    )
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+        @Test
+        @WithAnonymousUser
+        void 회원_정보_조회시_로그인이_안된_경우_에러_발생() throws Exception {
+            // Given
+
+            // When&Then
+            mockMvc.perform(get("/api/main/profile")
+                            .contentType(MediaType.APPLICATION_JSON)
+                    )
+                    .andDo(print())
+                    .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+        }
 }
