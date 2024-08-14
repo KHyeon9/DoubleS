@@ -111,6 +111,43 @@ class UserAccountServiceTest {
     }
 
     @Test
+    void 유저_정보_수정_성공() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+        UserAccount fixture = get(userId, password);
+
+        String nickname = "nickname";
+        String email = "email@email.com";
+        String memo = "memo test";
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(userAccountRepository.saveAndFlush(any())).thenReturn(
+                get(userId, password, nickname, email, memo)
+        );
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.modifiyUserInfo(userId, nickname, email, memo));
+    }
+
+    @Test
+    void 유저_정보_수정시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String nickname = "nickname";
+        String email = "email@email.com";
+        String memo = "test memo";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(DoubleSApplicationException.class, () -> userAccountService.modifiyUserInfo(userId, nickname, email, memo));
+    }
+
+    @Test
     void 유저_정보_조회_성공() {
         // Given
         String userId = "userId";
