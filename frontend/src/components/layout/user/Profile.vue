@@ -9,10 +9,10 @@
         <div class="col-auto my-auto">
           <div class="h-100">
             <h4 class="mb-1">
-              nickname
+              {{ profileData.nickname }}
             </h4>
             <p class="mb-0 font-weight-normal text-md">
-              userId
+              {{ profileData.userId }}
             </p>
           </div>
         </div>
@@ -56,89 +56,41 @@
               </div>
               <div class="card-body p-3">
                 <p class="text-md">
-                  user memo 띄우고 줄바꿈 가능하게
+                  {{ profileData.memo || '자기소개가 존재하지 않습니다.' }}
                 </p>
                 <hr class="horizontal gray-light my-4">
                 <ul class="list-group">
-                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">Email:</strong> &nbsp; alecthompson@mail.com</li>
+                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">Email:</strong> &nbsp; {{ profileData.email }}</li>
                   <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">스터디 그룹 여부:</strong> &nbsp; 참여중</li>
                 </ul>
               </div>
               <div class="col-12 mt-4">
-              <div class="mb-3 ps-3">
-                <h6 class="mb-1">최근 게시물</h6>
-              </div>
-              <div class="row">
-                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                  <div class="card card-blog card-plain">
-                    <div class="card-body p-3">
-                      <a href="javascript:;">
-                        <h6>
-                          title 글자 수 제한 둬야 할거 같음
-                        </h6>
-                      </a>
-                      <p class="mb-4 text-sm">
-                        content 글자 수 제한 둬야 할거 같음
-                      </p>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
+                <div class="mb-3 ps-3">
+                  <h6 class="mb-1">최근 게시물</h6>
+                </div>
+                <div v-if="profileData.questionBoardList && profileData.questionBoardList.length" class="row">
+                  <div  v-for="questionBoard in profileData.questionBoardList" class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+                    <div class="card card-blog card-plain">
+                      <div class="card-body p-3">
+                        <a href="javascript:;">
+                          <h6>
+                            {{ truncateText(questionBoard.title, 18) }}
+                          </h6>
+                        </a>
+                        <p class="mb-4 text-sm">
+                          {{ truncateText(questionBoard.content, 20) }}
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between">
+                          <router-link :to="`/main/question_board/${questionBoard.id}`" type="button" class="btn btn-outline-primary btn-sm mb-0">View</router-link>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                  <div class="card card-blog card-plain">
-                    <div class="card-body p-3">
-                      <a href="javascript:;">
-                        <h6>
-                          title 글자 수 제한 둬야 할거 같음
-                        </h6>
-                      </a>
-                      <p class="mb-4 text-sm">
-                        content 글자 수 제한 둬야 할거 같음
-                      </p>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                  <div class="card card-blog card-plain">
-                    <div class="card-body p-3">
-                      <a href="javascript:;">
-                        <h6>
-                          title 글자 수 제한 둬야 할거 같음
-                        </h6>
-                      </a>
-                      <p class="mb-4 text-sm">
-                        content 글자 수 제한 둬야 할거 같음
-                      </p>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                  <div class="card card-blog card-plain">
-                    <div class="card-body p-3">
-                      <a href="javascript:;">
-                        <h6>
-                          title 글자 수 제한 둬야 할거 같음
-                        </h6>
-                      </a>
-                      <p class="mb-4 text-sm">
-                        content 글자 수 제한 둬야 할거 같음
-                      </p>
-                      <div class="d-flex align-items-center justify-content-between">
-                        <button type="button" class="btn btn-outline-primary btn-sm mb-0">View</button>
-                      </div>
-                    </div>
-                  </div>
+                <div v-else class="mb-3 ps-3">
+                    최근 게시물이 존재하지 않습니다.
                 </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -147,12 +99,36 @@
   </div>
 </template>
 <script setup>
-import { useAuthStore } from '../../../store/authStore';
-import { computed } from 'vue';
+  import { ref, onMounted } from 'vue';
+  import apiClient from '../../../config/authConfig';
 
-const authStore = useAuthStore();
-const userId = computed(() => authStore.userId);
+  const profileData = ref({});
 
+  const getProfile = async () => {
+    try{
+      const response = await apiClient.get('/main/profile');
+
+      console.log(response.data.result);
+      profileData.value = response.data.result
+
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('프로필 데이터를 가져오지 못했습니다.');
+    }
+  };
+
+  const truncateText = (text, len) => {
+    // 전체 길이가 maxLength보다 작으면 그대로 반환
+    if (text.length <= len) {
+      return text;
+    }
+
+    return text.slice(0, len) + '...';
+  };
+
+  onMounted(() => {
+    getProfile();
+  });
 </script>
 <style scoped>
   

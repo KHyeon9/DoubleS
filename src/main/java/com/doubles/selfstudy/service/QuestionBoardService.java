@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class QuestionBoardService {
@@ -65,6 +67,17 @@ public class QuestionBoardService {
         Page<Object[]> results = questionBoardRepository.findAllMyQuestionBoardWithCountsByTag(userId, tagValue, pageable);
 
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
+    }
+
+    public List<QuestionBoardDto> profileQuestionBoardList(String userId) {
+        // 유저 확인
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // profile에 사용할 질문 게시글 가져오기
+        List<QuestionBoard> questionBoardList = questionBoardRepository
+                .findTop4ByUserAccountOrderByCreatedAtDesc(userAccount);
+
+        return questionBoardList.stream().map(QuestionBoardDto::fromEntity).toList();
     }
 
     // 질문 게시글 상세 조회

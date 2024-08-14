@@ -91,7 +91,7 @@ const router = createRouter({
           component: Alarm,
         },
         {
-          path: 'profile/:userId', 
+          path: 'profile', 
           component: Profile,
         },
         {

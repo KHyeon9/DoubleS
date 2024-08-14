@@ -2,6 +2,7 @@ package com.doubles.selfstudy.repository;
 
 import com.doubles.selfstudy.dto.question.QuestionBoardTag;
 import com.doubles.selfstudy.entity.QuestionBoard;
+import com.doubles.selfstudy.entity.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,9 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
     
     // 최신 질문 게시글 5개만 조회
     List<QuestionBoard> findTop5ByOrderByCreatedAtDesc();
+
+    // profile에 사용될 최신 질문 게시글 4개만 조회
+    List<QuestionBoard> findTop4ByUserAccountOrderByCreatedAtDesc(UserAccount userAccount);
     
     // 좋아요 갯수와 댓글 갯수를 포함한 리스트 조회
     @Query("SELECT q, " +

@@ -25,6 +25,7 @@ public class UserAccountService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
+    // 회원가입
     @Transactional
     public UserAccountDto regist(String userId, String password, String email, String nickname) {
         // 회원 가입하는 userId 중복 체크
@@ -39,6 +40,7 @@ public class UserAccountService {
         return UserAccountDto.fromEntity(userAccount);
     }
 
+    // 로그인
     public String login(String userId, String password) {
         // 회원 가입 체크
         UserAccount userAccount = getUserAccountOrException(userId);
@@ -53,12 +55,48 @@ public class UserAccountService {
 
         return token;
     }
-
+    
+    // 유저 정보 조회
     public UserAccountDto getUserInfo(String userId) {
         // 아이디 가져옴
         UserAccount userAccount = getUserAccountOrException(userId);
 
         return UserAccountDto.fromEntity(userAccount);
+    }
+
+    // 유저 정보 수정
+    @Transactional
+    public UserAccountDto modifiyUserInfo(String userId, String nickname, String email, String memo) {
+        // 유저 정보 가져옴
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        userAccount.setNickname(nickname);
+        userAccount.setEmail(email);
+        userAccount.setMemo(memo);
+        
+        // 변경 내용 수정
+        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+    }
+
+    // 유저 비밀번호 수정
+    public UserAccountDto modifiyUserPassword(String userId, String nowPassword, String changePassword) {
+        // 유저 정보 가져옴
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+
+        if (!encoder.matches(userAccount.getPassword(), nowPassword)) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_PASSWORD, String.format(
+                            "유저 아이디: '%s' 에 대해서 비밀번호가 틀렸습니다.",
+                            userId
+                        )
+                    );
+        }
+
+        // 변경 내용 수정
+        userAccount.setPassword(changePassword);
+
+        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
     }
 
     private UserAccount getUserAccountOrException(String userId) {

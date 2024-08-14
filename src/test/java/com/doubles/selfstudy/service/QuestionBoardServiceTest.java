@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -259,6 +260,19 @@ class QuestionBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.myQuestionBoardListByTag(userAccount.getUserId(), tag.name(), pageable));
+    }
+
+    @Test
+    void 회원_정보_페이지에_질문_게시글_리스트_조회_성공() {
+        // Given
+        UserAccount userAccount = mock(UserAccount.class);
+
+        // When
+        when(userAccountRepository.findById(any())).thenReturn(Optional.of(userAccount));
+        when(questionBoardRepository.findTop4ByUserAccountOrderByCreatedAtDesc(any())).thenReturn(List.of());
+
+        // Then
+        assertDoesNotThrow(() -> questionBoardService.profileQuestionBoardList(userAccount.getUserId()));
     }
 
     @Test
