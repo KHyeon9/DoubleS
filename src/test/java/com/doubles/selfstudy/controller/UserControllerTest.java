@@ -1,6 +1,7 @@
 package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
+import com.doubles.selfstudy.controller.request.UserModifyRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.ProfileResponse;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
@@ -23,10 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -169,16 +170,60 @@ class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
-        @Test
-        @WithAnonymousUser
-        void 회원_정보_조회시_로그인이_안된_경우_에러_발생() throws Exception {
-            // Given
+    @Test
+    @WithAnonymousUser
+    void 회원_정보_조회시_로그인이_안된_경우_에러_발생() throws Exception {
+        // Given
 
-            // When&Then
-            mockMvc.perform(get("/api/main/profile")
-                            .contentType(MediaType.APPLICATION_JSON)
-                    )
-                    .andDo(print())
-                    .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
-        }
+        // When&Then
+        mockMvc.perform(get("/api/main/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 회원_정보_수정_성공() throws Exception {
+        // Given
+        String email = "test@email.com";
+        String nickname = "nickname";
+        String memo = "memo";
+
+        // When
+        when(userAccountService.modifiyUserInfo(any(), eq(email), eq(nickname), eq(memo)))
+                .thenReturn(mock(UserAccountDto.class));
+
+        // Then
+        mockMvc.perform(put("/api/main/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new UserModifyRequest(email, nickname, memo, null))
+                        )
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 회원_정보_수정시_로그인이_안된_경우_에러_발생() throws Exception {
+        // Given
+        String email = "test@email.com";
+        String nickname = "nickname";
+        String memo = "memo";
+
+        // When
+        when(userAccountService.modifiyUserInfo(any(), eq(email), eq(nickname), eq(memo)))
+                .thenReturn(mock(UserAccountDto.class));
+
+        // Then
+        mockMvc.perform(put("/api/main/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new UserModifyRequest(email, nickname, memo, null))
+                        )
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
 }
