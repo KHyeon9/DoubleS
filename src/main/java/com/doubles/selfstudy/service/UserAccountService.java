@@ -25,6 +25,7 @@ public class UserAccountService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
+    // 회원가입
     @Transactional
     public UserAccountDto regist(String userId, String password, String email, String nickname) {
         // 회원 가입하는 userId 중복 체크
@@ -39,6 +40,7 @@ public class UserAccountService {
         return UserAccountDto.fromEntity(userAccount);
     }
 
+    // 로그인
     public String login(String userId, String password) {
         // 회원 가입 체크
         UserAccount userAccount = getUserAccountOrException(userId);
@@ -53,7 +55,8 @@ public class UserAccountService {
 
         return token;
     }
-
+    
+    // 유저 정보 조회
     public UserAccountDto getUserInfo(String userId) {
         // 아이디 가져옴
         UserAccount userAccount = getUserAccountOrException(userId);
