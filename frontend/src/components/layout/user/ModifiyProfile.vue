@@ -51,7 +51,7 @@
                 </div>
               </div>
             </div>
-            <button class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0">Update Info</button>
+            <button @click="modifyUserInfo" class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0">내 정보 수정</button>
           </div>
         </div>
         <div class="card mt-4" id="password">
@@ -122,6 +122,14 @@
     if (!validateUserInfoForm()) {
       return;
     }
+
+    const response = await apiClient.put("/main/profile", {
+      nickname: nickname.value,
+      email: email.value,
+      memo: memo.value
+    });
+
+    console.log(response.data.result);
 
     try{
 
