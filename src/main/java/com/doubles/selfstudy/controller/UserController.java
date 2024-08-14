@@ -3,10 +3,15 @@ package com.doubles.selfstudy.controller;
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.*;
+import com.doubles.selfstudy.dto.question.QuestionBoardDto;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
+import com.doubles.selfstudy.service.QuestionBoardService;
 import com.doubles.selfstudy.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserAccountService userAccountService;
+    private final QuestionBoardService questionBoardService;
 
     @PostMapping("/login")
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
@@ -39,12 +45,21 @@ public class UserController {
         return Response.success(LoginUserInfoResponse.fromUserAccountDto(userAccountDto));
     }
 
-    @GetMapping("/profile")
-    public Response<ProfileResponse> profile(@PathVariable String userId) {
-        // profile get
-        UserAccountDto userAccountDto = userAccountService.getUserInfo(userId);
+    @GetMapping("/main/profile")
+    public Response<ProfileResponse> getProfileUserInfo(Authentication authentication) {
+        // user info get
+        UserAccountDto userAccountDto = userAccountService
+                .getUserInfo(authentication.getName());
 
-        return Response.success(ProfileResponse.fromUserAccountDto(userAccountDto));
+        // profile question board get
+        List<QuestionBoardDto> questionBoardDtoList = questionBoardService
+                .profileQuestionBoardList(authentication.getName());
+
+        return Response.success(ProfileResponse
+                .fromUserAccountDtoAndQuestionBoardListDto(
+                        userAccountDto,
+                        questionBoardDtoList
+                ));
     }
 
     @GetMapping("/alarm")
