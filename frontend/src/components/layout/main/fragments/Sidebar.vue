@@ -106,7 +106,7 @@
         <li class="nav-item">
           <router-link 
             :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/profile') }]"
-            :to="`/main/profile/${userId}`"
+            :to="`/main/profile`"
              @click="indexStore.changePage('/main/profile')"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
