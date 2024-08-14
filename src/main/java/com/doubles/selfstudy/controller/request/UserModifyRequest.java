@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserModifyRequest {
 
-    private String userId;
     private String nickname;
     private String email;
     private String memo;
