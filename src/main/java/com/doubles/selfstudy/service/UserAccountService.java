@@ -64,6 +64,41 @@ public class UserAccountService {
         return UserAccountDto.fromEntity(userAccount);
     }
 
+    // 유저 정보 수정
+    @Transactional
+    public UserAccountDto modifiyUserInfo(String userId, String nickname, String email, String memo) {
+        // 유저 정보 가져옴
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        userAccount.setNickname(nickname);
+        userAccount.setEmail(email);
+        userAccount.setMemo(memo);
+        
+        // 변경 내용 수정
+        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+    }
+
+    // 유저 비밀번호 수정
+    public UserAccountDto modifiyUserPassword(String userId, String nowPassword, String changePassword) {
+        // 유저 정보 가져옴
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+
+        if (!encoder.matches(userAccount.getPassword(), nowPassword)) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_PASSWORD, String.format(
+                            "유저 아이디: '%s' 에 대해서 비밀번호가 틀렸습니다.",
+                            userId
+                        )
+                    );
+        }
+
+        // 변경 내용 수정
+        userAccount.setPassword(changePassword);
+
+        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+    }
+
     private UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
         return userAccountRepository.findById(userId).orElseThrow(() ->
