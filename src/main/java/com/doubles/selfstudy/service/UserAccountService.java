@@ -89,7 +89,7 @@ public class UserAccountService {
         }
 
         // 변경 내용 수정
-        userAccount.setPassword(changePassword);
+        userAccount.setPassword(encoder.encode(changePassword));
 
         return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
     }
