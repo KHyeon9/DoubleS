@@ -83,14 +83,9 @@ public class UserAccountService {
         // 유저 정보 가져옴
         UserAccount userAccount = getUserAccountOrException(userId);
 
-
-        if (!encoder.matches(userAccount.getPassword(), nowPassword)) {
-            throw new DoubleSApplicationException(
-                    ErrorCode.INVALID_PASSWORD, String.format(
-                            "유저 아이디: '%s' 에 대해서 비밀번호가 틀렸습니다.",
-                            userId
-                        )
-                    );
+        // 비밀 번호 체크
+        if (!encoder.matches(nowPassword, userAccount.getPassword())) {
+            throw new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
         // 변경 내용 수정
