@@ -13,4 +13,12 @@ public class QuestionBoardFixture {
 
         return questionBoard;
     }
+
+    public static QuestionBoard get(String userId, String title, String content) {
+        UserAccount userAccount = UserAccount.of(userId, "test", "test", "test", null);
+
+        QuestionBoard questionBoard = QuestionBoard.of(userAccount, title, content, QuestionBoardTag.Free, 0);
+
+        return questionBoard;
+    }
 }

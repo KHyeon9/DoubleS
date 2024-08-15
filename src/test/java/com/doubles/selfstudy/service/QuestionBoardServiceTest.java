@@ -81,29 +81,30 @@ class QuestionBoardServiceTest {
     @Test
     void 질문_게시글_수정이_성공한_경우() {
         // Given
-        String title = "modifiy_title";
-        String content = "modifiy_content";
+        String modifiyTitle = "modifiy_title";
+        String modifiyContent = "modifiy_content";
         String tag = "Free";
         String userId = "userId";
         Long questionBoardId = 1L;
 
         QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
+        QuestionBoard modifyQuestionBoard = QuestionBoardFixture.get(userId, modifiyTitle, modifiyContent);
         UserAccount userAccount = questionBoard.getUserAccount();
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
-        when(questionBoardRepository.saveAndFlush(any())).thenReturn(questionBoard);
+        when(questionBoardRepository.saveAndFlush(any())).thenReturn(modifyQuestionBoard);
 
         // Then
-        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content, tag));
+        assertDoesNotThrow(() -> questionBoardService.modifyQuestionBoard(userId, questionBoardId, modifiyTitle, modifiyContent, tag));
     }
 
     @Test
     void 질문_게시글_수정시_게시글이_존재하지_않을_경우_에러_반환() {
         // Given
-        String title = "modifiy_title";
-        String content = "modifiy_content";
+        String modifiyTitle = "modifiy_title";
+        String modifiyContent = "modifiy_content";
         String tag = "Free";
         String userId = "userId";
         Long questionBoardId = 1L;
@@ -117,7 +118,7 @@ class QuestionBoardServiceTest {
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
-                    questionBoardService.modifyQuestionBoard(userId, questionBoardId, title, content, tag)
+                    questionBoardService.modifyQuestionBoard(userId, questionBoardId, modifiyTitle, modifiyContent, tag)
                 );
 
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
