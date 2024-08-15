@@ -103,23 +103,24 @@ class QuestionBoardCommentServiceTest {
     @Test
     void 질문_게시글_댓글_수정_성공() {
         // Given
-        String comment = "comment";
+        String modifyComment = "modify_comment";
         String userId = "userId";
         Long questionBoardId = 1L;
         Long questionBoardCommentId = 1L;
 
         QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
         QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, "test");
+        QuestionBoardComment modifyQuestionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, modifyComment);
         UserAccount userAccount = questionBoardComment.getUserAccount();
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
-        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
+        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(modifyQuestionBoardComment);
 
         // Then
-        assertDoesNotThrow(() -> questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment));
+        assertDoesNotThrow(() -> questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, modifyComment));
     }
 
     @Test
@@ -130,14 +131,9 @@ class QuestionBoardCommentServiceTest {
         Long questionBoardId = 1L;
         Long questionBoardCommentId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
-        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
-        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
-        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
-        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
@@ -155,15 +151,11 @@ class QuestionBoardCommentServiceTest {
         Long questionBoardId = 1L;
         Long questionBoardCommentId = 1L;
 
-        QuestionBoard questionBoard = QuestionBoardFixture.get("boardWriter");
-        QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get(userId, questionBoard, "test");
-        UserAccount userAccount = questionBoardComment.getUserAccount();
+        UserAccount userAccount = UserAccountFixture.get(userId, "password");
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
-        when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
-        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
@@ -187,16 +179,15 @@ class QuestionBoardCommentServiceTest {
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(modifyUser));
-        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.empty());
+        when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.findById(questionBoardCommentId)).thenReturn(Optional.of(questionBoardComment));
-        when(questionBoardCommentRepository.saveAndFlush(any())).thenReturn(questionBoardComment);
 
         // Then
         DoubleSApplicationException e = assertThrows(DoubleSApplicationException.class, () ->
                 questionBoardCommentService.modifyQuestionBoardComment(userId, questionBoardId, questionBoardCommentId, comment)
         );
 
-        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
 
     @Test

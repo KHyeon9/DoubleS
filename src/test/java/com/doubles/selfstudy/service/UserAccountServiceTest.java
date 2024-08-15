@@ -92,11 +92,15 @@ class UserAccountServiceTest {
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(DoubleSApplicationException.class, () -> userAccountService.login(userId, password));
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.login(userId, password));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
-    void 로그인시_password가_틀린_경우_에러_반환() {
+    void 로그인시_비밀번호가_틀린_경우_에러_반환() {
         // Given
         String userId = "userId";
         String password = "password";
@@ -107,7 +111,11 @@ class UserAccountServiceTest {
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
 
         // Then
-        assertThrows(DoubleSApplicationException.class, () -> userAccountService.login(userId, wrongPassword));
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.login(userId, wrongPassword));
+
+        assertEquals(ErrorCode.INVALID_PASSWORD, e.getErrorCode());
     }
 
     @Test
@@ -144,7 +152,69 @@ class UserAccountServiceTest {
                 .thenReturn(Optional.empty());
 
         // Then
-        assertThrows(DoubleSApplicationException.class, () -> userAccountService.modifiyUserInfo(userId, nickname, email, memo));
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.modifiyUserInfo(userId, nickname, email, memo));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 유저_비밀번호_수정_성공() {
+        // Given
+        String userId = "userId";
+        String nowPassword = "now_password";
+        String changePassword = "change_password";
+
+        UserAccount fixture = get(userId, nowPassword);
+        UserAccount changeFixture = get(userId, changePassword);
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(encoder.matches(nowPassword, fixture.getPassword())).thenReturn(true);
+        when(userAccountRepository.saveAndFlush(any())).thenReturn(changeFixture);
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.modifiyUserPassword(userId, nowPassword, changePassword));
+    }
+
+    @Test
+    void 유저_비밀번호_수정시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String nowPassword = "now_password";
+        String changePassword = "change_password";
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.modifiyUserPassword(userId, nowPassword, changePassword));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+    
+    @Test
+    void 유저_비밀번호_수정시_현재_비밀번호가_틀린_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        String nowPassword = "now_password";
+        String changePassword = "change_password";
+
+        UserAccount fixture = get(userId, nowPassword);
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(encoder.matches(nowPassword, fixture.getPassword())).thenReturn(false);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.modifiyUserPassword(userId, nowPassword, changePassword));
+
+        assertEquals(ErrorCode.INVALID_PASSWORD, e.getErrorCode());
     }
 
     @Test
@@ -159,5 +229,21 @@ class UserAccountServiceTest {
 
         // Then
         assertDoesNotThrow(() -> userAccountService.getUserInfo(userId));
+    }
+
+    @Test
+    void 유저_정보_조회시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.getUserInfo(userId));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 }
