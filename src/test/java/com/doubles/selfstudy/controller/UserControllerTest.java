@@ -1,7 +1,8 @@
 package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
-import com.doubles.selfstudy.controller.request.UserModifyRequest;
+import com.doubles.selfstudy.controller.request.UserInfoModifyRequest;
+import com.doubles.selfstudy.controller.request.UserPasswordModifyRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.ProfileResponse;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
@@ -196,9 +197,9 @@ class UserControllerTest {
                 .thenReturn(mock(UserAccountDto.class));
 
         // Then
-        mockMvc.perform(put("/api/main/profile")
+        mockMvc.perform(put("/api/main/profile/user_info")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new UserModifyRequest(email, nickname, memo, null))
+                        .content(objectMapper.writeValueAsBytes(new UserInfoModifyRequest(email, nickname, memo))
                         )
                 )
                 .andDo(print())
@@ -218,9 +219,51 @@ class UserControllerTest {
                 .thenReturn(mock(UserAccountDto.class));
 
         // Then
-        mockMvc.perform(put("/api/main/profile")
+        mockMvc.perform(put("/api/main/profile/user_info")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new UserModifyRequest(email, nickname, memo, null))
+                        .content(objectMapper.writeValueAsBytes(new UserInfoModifyRequest(email, nickname, memo))
+                        )
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 회원_비밀번호_수정_성공() throws Exception {
+        // Given
+        String nowPassword = "nowPassword";
+        String changePassword = "changePassword";
+
+        // When
+        when(userAccountService.modifiyUserPassword(any(), eq(nowPassword), eq(changePassword)))
+                .thenReturn(mock(UserAccountDto.class));;
+
+            // Then
+            mockMvc.perform(put("/api/main/profile/user_password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(new UserPasswordModifyRequest(nowPassword, changePassword))
+                        )
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 회원_비밀번호_수정시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        String nowPassword = "nowPassword";
+        String changePassword = "changePassword";
+
+        // When
+        when(userAccountService.modifiyUserPassword(any(), eq(nowPassword), eq(changePassword)))
+                .thenReturn(mock(UserAccountDto.class));;
+
+        // Then
+        mockMvc.perform(put("/api/main/profile/user_password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new UserPasswordModifyRequest(nowPassword, changePassword))
                         )
                 )
                 .andDo(print())
