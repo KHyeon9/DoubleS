@@ -7,10 +7,10 @@
             <div class="col-sm-auto col-8 my-auto">
               <div class="h-100">
                 <h5 class="mb-1 font-weight-bolder">
-                  Richard Davis
+                  {{ nickname }}
                 </h5>
                 <p class="mb-0 font-weight-normal text-sm">
-                  CEO / Co-Founder
+                  {{ userId }}
                 </p>
               </div>
             </div>
@@ -51,7 +51,7 @@
                 </div>
               </div>
             </div>
-            <button @click="modifyUserInfo" class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0">내 정보 수정</button>
+            <button @click="modifyUserInfo" class="btn bg-gradient-dark btn-md float-end mt-6 mb-0">내 정보 수정</button>
           </div>
         </div>
         <div class="card mt-4" id="password">
@@ -59,31 +59,51 @@
             <h5>비밀번호 변경</h5>
           </div>
           <div class="card-body pt-0">
-            <div class="input-group input-group-outline">
-              <label class="form-label">현제 비밀번호</label>
-              <input v-model="nowPassword" type="password" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
+            <div class="col-6">
+              <div :class="['input-group input-group-outline', { 'is-focused': isNowPasswordFocused || nowPassword }]">
+                <label class="form-label">현재 비밀번호</label>
+                <input 
+                  v-model="nowPassword" 
+                  type="password" 
+                  class="form-control" 
+                  @focus="handleNowPasswordFocus"
+                  @blur="handleNowPasswordBlur"
+                >
+              </div>
+              <div :class="['input-group input-group-outline my-4', { 'is-focused': isNewPasswordFocused || newPassword }]">
+                <label class="form-label">새 비밀번호</label>
+                <input 
+                  v-model="newPassword" 
+                  type="password" 
+                  class="form-control" 
+                  @focus="handleNewPasswordFocus"
+                  @blur="handleNewPasswordBlur"
+                >
+              </div>
+              <div :class="['input-group input-group-outline', { 'is-focused': isConfirmPasswordFocused || confirmPassword }]">
+                <label class="form-label">새 비밀번호 확인</label>
+                <input 
+                  v-model="confirmPassword" 
+                  type="password" 
+                  class="form-control" 
+                  @focus="handleConfirmPasswordFocus"
+                  @blur="handleConfirmPasswordBlur"
+                >
+              </div>
             </div>
-            <div class="input-group input-group-outline my-4">
-              <label class="form-label">새 비밀번호</label>
-              <input v-model="newPassword" type="password" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
-            </div>
-            <div class="input-group input-group-outline">
-              <label class="form-label">새 비밀번호 확인</label>
-              <input v-model="confirmPassword" type="password" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
-            </div>
-            <button class="btn bg-gradient-dark btn-sm float-end mt-6 mb-0">비밀번호 수정</button>
+            <button @click="modifyPassword" class="btn bg-gradient-dark btn-md float-end mt-6 mb-0">비밀번호 수정</button>
           </div>
         </div>
         <div class="card mt-4" id="delete">
           <div class="card-body">
             <div class="d-flex align-items-center mb-sm-0 mb-4">
               <div class="w-50">
-                <h5>Delete Account</h5>
-                <p class="text-sm mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                <h5>계정 삭제 또는 되돌아가기</h5>
+                <p class="text-sm mb-0">계정을 삭제하거나 되돌아갑니다.</p>
               </div>
               <div class="w-50 text-end">
-                <button class="btn btn-outline-secondary mb-3 mb-md-0 ms-auto" type="button" name="button">Deactivate</button>
-                <button class="btn bg-gradient-danger mb-0 ms-2" type="button" name="button">Delete Account</button>
+                <router-link to="/main/profile" class="btn btn-outline-secondary mb-3 mb-md-0 ms-auto" type="button" name="button">내 프로필로</router-link>
+                <button class="btn bg-gradient-danger mb-0 ms-2" type="button" name="button">계정 삭제</button>
               </div>
             </div>
           </div>
@@ -94,8 +114,11 @@
 </template>
 <script setup>
   import { ref, onMounted } from 'vue';
+  import { useRouter } from 'vue-router';
   import apiClient from '../../../config/authConfig';
 
+  const router = useRouter();
+  const userId = ref('');
   const nickname = ref('');
   const email = ref('');
   const memo = ref('');
@@ -103,12 +126,17 @@
   const newPassword = ref('');
   const confirmPassword = ref('');
 
+  const isNowPasswordFocused = ref(false);
+  const isNewPasswordFocused = ref(false);
+  const isConfirmPasswordFocused = ref(false);
+
   const getUserInfo = async () => {
     try {
       const response = await apiClient.get('/main/user_info');
 
       console.log(response.data.result);
 
+      userId.value = response.data.result.userId;
       nickname.value = response.data.result.nickname;
       email.value = response.data.result.email;
       memo.value = response.data.result.memo;
@@ -123,7 +151,7 @@
       return;
     }
 
-    const response = await apiClient.put("/main/profile", {
+    const response = await apiClient.put("/main/profile/user_info", {
       nickname: nickname.value,
       email: email.value,
       memo: memo.value
@@ -131,6 +159,7 @@
 
     console.log(response.data.result);
 
+    router.push('/main/profile');
     try{
 
     } catch (error) {
@@ -144,11 +173,25 @@
       return;
     }
 
-    try{
+    if (newPassword.value !== confirmPassword.value) {
+      alert('새로운 비밀번호와 비밀번호 확인이 맞지 않습니다.');
+      return;
+    }
 
+    try{
+      const response = await apiClient.put("/main/profile/user_password", {
+        nowPassword: nowPassword.value,
+        changePassword: newPassword.value,
+      });
+
+      router.push('/main/profile');
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
-      alert('비밀번호 수정을 실패했습니다.');
+      if(error.response.data.resultCode === "INVALID_PASSWORD") {
+        alert('현재 비밀번호가 틀렸습니다.')
+      } else {
+        alert('비밀번호 수정을 실패했습니다.');
+      }
     }
   };
 
@@ -170,7 +213,7 @@
     if (!nowPassword.value) {
       alert('현재 비밀번호가 입력되지 않았습니다.');
       return false;
-    } else if (password.value.length < 6) {
+    } else if (nowPassword.value.length < 6) {
       alert('비밀번호는 최소 6자리 이상이어야 합니다.');
       return false;
     }
@@ -178,7 +221,7 @@
     if (!newPassword.value) {
       alert('새로운 비밀번호가 입력되지 않았습니다.');
       return false;
-    } else if (password.value.length < 6) {
+    } else if (newPassword.value.length < 6) {
       alert('새 비밀번호는 최소 6자리 이상이어야 합니다.');
       return false;
     }
@@ -189,6 +232,30 @@
     }
 
     return true;
+  };
+
+  const handleNowPasswordFocus = () => {
+    isNowPasswordFocused.value = true;
+  };
+
+  const handleNowPasswordBlur = () => {
+    isNowPasswordFocused.value = false;
+  };
+
+  const handleNewPasswordFocus = () => {
+    isNewPasswordFocused.value = true;
+  };
+
+  const handleNewPasswordBlur = () => {
+    isNewPasswordFocused.value = false;
+  };
+
+  const handleConfirmPasswordFocus = () => {
+    isConfirmPasswordFocused.value = true;
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    isConfirmPasswordFocused.value = false;
   };
 
   onMounted(() => {
