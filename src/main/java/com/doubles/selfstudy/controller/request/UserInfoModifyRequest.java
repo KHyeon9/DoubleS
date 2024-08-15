@@ -5,10 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserModifyRequest {
+public class UserInfoModifyRequest {
 
     private String nickname;
     private String email;
     private String memo;
-    private String password;
 }
