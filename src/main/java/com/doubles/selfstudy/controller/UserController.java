@@ -1,7 +1,8 @@
 package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.controller.request.UserLoginRequest;
-import com.doubles.selfstudy.controller.request.UserModifyRequest;
+import com.doubles.selfstudy.controller.request.UserInfoModifyRequest;
+import com.doubles.selfstudy.controller.request.UserPasswordModifyRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.*;
 import com.doubles.selfstudy.dto.question.QuestionBoardDto;
@@ -72,10 +73,10 @@ public class UserController {
                         questionBoardDtoList
                 ));
     }
-    @PutMapping("/main/profile")
+    @PutMapping("/main/profile/user_info")
     public Response<ProfileResponse> modifyUserInfo(
             Authentication authentication,
-            @RequestBody UserModifyRequest request
+            @RequestBody UserInfoModifyRequest request
             ) {
         return Response.success(
                 ProfileResponse.fromUserAccountDto(
@@ -88,6 +89,21 @@ public class UserController {
                                 )
                     )
         );
+    }
+
+    @PutMapping("/main/profile/user_password")
+    public Response<Void> modifyUserPassword(
+            Authentication authentication,
+            @RequestBody UserPasswordModifyRequest request
+    ) {
+        userAccountService
+                .modifiyUserPassword(
+                        authentication.getName(),
+                        request.getNowPassword(),
+                        request.getChangePassword()
+        );
+
+        return Response.success();
     }
 
     @GetMapping("/alarm")
