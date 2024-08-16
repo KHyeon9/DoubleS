@@ -57,15 +57,24 @@ public class UserController {
         );
     }
 
-    @GetMapping("/main/profile")
-    public Response<ProfileResponse> getProfileUserInfo(Authentication authentication) {
+    @GetMapping("/main/check/{userId}")
+    public Response<Boolean> checkUserInfo(@PathVariable String userId) {
+        // user info check 찾지 못하면 서비스단에 에러 발생
+        // 그러므로 따로 false반환 이유가 없음
+        userAccountService.getUserInfo(userId);
+        
+        return Response.success(true);
+    }
+
+    @GetMapping("/main/profile/{userId}")
+    public Response<ProfileResponse> getProfileUserInfo(@PathVariable String userId) {
         // user info get
         UserAccountDto userAccountDto = userAccountService
-                .getUserInfo(authentication.getName());
+                .getUserInfo(userId);
 
         // profile question board get
         List<QuestionBoardDto> questionBoardDtoList = questionBoardService
-                .profileQuestionBoardList(authentication.getName());
+                .profileQuestionBoardList(userId);
 
         return Response.success(ProfileResponse
                 .fromUserAccountDtoAndQuestionBoardListDto(
@@ -73,6 +82,7 @@ public class UserController {
                         questionBoardDtoList
                 ));
     }
+
     @PutMapping("/main/profile/user_info")
     public Response<ProfileResponse> modifyUserInfo(
             Authentication authentication,
