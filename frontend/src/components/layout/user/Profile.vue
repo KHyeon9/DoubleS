@@ -16,7 +16,7 @@
             </p>
           </div>
         </div>
-        <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+        <div class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" role="tablist">
               <li class="nav-item">
@@ -25,7 +25,7 @@
                   <span class="ms-1">Messages</span>
                 </a>
               </li>
-              <li class="nav-item">
+              <li v-if="userId === profileData.userId" class="nav-item">
                 <router-link 
                   class="nav-link mb-0 px-0 py-1 " role="tab"
                   :to="`/main/profile/modify/${userId}`"
@@ -99,14 +99,19 @@
   </div>
 </template>
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, computed, onMounted, watch } from 'vue';
+  import { useRoute } from 'vue-router';
   import apiClient from '../../../config/authConfig';
+  import { useAuthStore } from '../../../store/authStore.js';
 
+  const route = useRoute();
+  const authStore = useAuthStore();
+  const userId = computed(() => authStore.userId);
   const profileData = ref({});
 
-  const getProfile = async () => {
+  const getProfile = async (userId) => {
     try{
-      const response = await apiClient.get('/main/profile');
+      const response = await apiClient.get(`/main/profile/${userId}`);
 
       console.log(response.data.result);
       profileData.value = response.data.result
@@ -126,10 +131,19 @@
     return text.slice(0, len) + '...';
   };
 
+  
+
   onMounted(() => {
-    getProfile();
+    getProfile(route.params.userId);
   });
-</script>
+
+  watch(
+    () => route.params.userId,
+    (newUserId) => {
+      getProfile(newUserId);
+    }
+  );
+  </script>
 <style scoped>
   
 </style>
