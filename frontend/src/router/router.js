@@ -4,7 +4,6 @@ import MainComp from "../components/MainComp.vue";
 import Todo from "../components/layout/main/Todo.vue"
 import QuestionBoardList from "../components/layout/main/QuestionBoardList.vue";
 import Home from "../components/layout/main/Home.vue";
-import Group from "../components/layout/main/Group.vue";
 import Chat from "../components/layout/main/Chat.vue";
 import Notice from "../components/layout/main/Notice.vue";
 import UserAccount from "../components/UserAccount.vue";
@@ -21,6 +20,7 @@ import ModifyQuestionBoard from "../components/layout/main/ModifyQuestionBoard.v
 import Profile from "../components/layout/user/Profile.vue";
 import ModifiyProfile from "../components/layout/user/ModifiyProfile.vue";
 import MyQuestionBoardList from "../components/layout/main/MyQuestionBoardList.vue";
+import StudyGroup from "../components/layout/main/StudyGroup.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -80,7 +80,7 @@ const router = createRouter({
         },
         {
           path: 'group', 
-          component: Group,
+          component: StudyGroup,
         },
         {
           path: 'chat', 
@@ -91,7 +91,7 @@ const router = createRouter({
           component: Alarm,
         },
         {
-          path: 'profile', 
+          path: 'profile/:userId', 
           component: Profile,
         },
         {
