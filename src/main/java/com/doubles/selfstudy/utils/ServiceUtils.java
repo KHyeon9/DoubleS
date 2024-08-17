@@ -1,16 +1,10 @@
 package com.doubles.selfstudy.utils;
 
 import com.doubles.selfstudy.dto.user.RoleType;
-import com.doubles.selfstudy.entity.NoticeBoard;
-import com.doubles.selfstudy.entity.QuestionBoard;
-import com.doubles.selfstudy.entity.QuestionBoardComment;
-import com.doubles.selfstudy.entity.UserAccount;
+import com.doubles.selfstudy.entity.*;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
-import com.doubles.selfstudy.repository.NoticeBoardRepository;
-import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
-import com.doubles.selfstudy.repository.QuestionBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +18,7 @@ public class ServiceUtils {
     private final QuestionBoardRepository questionBoardRepository;
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final NoticeBoardRepository noticeBoardRepository;
+    private final TodoRepository todoRepository;
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
@@ -33,6 +28,7 @@ public class ServiceUtils {
     }
 
     public UserAccount getAdminUserAccountOrException(String userId) {
+        // 유저 정보 가져오가
         UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId)
                 )
@@ -54,7 +50,7 @@ public class ServiceUtils {
     }
 
     public QuestionBoardComment getQuestionBoardCommentOrException(Long questionBoardCommentId) {
-        // find question board
+        // 댓글 가져오기
         return questionBoardCommentRepository.findById(questionBoardCommentId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.COMMENT_NOT_FOUND, String.format("댓글번호: '%s' 를 찾지 못했습니다.", questionBoardCommentId))
         );
@@ -64,6 +60,14 @@ public class ServiceUtils {
         // 공지사항 글을 가져오면서 못 찾는 경우 검사
         return noticeBoardRepository.findById(noticeBoardId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("공지사항 %d번을 찾지 못했습니다.", noticeBoardId)
+                )
+        );
+    }
+    
+    public Todo getTodoOrException(Long todoId) {
+        // todo 정보 가져오면서 검사
+        return todoRepository.findById(todoId).orElseThrow(() ->
+                new DoubleSApplicationException(ErrorCode.TODO_NOT_FOUND, String.format("todo %d번을 찾지 못했습니다.", todoId)
                 )
         );
     }
