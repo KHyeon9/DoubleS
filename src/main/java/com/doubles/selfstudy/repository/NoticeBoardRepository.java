@@ -10,5 +10,5 @@ import java.util.List;
 public interface NoticeBoardRepository extends JpaRepository<NoticeBoard, Long> {
     
     // 공지사항 최신 10개 조회
-    List<NoticeBoard> findTop10ByOrderByCreatedAtDesc();
+    List<NoticeBoard> findTop10ByOrderByIdDesc();
 }

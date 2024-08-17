@@ -10,7 +10,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +23,10 @@ import java.util.List;
 @Service
 public class QuestionBoardService {
 
-    private final UserAccountRepository userAccountRepository;
     private final QuestionBoardRepository questionBoardRepository;
     private final QuestionBoardLikeRepository questionBoardLikeRepository;
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
+    private final ServiceUtils serviceUtils;
 
     // 질문 게시글 리스트
     public Page<QuestionBoardDto> questionBoardList(Pageable pageable) {
@@ -47,7 +47,7 @@ public class QuestionBoardService {
     // 나의 질문 게시글 리스트 조회
     public Page<QuestionBoardDto> myQuestionBoardList(String userId, Pageable pageable) {
         // 유저 확인
-        getUserAccountOrException(userId);
+        serviceUtils.getUserAccountOrException(userId);
         
         // 나의 질문 게시글들 가져오기
         Page<Object[]> results = questionBoardRepository.findAllMyQuestionBoardWithCounts(userId, pageable);
@@ -58,7 +58,7 @@ public class QuestionBoardService {
     // 나의 질문 게시글 리스트 태그로 조회
     public Page<QuestionBoardDto> myQuestionBoardListByTag(String userId, String tag, Pageable pageable) {
         // 유저 확인
-        getUserAccountOrException(userId);
+        serviceUtils.getUserAccountOrException(userId);
 
         // 태그 변환
         QuestionBoardTag tagValue = QuestionBoardTag.fromString(tag);
@@ -71,7 +71,7 @@ public class QuestionBoardService {
 
     public List<QuestionBoardDto> profileQuestionBoardList(String userId) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // profile에 사용할 질문 게시글 가져오기
         List<QuestionBoard> questionBoardList = questionBoardRepository
@@ -83,7 +83,7 @@ public class QuestionBoardService {
     // 질문 게시글 상세 조회
     public QuestionBoardDto questionBoardDetail(Long questionBoardId) {
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         // 조회수 증가
         questionBoard.plusViewCount(); 
@@ -100,7 +100,7 @@ public class QuestionBoardService {
     @Transactional
     public void createQuestionBoard(String userId, String title, String content, String tag) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
         QuestionBoardTag questionBoardTag = QuestionBoardTag.fromString(tag);
         // 질문 게시글 저장
         questionBoardRepository.save(
@@ -112,10 +112,10 @@ public class QuestionBoardService {
     @Transactional
     public QuestionBoardDto modifyQuestionBoard(String userId, Long questionBoardId, String title, String content, String tag) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);;
 
         // 질문 게시글 권한 확인
         if (questionBoard.getUserAccount() != userAccount) {
@@ -140,10 +140,10 @@ public class QuestionBoardService {
     @Transactional
     public void deleteQuestionBoard(String userId, Long questionBoardId) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);;
 
         // 질문 게시판 권한 확인
         if (questionBoard.getUserAccount() != userAccount) {
@@ -168,10 +168,10 @@ public class QuestionBoardService {
     @Transactional
     public void questionBoardLike(String userId, Long questionBoardId) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         // 좋아요 확인
         questionBoardLikeRepository.findByUserAccountAndQuestionBoard(userAccount, questionBoard)
@@ -190,10 +190,10 @@ public class QuestionBoardService {
     @Transactional
     public void questionBoardDisLike(String userId, Long questionBoardId) {
         // 유저 확인
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         // 좋아요 저장
         questionBoardLikeRepository.deleteByQuestionBoardAndUserAccount(questionBoard, userAccount);
@@ -202,22 +202,8 @@ public class QuestionBoardService {
     // 좋아요 갯수 조회
     public Long questionBoardLikeCount(Long questionBoardId) {
         // 질문 게시글 확인
-        QuestionBoard questionBoard = getQuestionBoardOrException(questionBoardId);
+        QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         return questionBoardLikeRepository.countByQuestionBoard(questionBoard);
-    }
-
-    private UserAccount getUserAccountOrException(String userId) {
-        // 유저 정보 가져오면서 못 찾는 경우 검사
-        return userAccountRepository.findById(userId).orElseThrow(() ->
-                    new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
-                );
-    }
-
-    private QuestionBoard getQuestionBoardOrException(Long questionBoardId) {
-        // 질문 게시글 가져오면서 못 찾는 경우 검사
-        return questionBoardRepository.findById(questionBoardId).orElseThrow(() ->
-                new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND, String.format("게시글 번호: '%s' 를 찾지 못했습니다.", questionBoardId))
-        );
     }
 }
