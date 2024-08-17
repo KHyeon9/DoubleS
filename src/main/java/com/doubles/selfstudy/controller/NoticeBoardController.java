@@ -24,7 +24,7 @@ public class NoticeBoardController {
     @GetMapping
     public Response<Page<NoticeBoardResponse>> noticeBoardList(
             Authentication authentication,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         // 공지사항 리스트 반환
         return Response.success(

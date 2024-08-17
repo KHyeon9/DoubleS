@@ -26,7 +26,7 @@ public class HomePageService {
 
     public List<NoticeBoardDto> homePageNoticeBoardList() {
         return noticeBoardRepository
-                .findTop10ByOrderByCreatedAtDesc()
+                .findTop10ByOrderByIdDesc()
                 .stream()
                 .map(NoticeBoardDto::fromEntity)
                 .toList();
