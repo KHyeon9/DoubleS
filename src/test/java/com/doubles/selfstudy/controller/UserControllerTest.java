@@ -159,7 +159,7 @@ class UserControllerTest {
                 .thenReturn(List.of());
 
         // Then
-        mockMvc.perform(get("/api/main/profile")
+        mockMvc.perform(get("/api/main/profile/userId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper
                         .writeValueAsBytes(ProfileResponse
@@ -177,7 +177,7 @@ class UserControllerTest {
         // Given
 
         // When&Then
-        mockMvc.perform(get("/api/main/profile")
+        mockMvc.perform(get("/api/main/profile/userId")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
