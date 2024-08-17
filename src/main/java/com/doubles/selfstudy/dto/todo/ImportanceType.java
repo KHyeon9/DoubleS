@@ -1,13 +1,15 @@
 package com.doubles.selfstudy.dto.todo;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum ImportanceType {
 
-    high("높음"),
-    middle("중간"),
-    low("낮음");
+    High("높음"),
+    Middle("중간"),
+    Low("낮음");
 
     private final String typeName;
 

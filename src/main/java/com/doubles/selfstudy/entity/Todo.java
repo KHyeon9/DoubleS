@@ -21,13 +21,13 @@ public class Todo {
     @JoinColumn(name = "user_id")
     private UserAccount userAccount; // 작성 유저
 
-    @Column
+    @Column(nullable = false, name = "content")
     private String content; // Todo 내용
 
-    @Column
+    @Column(nullable = false, name = "importance_type")
     private ImportanceType importanceType; // 중요도
 
-    @Column
+    @Column(nullable = false, name = "is_completed")
     private boolean isCompleted; // 완료 여부 (생성시 기본값 -> false)
 
     @Column(name = "created_at")
