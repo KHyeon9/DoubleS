@@ -6,6 +6,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.utils.JwtTokenUtils;
+import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,7 @@ public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
     private final BCryptPasswordEncoder encoder;
+    private final ServiceUtils serviceUtils;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -43,7 +45,7 @@ public class UserAccountService {
     // 로그인
     public String login(String userId, String password) {
         // 회원 가입 체크
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 비밀 번호 체크
         if (!encoder.matches(password, userAccount.getPassword())) {
@@ -59,7 +61,7 @@ public class UserAccountService {
     // 유저 정보 조회
     public UserAccountDto getUserInfo(String userId) {
         // 아이디 가져옴
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         return UserAccountDto.fromEntity(userAccount);
     }
@@ -68,7 +70,7 @@ public class UserAccountService {
     @Transactional
     public UserAccountDto modifiyUserInfo(String userId, String nickname, String email, String memo) {
         // 유저 정보 가져옴
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         userAccount.setNickname(nickname);
         userAccount.setEmail(email);
@@ -81,7 +83,7 @@ public class UserAccountService {
     // 유저 비밀번호 수정
     public UserAccountDto modifiyUserPassword(String userId, String nowPassword, String changePassword) {
         // 유저 정보 가져옴
-        UserAccount userAccount = getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 비밀 번호 체크
         if (!encoder.matches(nowPassword, userAccount.getPassword())) {
@@ -94,13 +96,6 @@ public class UserAccountService {
         return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
     }
 
-    private UserAccount getUserAccountOrException(String userId) {
-        // 유저 정보 가져오면서 못 찾는 경우 검사
-        return userAccountRepository.findById(userId).orElseThrow(() ->
-                new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
-        );
-    }
-    
     // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
     public UserAccountDto loadUserByUserId(String userId) {
         return userAccountRepository.findById(userId).map(UserAccountDto::fromEntity).orElseThrow(
