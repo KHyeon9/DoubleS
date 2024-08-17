@@ -15,12 +15,12 @@ public enum QuestionBoardTag {
     private final String tagName;
 
     // String 값을 받아 Enum 값으로 변환하는 메서드
-    public static QuestionBoardTag fromString(String tag) {
+    public static QuestionBoardTag fromString(String tagName) {
         for (QuestionBoardTag questionBoardTag : QuestionBoardTag.values()) {
-            if (questionBoardTag.name().equalsIgnoreCase(tag)) {
+            if (questionBoardTag.name().equalsIgnoreCase(tagName)) {
                 return questionBoardTag;
             }
         }
-        throw new IllegalArgumentException("Tag를 찾지 못했습니다 tag: " + tag);
+        throw new IllegalArgumentException("Tag를 찾지 못했습니다 tag: " + tagName);
     }
 }
