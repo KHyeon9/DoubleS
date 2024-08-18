@@ -86,7 +86,7 @@ class TodoServiceTest {
         when(todoRepository.saveAndFlush(any())).thenReturn(modifyTodo);
 
         // Then
-        assertDoesNotThrow(() -> todoService.todoChangeComplete(userId, todoId));
+        assertDoesNotThrow(() -> todoService.changeTodoCompletedStatus(userId, todoId));
     }
 
     @Test
@@ -102,7 +102,7 @@ class TodoServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> todoService.todoChangeComplete(userId, todoId)
+                () -> todoService.changeTodoCompletedStatus(userId, todoId)
         );
 
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
@@ -123,7 +123,7 @@ class TodoServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> todoService.todoChangeComplete(userId, todoId)
+                () -> todoService.changeTodoCompletedStatus(userId, todoId)
         );
 
         assertEquals(ErrorCode.TODO_NOT_FOUND, e.getErrorCode());
@@ -147,7 +147,7 @@ class TodoServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> todoService.todoChangeComplete(userId, todoId)
+                () -> todoService.changeTodoCompletedStatus(userId, todoId)
         );
 
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());

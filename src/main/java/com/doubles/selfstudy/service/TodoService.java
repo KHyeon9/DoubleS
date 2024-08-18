@@ -32,6 +32,11 @@ public class TodoService {
                 .toList();
     }
 
+    // 나의 완료된 Todo 갯수 가져오기
+    public Integer getMyCompletedTodoCount(String userId) {
+        return todoRepository.countCompletedByUserId(userId);
+    }
+
     // Todo 생성
     @Transactional
     public void createTodo(String userId, String content, String importanceType) {
@@ -46,7 +51,7 @@ public class TodoService {
     
     // Todo 완료또는 완료 못함 변경 
     @Transactional
-    public TodoDto todoChangeComplete(String userId, Long todoId) {
+    public TodoDto changeTodoCompletedStatus(String userId, Long todoId) {
         // 유저 정보 가져오기
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 

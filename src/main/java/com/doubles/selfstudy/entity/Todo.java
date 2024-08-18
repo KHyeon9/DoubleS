@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Table(name = "Todo")
+@Table(
+        name = "Todo",
+        indexes = {
+                @Index(name = "idx_user_account", columnList = "user_id"),
+        }
+)
 @Entity
 public class Todo {
 
@@ -24,6 +29,7 @@ public class Todo {
     @Column(nullable = false, name = "content")
     private String content; // Todo 내용
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "importance_type")
     private ImportanceType importanceType; // 중요도
 
