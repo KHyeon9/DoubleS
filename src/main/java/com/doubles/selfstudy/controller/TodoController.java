@@ -34,12 +34,6 @@ public class TodoController {
         );
     }
 
-    // 완료된 todo 갯수 조회
-    @GetMapping("/totalCompletedCount")
-    public Integer getTotalCompleteCount(Authentication authentication) {
-        return todoService.getMyCompletedTodoCount(authentication.getName());
-    }
-
     // todo 생성
     @PostMapping
     public Response<Void> createTodo(
@@ -109,6 +103,14 @@ public class TodoController {
                         )
                     )
                     .collect(Collectors.toList())
+        );
+    }
+
+    // 완료된 todo 갯수 조회
+    @GetMapping("/totalCompletedCount")
+    public Response<Integer> getTotalCompleteCount(Authentication authentication) {
+        return Response.success(
+                todoService.getMyCompletedTodoCount(authentication.getName())
         );
     }
 }
