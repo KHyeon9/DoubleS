@@ -14,7 +14,7 @@ public class TodoResponse {
     private Long id;
     private UserResponse user;
     private String content;
-    private ImportanceType importanceType;
+    private ImportanceTypeResponse importanceType;
     private boolean isCompleted;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -24,7 +24,10 @@ public class TodoResponse {
                 dto.getId(),
                 UserResponse.fromUserAccountDto(dto.getUserAccountDto()),
                 dto.getContent(),
-                dto.getImportanceType(),
+                new ImportanceTypeResponse(
+                        dto.getImportanceType().name(),
+                        dto.getImportanceType().getTypeName()
+                ),
                 dto.isCompleted(),
                 dto.getCreatedAt(),
                 dto.getModifiedAt()
