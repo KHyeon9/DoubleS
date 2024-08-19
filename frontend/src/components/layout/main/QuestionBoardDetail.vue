@@ -100,7 +100,7 @@
                           </button>
                           <button @click="cancelEdit" class="btn btn-link text-danger text-gradient px-3 mb-0">
                             <i class="material-icons text-sm me-2">cancel</i>
-                            삭제
+                            취소
                           </button>
                         </div>
                       </div>
@@ -113,13 +113,13 @@
                           <button  @click="editComment(quesionBoardComment.id, quesionBoardComment.comment)" 
                                     class="btn btn-link text-dark px-3 mb-0">
                             <i class="material-icons text-sm me-2">edit</i>
-                            Edit
+                            수정
                           </button>
                           <button  @click="deleteComment(quesionBoardComment.id)"
                                   class="btn btn-link text-danger text-gradient px-3 mb-0"
                           >
                             <i class="material-icons text-sm me-2" >delete</i>
-                            Delete
+                            삭제
                           </button>
                         </div>
                       </div>
