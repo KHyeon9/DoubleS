@@ -10,7 +10,7 @@
             </p>
           </div>
           <div class="card-body">
-            <form class="d-flex justify-content-center align-items-center mb-4">
+            <form @submit.prevent="createTodo" class="d-flex justify-content-center align-items-center mb-4">
               <div :class="['input-group input-group-outline my-3', { 'is-focused': isTaskInputFocused || taskInput }]">
                 <label class="form-label">새로운 할 일을 입력해주세요.</label>
                 <input 
@@ -61,34 +61,39 @@
                   <th scope="col">중요도</th>
                   <th scope="col">날짜</th>
                   <th scope="col"></th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody class="text-md" v-for="todo in todos" :key="todo.id">
                 <tr class="fw-normal">
                   <td class="align-middle">
-                    <span>{{ todo.content }}</span>
+                    <span v-if="todo.completed"><del>{{ todo.content }}</del></span>
+                    <span v-else>{{ todo.content }}</span>
                   </td>
-                  <td class="align-middle">
+                  <td class="align-middle w-20">
                     <h6 class="mb-0">
                       <span class="ms-3 badge" :class="importanceTypeColor[todo.importanceType.key]">{{ todo.importanceType.value }}</span>
                     </h6>
                   </td>
-                  <td class="align-middle">
+                  <td class="align-middle w-15">
                     <span>{{ formatDate(todo.createdAt) }}</span>
                   </td>
-                  <td class="align-middle">
-                    <a href="#!"><i class="material-icons text-success me-4">check</i></a>
-                    <a href="#!"><i class="material-icons text-danger">delete</i></a>
+                  <td class="align-middle w-10">
+                    <a v-if="todo.completed" href="#!" role="button"><i class="material-icons text-success me-4">restart_alt</i></a>
+                    <a v-else href="#!" role="button"><i class="material-icons text-success me-4">check</i></a>
+                    <a @click="deleteTodo(todo.id)" role="button"><i class="material-icons text-danger">delete</i></a>
+                  </td>
+                  <td class="align-middle w-1">
+                    <a href="#!"><i class="material-icons text-secondary">settings</i></a>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="card-footer text-end p-3">
-            <button class="btn bg-gradient-dark">홈으로</button>
+            <router-link to="/main"  class="btn bg-gradient-dark">홈으로</router-link>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -98,7 +103,6 @@ import { ref, onMounted, computed } from 'vue';
 import apiClient from '../../../config/authConfig';
 import { useFormat } from '../../../utils/format';
 
-const taskInput =  ref('');
 const isTaskInputFocused = ref(false);
 const {
     formatDate
@@ -108,13 +112,53 @@ const importanceTypes = ref([]);
 const todos = ref([]);
 const totalTodoCount = ref(0);
 const totalCompletedCount = ref(0);
+const taskInput =  ref('');
 const importanceType = ref('');
 const importanceTypeName = ref('');
+
+const createTodo = async () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  try {
+    const response = await apiClient.post('/main/todo', {
+      content: taskInput.value,
+      importanceType: importanceType.value,
+    });
+
+    console.log(response);
+    taskInput.value = '';
+    getTodos();
+  } catch (error) {
+    console.log('에러가 발생했습니다. ', error);
+    alert('todo를 생성하는데 오류가 발생했습니다.');
+  }
+};
+
+const modifyTodo = async () => {
+
+};
+
+const changeCompletedState = async () => {
+  
+};
+
+const deleteTodo = async (todoId) => {
+  try {
+    const response = await apiClient.delete(`/main/todo/${todoId}`);
+    
+    console.log(response);
+    getTodos();
+  } catch (error) {
+    console.log('에러가 발생했습니다. ', error);
+    alert('todo를 삭제하는데 오류가 발생했습니다.');
+  }
+};
 
 const getTodos = async () => {
   try {
     const response = await apiClient.get('/main/todo');
-
     
     todos.value = response.data.result;
     totalTodoCount.value = todos.value.length;
@@ -166,6 +210,21 @@ const percentage = computed(() => {
 const selectType = (type) => {
   importanceType.value = type.key;
   importanceTypeName.value = type.value;
+};
+
+const validateForm = () => {
+
+if (!taskInput.value) {
+  alert('새로운 할 일이 입력되지 않았습니다.');
+  return false;
+} 
+
+if (!importanceType.value) {
+  alert('중요도가 입력되지 않았습니다.');
+  return false;
+} 
+
+return true;
 };
 
 const importanceTypeColor = {
