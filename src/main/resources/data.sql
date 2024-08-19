@@ -121,3 +121,14 @@ values ('tester2', 'comment1', 24, 'tester2', now(), 'tester2', now()),
        ('tester2', 'comment18', 23, 'tester2', now(), 'tester2', now()),
        ('tester2', 'comment19', 23, 'tester2', now(), 'tester2', now()),
        ('tester2', 'comment20', 23, 'tester2', now(), 'tester2', now());
+
+-- todolist
+insert into todo(user_id, content, importance_type, is_completed, created_at, modified_at)
+values ('tester', 'Java 공부하기', 'Middle', false, now(), now()),
+       ('tester', 'AWS 공부하기', 'Middle', false, now(), now()),
+       ('tester', 'CS 공부하기', 'High', true, now(), now()),
+       ('tester', '코테 공부하기', 'Middle', false, now(), now()),
+       ('tester', '블로그 정리하기', 'Middle', false, now(), now()),
+       ('tester', '회사 지원하기', 'Middle', false, now(), now()),
+       ('tester', '운동하기', 'Low', true, now(), now()),
+       ('tester', '영어 공부하기', 'Middle', false, now(), now());

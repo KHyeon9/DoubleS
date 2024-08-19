@@ -177,6 +177,7 @@
       console.log(response.data)
     } catch (error) {
       console.log('태그를 가져오지 못했습니다.', error);
+      alert('태그를 가져오는데 오류가 생겼습니다.');
     }
   };
 
