@@ -114,6 +114,10 @@ const router = createRouter({
         },
       ]
     },
+    // {
+    //   path: '*',
+    //   name: 404,
+    // }
     
   ]
 })

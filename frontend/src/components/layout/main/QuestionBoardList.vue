@@ -33,7 +33,7 @@
             </div>
             <div class="p-3">
               <ul class="list-group">
-                <li v-for="questionBoard in questionBoardList" :key="questionBoard.id" 
+                <li v-if="questionBoardList.length > 0" v-for="questionBoard in questionBoardList" :key="questionBoard.id" 
                     class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
                   <router-link class="col-12" :to="`/main/question_board/${questionBoard.id}`">
                     <div class="d-flex flex-column">
@@ -67,6 +67,11 @@
                         </div>
                     </div>
                   </router-link>
+                </li>
+
+                <!-- 게시글이 없을 때 메시지 표시 -->
+                <li v-else class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg justify-content-center">
+                  게시글이 없습니다.
                 </li>
               </ul>
               <!-- 페이징 -->
