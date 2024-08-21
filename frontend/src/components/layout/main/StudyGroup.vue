@@ -1,6 +1,20 @@
 <template>
   <div class="row">
     <div class="col-12">
+      <div class="card card-body mb-5">
+        <div class="row align-items-center">
+          <div class="col-sm-auto col-8 my-auto">
+            <div class="h-100">
+              <h5 class="mb-1 font-weight-bolder">
+                Study Group Name
+              </h5>
+              <p class="mb-0 font-weight-normal text-sm">
+                Description
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="card my-4">
         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
           <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
@@ -13,7 +27,7 @@
               <thead>
                 <tr>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">유저 정보</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">직책</th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">가입 날짜</th>
                   <th class="text-secondary opacity-7"></th>
                 </tr>
