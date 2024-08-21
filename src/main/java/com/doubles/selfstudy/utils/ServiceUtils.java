@@ -19,6 +19,8 @@ public class ServiceUtils {
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final NoticeBoardRepository noticeBoardRepository;
     private final TodoRepository todoRepository;
+    private final UserStudyGroupRepository userStudyGroupRepository;
+    private final StudyGroupRepository studyGroupRepository;
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
@@ -68,6 +70,29 @@ public class ServiceUtils {
         // todo 정보 가져오면서 검사
         return todoRepository.findById(todoId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.TODO_NOT_FOUND, String.format("todo %d번을 찾지 못했습니다.", todoId)
+                )
+        );
+    }
+
+    public UserStudyGroup getUserStudyGroupOrException(UserAccount userAccount) {
+        // UserStudyGroup 정보 가져오면서 검사
+        return userStudyGroupRepository.findByUserAccount(userAccount).orElseThrow(() ->
+                    new DoubleSApplicationException(
+                            ErrorCode.USER_STUDY_GROUP_NOT_FOUND,
+                            String.format("%s에 대한 User Study Group를 찾지 못했습니다.", userAccount.getUserId())
+                )
+        );
+    }
+
+    public StudyGroup getStudyGroupOrException(Long studyGroupId) {
+        // study group 가져오면서 검사
+        return studyGroupRepository.findById(studyGroupId).orElseThrow(() ->
+                    new DoubleSApplicationException(
+                            ErrorCode.USER_STUDY_GROUP_NOT_FOUND,
+                            String.format(
+                                    "%d에 대한 Study Group를 찾지 못했습니다.",
+                                    studyGroupId
+                            )
                 )
         );
     }
