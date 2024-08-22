@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.utils;
 
+import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
 import com.doubles.selfstudy.dto.user.RoleType;
 import com.doubles.selfstudy.entity.*;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
@@ -21,6 +22,7 @@ public class ServiceUtils {
     private final TodoRepository todoRepository;
     private final UserStudyGroupRepository userStudyGroupRepository;
     private final StudyGroupRepository studyGroupRepository;
+    private final StudyGroupBoardRepository studyGroupBoardRepository;
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
@@ -93,6 +95,33 @@ public class ServiceUtils {
                                     "%d에 대한 Study Group를 찾지 못했습니다.",
                                     studyGroupId
                             )
+                )
+        );
+    }
+
+    // study group 권한 확인
+    public UserStudyGroup getUserStudyGroupAndPermissionCheck(String userId) {
+        // user 확인
+        UserAccount userAccount = getUserAccountOrException(userId);
+
+        // study group 권한 확인
+        UserStudyGroup userStudyGroup = getUserStudyGroupOrException(userAccount);
+
+        if (userStudyGroup.getPosition() != StudyGroupPosition.Leader) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_PERMISSION,
+                    String.format("%s는 해당 스터디 그룹에 대한 권한이 없습니다.", userId)
+            );
+        }
+
+        return userStudyGroup;
+    }
+
+    // 스터디 그룹 게시판 글 상세 조회
+    public StudyGroupBoard getStudyGroupBoardOrException(Long studyGroupBoardId) {
+        return studyGroupBoardRepository.findById(studyGroupBoardId).orElseThrow(() ->
+                new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND,
+                        String.format("스터디 그룹 게시글 %d번을 찾지 못했습니다.", studyGroupBoardId)
                 )
         );
     }
