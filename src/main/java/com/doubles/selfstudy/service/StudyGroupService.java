@@ -68,18 +68,8 @@ public class StudyGroupService {
     // 스터디 그룹 정보 수정
     @Transactional
     public StudyGroupDto modifyStudyGroup(String userId, String studyGroupName, String description) {
-        // user 확인
-        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
-
         // study group 권한 확인
-        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
-
-        if (userStudyGroup.getPosition() != StudyGroupPosition.Leader) {
-            throw new DoubleSApplicationException(
-                    ErrorCode.INVALID_PERMISSION,
-                    String.format("%s는 해당 스터디 그룹에 대한 권한이 없습니다.", userId)
-            );
-        }
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
         
         StudyGroup studyGroup = serviceUtils.getStudyGroupOrException(
                 userStudyGroup.getStudyGroup().getId()
@@ -96,40 +86,38 @@ public class StudyGroupService {
     // 스터디 그룹 삭제
     @Transactional
     public void deleteStudyGroup(String userId) {
-        // user 확인
-        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
-
         // study group 권한 확인
-        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
-
-        if (userStudyGroup.getPosition() != StudyGroupPosition.Leader) {
-            throw new DoubleSApplicationException(
-                    ErrorCode.INVALID_PERMISSION,
-                    String.format("%s는 해당 스터디 그룹에 대한 권한이 없습니다.", userId)
-            );
-        }
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
         studyGroupBoardRepository.deleteAllByStudyGroup(userStudyGroup.getStudyGroup());
         userStudyGroupRepository.deleteById(userStudyGroup.getId());
         studyGroupRepository.deleteById(userStudyGroup.getStudyGroup().getId());
     }
 
+    // 스터디 그룹 초대
+    @Transactional
+    public void inviteStudyGroup(String userId, String inviteUserId) {
+        // study group 권한 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
+
+        // 초대할 user 확인
+        UserAccount inviteMemberAccount = serviceUtils.getUserAccountOrException(inviteUserId);
+
+        StudyGroup studyGroup = serviceUtils.getStudyGroupOrException(userStudyGroup.getStudyGroup().getId());
+
+        UserStudyGroup inviteUserStudyGroup = UserStudyGroup.of(inviteMemberAccount, StudyGroupPosition.Member, studyGroup);
+
+        userStudyGroupRepository.save(inviteUserStudyGroup);
+    }
+
     // 스터디 그룹원 삭제
     @Transactional
     public void deleteStudyGroup(String userId, String deleteUserId) {
-        // user 확인
-        UserAccount leaderAccount = serviceUtils.getUserAccountOrException(userId);
+        // 유저 권한 확인
+        serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
+
+        // 삭제할 유저확인
         UserAccount deleteMemberAccount = serviceUtils.getUserAccountOrException(deleteUserId);
-
-        // study group 권한 확인
-        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(leaderAccount);
-
-        if (userStudyGroup.getPosition() != StudyGroupPosition.Leader) {
-            throw new DoubleSApplicationException(
-                    ErrorCode.INVALID_PERMISSION,
-                    String.format("%s는 해당 스터디 그룹에 대한 권한이 없습니다.", userId)
-            );
-        }
 
         userStudyGroupRepository.deleteByUserAccount(deleteMemberAccount);
     }
