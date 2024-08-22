@@ -20,7 +20,7 @@ public class StudyGroupBoard extends AuditingFields {
 
     @ManyToOne
     @JoinColumn(name = "study_group_id")
-    private StudyGroup studyGroupId;
+    private StudyGroup studyGroup;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -30,18 +30,19 @@ public class StudyGroupBoard extends AuditingFields {
 
     protected StudyGroupBoard() {}
 
-    private StudyGroupBoard(Long id, UserAccount studyGroupId, String title, String content) {
+    private StudyGroupBoard(Long id, UserAccount userAccount, StudyGroup studyGroup, String title, String content) {
         this.id = id;
-        this.userAccount = studyGroupId;
+        this.userAccount = userAccount;
+        this.studyGroup = studyGroup;
         this.title = title;
         this.content = content;
     }
 
-    public static StudyGroupBoard of(UserAccount studyGroupId, String title, String content) {
-        return new StudyGroupBoard(null, studyGroupId, title, content);
+    public static StudyGroupBoard of(UserAccount userAccount, StudyGroup studyGroup, String title, String content) {
+        return new StudyGroupBoard(null, userAccount, studyGroup, title, content);
     }
 
-    public static StudyGroupBoard of(Long id, UserAccount studyGroupId, String title, String content) {
-        return new StudyGroupBoard(id, studyGroupId, title, content);
+    public static StudyGroupBoard of(Long id, UserAccount userAccount, StudyGroup studyGroup, String title, String content) {
+        return new StudyGroupBoard(id, userAccount, studyGroup, title, content);
     }
 }
