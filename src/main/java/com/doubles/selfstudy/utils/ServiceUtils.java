@@ -90,7 +90,7 @@ public class ServiceUtils {
         // study group 가져오면서 검사
         return studyGroupRepository.findById(studyGroupId).orElseThrow(() ->
                     new DoubleSApplicationException(
-                            ErrorCode.USER_STUDY_GROUP_NOT_FOUND,
+                            ErrorCode.STUDY_GROUP_NOT_FOUND,
                             String.format(
                                     "%d에 대한 Study Group를 찾지 못했습니다.",
                                     studyGroupId

@@ -57,7 +57,13 @@ public class StudyGroupService {
             );
         });
 
+        // 스터디 그룹 생성
         StudyGroup studyGroup = studyGroupRepository.save(StudyGroup.of(studyGroupName, description));
+        userStudyGroupRepository.save(
+                UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)
+        );
+        
+        // 스터디 그룹에 유저 등록
         userStudyGroupRepository.save(
                 UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)
         );
@@ -100,6 +106,13 @@ public class StudyGroupService {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
+        if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) > 5) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.STUDY_GROUP_FULL,
+                    "해당 스터디 그룹은 이미 최대 인원입니다."
+            );
+        }
+
         // 초대할 user 확인
         UserAccount inviteMemberAccount = serviceUtils.getUserAccountOrException(inviteUserId);
 
@@ -112,7 +125,7 @@ public class StudyGroupService {
 
     // 스터디 그룹원 삭제
     @Transactional
-    public void deleteStudyGroup(String userId, String deleteUserId) {
+    public void deleteStudyGroupMember(String userId, String deleteUserId) {
         // 유저 권한 확인
         serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
