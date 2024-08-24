@@ -79,7 +79,7 @@ public class StudyGroupBoardService {
                     "%s는 권한이 스터디 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
                     userId,
                     studyGroupBoardId
-            )
+                )
             );
         }
 
@@ -107,7 +107,7 @@ public class StudyGroupBoardService {
                     "%s는 권한이 스터디 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
                     userId,
                     studyGroupBoardId
-            )
+                )
             );
         }
 
