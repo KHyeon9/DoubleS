@@ -36,8 +36,6 @@ class StudyGroupServiceTest {
     private StudyGroupRepository studyGroupRepository;
     @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
-    @MockBean
-    private StudyGroupBoardRepository studyGroupBoardRepository;
 
     @Test
     void 스터디_그룹_생성에_성공한_경우() {
