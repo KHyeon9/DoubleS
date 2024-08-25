@@ -16,13 +16,28 @@ public class StudyGroupBoardDto {
     private UserAccountDto studyGroupId;
     private String title;
     private String content;
+    private int comments;
 
-    public static StudyGroupBoardDto of(UserAccountDto studyGroupId, String title, String content) {
-        return new StudyGroupBoardDto(null, studyGroupId, title, content);
+    public static StudyGroupBoardDto of(UserAccountDto studyGroupId, String title, String content, int comments) {
+        return new StudyGroupBoardDto(null, studyGroupId, title, content, comments);
     }
 
-    public static StudyGroupBoardDto of(Long id, UserAccountDto studyGroupId, String title, String content) {
-        return new StudyGroupBoardDto(id, studyGroupId, title, content);
+    public static StudyGroupBoardDto of(UserAccountDto studyGroupId, String title, String content) {
+        return new StudyGroupBoardDto(null, studyGroupId, title, content, 0);
+    }
+
+    public static StudyGroupBoardDto of(Long id, UserAccountDto studyGroupId, String title, String content, int comments) {
+        return new StudyGroupBoardDto(id, studyGroupId, title, content, comments);
+    }
+
+    public static StudyGroupBoardDto fromEntity(StudyGroupBoard entity, int comments) {
+        return new StudyGroupBoardDto(
+                entity.getId(),
+                UserAccountDto.fromEntity(entity.getUserAccount()),
+                entity.getTitle(),
+                entity.getContent(),
+                comments
+        );
     }
 
     public static StudyGroupBoardDto fromEntity(StudyGroupBoard entity) {
@@ -30,7 +45,8 @@ public class StudyGroupBoardDto {
                 entity.getId(),
                 UserAccountDto.fromEntity(entity.getUserAccount()),
                 entity.getTitle(),
-                entity.getContent()
+                entity.getContent(),
+                0
         );
     }
 }
