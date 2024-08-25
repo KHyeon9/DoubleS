@@ -41,7 +41,7 @@ public class StudyGroupBoardComment extends AuditingFields {
         this.studyGroupBoard = studyGroupBoard;
     }
 
-    public StudyGroupBoardComment of(String comment, UserAccount userAccount, StudyGroupBoard studyGroupBoard) {
+    public static StudyGroupBoardComment of(String comment, UserAccount userAccount, StudyGroupBoard studyGroupBoard) {
         return new StudyGroupBoardComment(comment, userAccount, studyGroupBoard);
     }
 }
