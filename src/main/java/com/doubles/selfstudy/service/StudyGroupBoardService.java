@@ -6,6 +6,7 @@ import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyGroupBoardService {
 
     private final StudyGroupBoardRepository studyGroupBoardRepository;
+    private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final ServiceUtils serviceUtils;
 
     // 스터디 그룹전용 게시판 리스트 조회
@@ -40,9 +42,9 @@ public class StudyGroupBoardService {
         StudyGroupBoard studyGroupBoard = serviceUtils.getStudyGroupBoardOrException(studyGroupBoardId);
 
         // 댓글 수 조회
-        // Long comments =
+        int comments = studyGroupBoardCommentRepository.countByStudyGroupBoard(studyGroupBoard);
 
-        return StudyGroupBoardDto.fromEntity(studyGroupBoard);
+        return StudyGroupBoardDto.fromEntity(studyGroupBoard, comments);
     }
 
     // 스터디 그룹 게시글 생성
@@ -111,7 +113,7 @@ public class StudyGroupBoardService {
             );
         }
 
-        // TODO: 댓글 삭제 부분 추가되야함
+        studyGroupBoardCommentRepository.deleteAllByStudyGroupBoard(studyGroupBoard);
         studyGroupBoardRepository.delete(studyGroupBoard);
     }
 }
