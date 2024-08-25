@@ -46,12 +46,9 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 수정
-    public QuestionBoardCommentDto modifyQuestionBoardComment(String userId, Long questionBoardId, Long questionBoardCommentId,  String comment) {
+    public QuestionBoardCommentDto modifyQuestionBoardComment(String userId, Long questionBoardCommentId,  String comment) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
-
-        // 게시글 확인
-        serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         // 댓글 확인
         QuestionBoardComment questionBoardComment =
@@ -75,12 +72,9 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 삭제
-    public void deleteQuestionBoardComment(String userId, Long questionBoardId, Long questionBoardCommentId) {
+    public void deleteQuestionBoardComment(String userId, Long questionBoardCommentId) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
-
-        // 게시글 확인
-        serviceUtils.getQuestionBoardOrException(questionBoardId);
 
         // 댓글 확인
         QuestionBoardComment questionBoardComment =
