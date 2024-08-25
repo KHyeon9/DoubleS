@@ -122,7 +122,7 @@ class QuestionBoardCommentControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
-                .when(questionBoardCommentService).modifyQuestionBoardComment(any(), any(), any(), any());
+                .when(questionBoardCommentService).modifyQuestionBoardComment(any(), any(), any());
 
         // Then
         mockMvc.perform(put("/api/main/question_board/1/comment/1")
@@ -172,7 +172,7 @@ class QuestionBoardCommentControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
-                .when(questionBoardCommentService).deleteQuestionBoardComment(any(), any(), any());
+                .when(questionBoardCommentService).deleteQuestionBoardComment(any(), any());
 
         // Then
         mockMvc.perform(delete("/api/main/question_board/1/comment/1")

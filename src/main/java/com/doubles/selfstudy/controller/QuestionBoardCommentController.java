@@ -49,13 +49,11 @@ public class QuestionBoardCommentController {
     @PutMapping("/{questionBoardId}/comment/{questionBoardCommentId}")
     public Response<Void> modifyQuestionBoardComment(
             Authentication authentication,
-            @PathVariable Long questionBoardId,
             @PathVariable Long questionBoardCommentId,
             @RequestBody QuestionBoardCommentRequest request
     ) {
         questionBoardCommentService.modifyQuestionBoardComment(
                 authentication.getName(),
-                questionBoardId,
                 questionBoardCommentId,
                 request.getComment()
         );
@@ -67,12 +65,10 @@ public class QuestionBoardCommentController {
     @DeleteMapping("/{questionBoardId}/comment/{questionBoardCommentId}")
     public Response<Void> deleteQuestionBoardComment(
         Authentication authentication,
-        @PathVariable Long questionBoardId,
         @PathVariable Long questionBoardCommentId
     ) {
         questionBoardCommentService.deleteQuestionBoardComment(
                 authentication.getName(),
-                questionBoardId,
                 questionBoardCommentId
         );
 

@@ -23,6 +23,7 @@ public class ServiceUtils {
     private final UserStudyGroupRepository userStudyGroupRepository;
     private final StudyGroupRepository studyGroupRepository;
     private final StudyGroupBoardRepository studyGroupBoardRepository;
+    private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
@@ -122,6 +123,15 @@ public class ServiceUtils {
         return studyGroupBoardRepository.findById(studyGroupBoardId).orElseThrow(() ->
                 new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND,
                         String.format("스터디 그룹 게시글 %d번을 찾지 못했습니다.", studyGroupBoardId)
+                )
+        );
+    }
+
+    // 스터디 그룹 게시글의 댓글 조회
+    public StudyGroupBoardComment getStudyGroupBoardCommentOrException(Long studyGroupBoardCommentId) {
+        return studyGroupBoardCommentRepository.findById(studyGroupBoardCommentId).orElseThrow(() ->
+                new DoubleSApplicationException(ErrorCode.COMMENT_NOT_FOUND,
+                        String.format("스터디 그룹 게시글의 댓글 %d번을 찾지 못했습니다.", studyGroupBoardCommentId)
                 )
         );
     }
