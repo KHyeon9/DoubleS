@@ -1,12 +1,15 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.StudyGroupRequest;
+import com.doubles.selfstudy.controller.response.Response;
+import com.doubles.selfstudy.controller.response.StudyGroupResponse;
 import com.doubles.selfstudy.controller.response.StudyGroupUserResponse;
+import com.doubles.selfstudy.dto.studygroup.StudyGroupDto;
 import com.doubles.selfstudy.dto.studygroup.UserStudyGroupDto;
 import com.doubles.selfstudy.service.StudyGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class StudyGroupController {
     private final StudyGroupService studyGroupService;
 
     // 스터디 그룹원 리스트 조회
+    @GetMapping
     public List<StudyGroupUserResponse> studyGroupUserList(
             Authentication authentication
     ) {
@@ -28,5 +32,67 @@ public class StudyGroupController {
                 .stream()
                 .map(StudyGroupUserResponse::fromUserStudyGroupDto)
                 .toList();
+    }
+
+    // 스터디 그룹 생성
+    @PostMapping
+    public Response<Void> createStudyGroup(
+            Authentication authentication,
+            @RequestBody StudyGroupRequest request
+    ) {
+        studyGroupService.createStudyGroup(
+                authentication.getName(),
+                request.getStudyGroupName(),
+                request.getDescription()
+        );
+
+        return Response.success();
+    }
+
+    // 스터디 그룹 수정
+    @PutMapping
+    public Response<StudyGroupResponse> modifyStudyGroup(
+            Authentication authentication,
+            @RequestBody StudyGroupRequest request
+    ) {
+        StudyGroupDto studyGroupDto = studyGroupService.modifyStudyGroup(
+                                            authentication.getName(),
+                                            request.getStudyGroupName(),
+                                            request.getDescription()
+                                    );
+
+        return Response.success(
+                StudyGroupResponse.fromStudyGroupDto(studyGroupDto)
+        );
+    }
+
+    // 스터디 그룹 삭제
+    @DeleteMapping
+    public Response<Void> deleteStudyGroup(
+            Authentication authentication
+    ) {
+        studyGroupService.deleteStudyGroup(authentication.getName());
+
+        return Response.success();
+    }
+
+    @PostMapping("/invite")
+    private Response<Void> inviteStudyGroupMember(
+            Authentication authentication,
+            @RequestBody String inviteUserId
+    ) {
+        studyGroupService.inviteStudyGroupMember(authentication.getName(), inviteUserId);
+
+        return Response.success();
+    }
+
+    @DeleteMapping("/invite")
+    private Response<Void> deleteStudyGroupMember(
+            Authentication authentication,
+            @RequestBody String deleteUserId
+    ) {
+        studyGroupService.deleteStudyGroupMember(authentication.getName(), deleteUserId);
+
+        return Response.success();
     }
 }
