@@ -7,7 +7,6 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
-import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
 import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
@@ -343,7 +342,7 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(mock(UserAccount.class)));
 
         // Then
-        assertDoesNotThrow(() -> studyGroupService.inviteStudyGroup(userId, inviteUserId));
+        assertDoesNotThrow(() -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId));
     }
 
     @Test
@@ -359,7 +358,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -387,7 +386,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.STUDY_GROUP_FULL, e.getErrorCode());
     }
@@ -407,7 +406,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
     }
@@ -437,7 +436,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -467,7 +466,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
