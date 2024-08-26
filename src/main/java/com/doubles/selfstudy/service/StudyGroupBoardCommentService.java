@@ -43,13 +43,13 @@ public class StudyGroupBoardCommentService {
 
         // 댓글 저장
         studyGroupBoardCommentRepository.save(
-                StudyGroupBoardComment.of(comment, userAccount, studyGroupBoard)
+                StudyGroupBoardComment.of(userAccount, studyGroupBoard, comment)
         );
     }
 
     // 스터디 그룹 게시글의 댓글 수정
     @Transactional
-    public StudyGroupBoardCommentDto modifyStudyGroupBoardComment(String userId, Long studyGroupBoardId, Long studyGroupBoardCommentId, String comment) {
+    public StudyGroupBoardCommentDto modifyStudyGroupBoardComment(String userId, Long studyGroupBoardCommentId, String comment) {
         // 유저 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
@@ -93,7 +93,7 @@ public class StudyGroupBoardCommentService {
                     "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
                     userId,
                     studyGroupBoardCommentId
-            )
+                )
             );
         }
 
