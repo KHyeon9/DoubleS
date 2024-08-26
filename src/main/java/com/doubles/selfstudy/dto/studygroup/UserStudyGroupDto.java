@@ -2,11 +2,12 @@ package com.doubles.selfstudy.dto.studygroup;
 
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.StudyGroup;
-import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -17,13 +18,14 @@ public class UserStudyGroupDto {
     private UserAccountDto user;
     private StudyGroupPosition position;
     private StudyGroup studyGroup;
+    private LocalDateTime joinedAt;
 
-    public static UserStudyGroupDto of(UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup) {
-        return UserStudyGroupDto.of(null, user, position, studyGroup);
+    public static UserStudyGroupDto of(UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup, LocalDateTime joinedAt) {
+        return UserStudyGroupDto.of(null, user, position, studyGroup, joinedAt);
     }
 
-    public static UserStudyGroupDto of(Long id, UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup) {
-        return new UserStudyGroupDto(id, user, position, studyGroup);
+    public static UserStudyGroupDto of(Long id, UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup, LocalDateTime joinedAt) {
+        return new UserStudyGroupDto(id, user, position, studyGroup, joinedAt);
     }
 
     public static UserStudyGroupDto fromEntity(UserStudyGroup entity) {
@@ -31,7 +33,8 @@ public class UserStudyGroupDto {
                 entity.getId(),
                 UserAccountDto.fromEntity(entity.getUserAccount()),
                 entity.getPosition(),
-                entity.getStudyGroup()
+                entity.getStudyGroup(),
+                entity.getJoinedAt()
         );
     }
 }

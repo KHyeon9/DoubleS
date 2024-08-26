@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Table(name = "user_study_group")
@@ -27,6 +29,9 @@ public class UserStudyGroup {
     @JoinColumn(name = "study_group_id")
     private StudyGroup studyGroup;
 
+    @Column(name = "joinedAt")
+    private LocalDateTime joinedAt;
+
     protected UserStudyGroup() {}
 
     private UserStudyGroup(Long id, UserAccount userAccount, StudyGroupPosition position, StudyGroup studyGroup) {
@@ -42,5 +47,10 @@ public class UserStudyGroup {
 
     public static UserStudyGroup of(Long id, UserAccount userAccount, StudyGroupPosition position, StudyGroup studyGroup) {
         return new UserStudyGroup(id, userAccount, position, studyGroup);
+    }
+
+    @PrePersist
+    void joinedAt() {
+        this.joinedAt = LocalDateTime.now();
     }
 }
