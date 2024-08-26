@@ -2,7 +2,7 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.studygroup.StudyGroupDto;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
-import com.doubles.selfstudy.dto.user.UserAccountDto;
+import com.doubles.selfstudy.dto.studygroup.UserStudyGroupDto;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
@@ -28,24 +28,24 @@ public class StudyGroupService {
     private final ServiceUtils serviceUtils;
 
     // 그룹원 리스트 조회
-    public List<UserAccountDto> studyGroupMemberList(String userId) {
+    public List<UserStudyGroupDto> studyGroupMemberList(String userId) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // user study group 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
 
-        List<UserAccount> members = userStudyGroupRepository.findAllByStudyGroupId(userStudyGroup.getId());
+        List<UserStudyGroup> userStudyGroups = userStudyGroupRepository.findAllByStudyGroupId(userStudyGroup.getId());
 
-        return members
+        return userStudyGroups
                 .stream()
-                .map(UserAccountDto::fromEntity)
+                .map(UserStudyGroupDto::fromEntity)
                 .toList();
     }
 
     // 스터디 그룹 생성
     @Transactional
-    public StudyGroupDto createStudyGroup(String userId, String studyGroupName, String description) {
+    public void createStudyGroup(String userId, String studyGroupName, String description) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
@@ -67,8 +67,6 @@ public class StudyGroupService {
         userStudyGroupRepository.save(
                 UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)
         );
-
-        return StudyGroupDto.fromEntity(studyGroup);
     }
 
     // 스터디 그룹 정보 수정
@@ -102,7 +100,7 @@ public class StudyGroupService {
 
     // 스터디 그룹 초대
     @Transactional
-    public void inviteStudyGroup(String userId, String inviteUserId) {
+    public void inviteStudyGroupMember(String userId, String inviteUserId) {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
