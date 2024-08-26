@@ -43,13 +43,13 @@ public class StudyGroupBoardCommentService {
 
         // 댓글 저장
         studyGroupBoardCommentRepository.save(
-                StudyGroupBoardComment.of(comment, userAccount, studyGroupBoard)
+                StudyGroupBoardComment.of(userAccount, studyGroupBoard, comment)
         );
     }
 
     // 스터디 그룹 게시글의 댓글 수정
     @Transactional
-    public StudyGroupBoardCommentDto modifyStudyGroupBoardComment(String userId, Long studyGroupBoardId, Long studyGroupBoardCommentId, String comment) {
+    public StudyGroupBoardCommentDto modifyStudyGroupBoardComment(String userId, Long studyGroupBoardCommentId, String comment) {
         // 유저 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
@@ -81,5 +81,22 @@ public class StudyGroupBoardCommentService {
     public void deleteStudyGroupBoardComment(String userId, Long studyGroupBoardCommentId) {
         // 유저 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 댓글 확인
+        StudyGroupBoardComment studyGroupBoardComment =
+                serviceUtils.getStudyGroupBoardCommentOrException(studyGroupBoardCommentId);
+
+        // 댓글 작성자 확인
+        if (studyGroupBoardComment.getUserAccount() != userAccount) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_PERMISSION, String.format(
+                    "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
+                    userId,
+                    studyGroupBoardCommentId
+                )
+            );
+        }
+
+        studyGroupBoardCommentRepository.deleteById(studyGroupBoardCommentId);
     }
 }
