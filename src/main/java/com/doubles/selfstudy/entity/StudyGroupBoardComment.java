@@ -22,9 +22,6 @@ public class StudyGroupBoardComment extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "comment")
-    private String comment;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
@@ -33,15 +30,19 @@ public class StudyGroupBoardComment extends AuditingFields {
     @JoinColumn(name = "study_group_board_id")
     private StudyGroupBoard studyGroupBoard;
 
+    @Column(name = "comment")
+    private String comment;
+
+
     protected StudyGroupBoardComment() {}
 
-    private StudyGroupBoardComment(String comment, UserAccount userAccount, StudyGroupBoard studyGroupBoard) {
-        this.comment = comment;
+    private StudyGroupBoardComment(UserAccount userAccount, StudyGroupBoard studyGroupBoard, String comment) {
         this.userAccount = userAccount;
         this.studyGroupBoard = studyGroupBoard;
+        this.comment = comment;
     }
 
-    public static StudyGroupBoardComment of(String comment, UserAccount userAccount, StudyGroupBoard studyGroupBoard) {
-        return new StudyGroupBoardComment(comment, userAccount, studyGroupBoard);
+    public static StudyGroupBoardComment of(UserAccount userAccount, StudyGroupBoard studyGroupBoard, String comment) {
+        return new StudyGroupBoardComment(userAccount, studyGroupBoard, comment);
     }
 }
