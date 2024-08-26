@@ -45,7 +45,7 @@ public class StudyGroupService {
 
     // 스터디 그룹 생성
     @Transactional
-    public StudyGroupDto createStudyGroup(String userId, String studyGroupName, String description) {
+    public void createStudyGroup(String userId, String studyGroupName, String description) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
@@ -67,8 +67,6 @@ public class StudyGroupService {
         userStudyGroupRepository.save(
                 UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)
         );
-
-        return StudyGroupDto.fromEntity(studyGroup);
     }
 
     // 스터디 그룹 정보 수정
@@ -102,7 +100,7 @@ public class StudyGroupService {
 
     // 스터디 그룹 초대
     @Transactional
-    public void inviteStudyGroup(String userId, String inviteUserId) {
+    public void inviteStudyGroupMember(String userId, String inviteUserId) {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
