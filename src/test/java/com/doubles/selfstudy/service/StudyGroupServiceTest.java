@@ -235,9 +235,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제가_성공한_경우() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
@@ -273,9 +271,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제시_스터디_그룹이_없는_경우_에러_반환() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
@@ -298,9 +294,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제시_리더가_아닌_경우_에러_반환() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
