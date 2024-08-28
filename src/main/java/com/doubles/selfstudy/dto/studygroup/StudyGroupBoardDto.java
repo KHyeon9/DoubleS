@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 public class StudyGroupBoardDto {
 
     private Long id;
-    private UserAccountDto studyGroupId;
+    private UserAccountDto user;
     private String title;
     private String content;
     private int comments;
 
-    public static StudyGroupBoardDto of(UserAccountDto studyGroupId, String title, String content, int comments) {
-        return new StudyGroupBoardDto(null, studyGroupId, title, content, comments);
+    public static StudyGroupBoardDto of(UserAccountDto user, String title, String content, int comments) {
+        return new StudyGroupBoardDto(null, user, title, content, comments);
     }
 
-    public static StudyGroupBoardDto of(UserAccountDto studyGroupId, String title, String content) {
-        return new StudyGroupBoardDto(null, studyGroupId, title, content, 0);
+    public static StudyGroupBoardDto of(UserAccountDto user, String title, String content) {
+        return new StudyGroupBoardDto(null, user, title, content, 0);
     }
 
-    public static StudyGroupBoardDto of(Long id, UserAccountDto studyGroupId, String title, String content, int comments) {
-        return new StudyGroupBoardDto(id, studyGroupId, title, content, comments);
+    public static StudyGroupBoardDto of(Long id, UserAccountDto user, String title, String content, int comments) {
+        return new StudyGroupBoardDto(id, user, title, content, comments);
     }
 
     public static StudyGroupBoardDto fromEntity(StudyGroupBoard entity, int comments) {
