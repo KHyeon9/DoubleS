@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class StudyGroupRequest {
+public class StudyGroupBoardRequest {
 
-    private String studyGroupName;
-    private String description;
+    private String title;
+    private String content;
 }

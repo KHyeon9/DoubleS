@@ -7,7 +7,6 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
-import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
 import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
@@ -236,9 +235,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제가_성공한_경우() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
@@ -274,9 +271,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제시_스터디_그룹이_없는_경우_에러_반환() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
@@ -299,9 +294,7 @@ class StudyGroupServiceTest {
     void 스터디_그룹_삭제시_리더가_아닌_경우_에러_반환() {
         // Given
         String userId = "userId";
-        String studyGroupName = "studyGroupName";
-        String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
 
         UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(userId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
@@ -343,7 +336,7 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(mock(UserAccount.class)));
 
         // Then
-        assertDoesNotThrow(() -> studyGroupService.inviteStudyGroup(userId, inviteUserId));
+        assertDoesNotThrow(() -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId));
     }
 
     @Test
@@ -359,7 +352,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -387,7 +380,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.STUDY_GROUP_FULL, e.getErrorCode());
     }
@@ -407,7 +400,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
     }
@@ -437,7 +430,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -467,7 +460,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroup(userId, inviteUserId)
+                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }

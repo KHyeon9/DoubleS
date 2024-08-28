@@ -56,10 +56,10 @@ public class StudyGroupController {
             @RequestBody StudyGroupRequest request
     ) {
         StudyGroupDto studyGroupDto = studyGroupService.modifyStudyGroup(
-                                            authentication.getName(),
-                                            request.getStudyGroupName(),
-                                            request.getDescription()
-                                    );
+                                                authentication.getName(),
+                                                request.getStudyGroupName(),
+                                                request.getDescription()
+                                        );
 
         return Response.success(
                 StudyGroupResponse.fromStudyGroupDto(studyGroupDto)
@@ -76,6 +76,7 @@ public class StudyGroupController {
         return Response.success();
     }
 
+    // 그룹 초대
     @PostMapping("/invite")
     private Response<Void> inviteStudyGroupMember(
             Authentication authentication,
@@ -86,6 +87,7 @@ public class StudyGroupController {
         return Response.success();
     }
 
+    // 그룹 강퇴
     @DeleteMapping("/invite")
     private Response<Void> deleteStudyGroupMember(
             Authentication authentication,
