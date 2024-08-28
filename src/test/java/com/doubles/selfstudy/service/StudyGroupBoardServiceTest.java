@@ -37,8 +37,6 @@ class StudyGroupBoardServiceTest {
     @MockBean
     private UserAccountRepository userAccountRepository;
     @MockBean
-    private StudyGroupRepository studyGroupRepository;
-    @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
     private StudyGroupBoardRepository studyGroupBoardRepository;
@@ -106,15 +104,13 @@ class StudyGroupBoardServiceTest {
     void 스터디_그룹_게시글_수정이_성공한_경우() {
         // Given
         String userId = "userId";
-        String password = "password";
         Long studyGroupBoardId = 1L;
         String title = "modify_title";
         String content = "modify_content";
 
-        UserAccount userAccount = UserAccountFixture.get(userId, password);
-        StudyGroup studyGroup = StudyGroupFixture.get();
-        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get(userAccount, studyGroup, "title", "content");
-        StudyGroupBoard modifyStudyGroupBoard = StudyGroupBoardFixture.get(userAccount, studyGroup, title, content);
+        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get(userId, "title", "content");
+        StudyGroupBoard modifyStudyGroupBoard = StudyGroupBoardFixture.get(userId, title, content);
+        UserAccount userAccount = studyGroupBoard.getUserAccount();
 
         // When
         when(userAccountRepository.findById(userId))
@@ -185,9 +181,7 @@ class StudyGroupBoardServiceTest {
         String content = "modify_content";
 
         UserAccount userAccount = UserAccountFixture.get(userId, password);
-        UserAccount writer = UserAccountFixture.get("writer", "password");
-        StudyGroup studyGroup = StudyGroupFixture.get();
-        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get(writer, studyGroup, "title", "content");
+        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get("writer", "title", "content");
 
         // When
         when(userAccountRepository.findById(userId))
@@ -208,13 +202,11 @@ class StudyGroupBoardServiceTest {
     void 스터디_그룹_게시글_삭제가_성공한_경우() {
         // Given
         String userId = "userId";
-        String password = "password";
         Long studyGroupBoardId = 1L;
 
-        UserAccount userAccount = UserAccountFixture.get(userId, password);
-        StudyGroup studyGroup = StudyGroupFixture.get();
         StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture
-                .get(userAccount, studyGroup, "title", "content");
+                .get(userId, "title", "content");
+        UserAccount userAccount = studyGroupBoard.getUserAccount();
 
         // When
         when(userAccountRepository.findById(userId))
@@ -277,10 +269,8 @@ class StudyGroupBoardServiceTest {
         Long studyGroupBoardId = 1L;
 
         UserAccount userAccount = UserAccountFixture.get(userId, password);
-        UserAccount writer = UserAccountFixture.get("writer", "password");
-        StudyGroup studyGroup = StudyGroupFixture.get();
         StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture
-                .get(writer, studyGroup, "title", "content");
+                .get("writer", "title", "content");
 
         // When
         when(userAccountRepository.findById(userId))
