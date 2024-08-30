@@ -20,18 +20,32 @@ public class StudyGroupController {
 
     private final StudyGroupService studyGroupService;
 
-    // 스터디 그룹원 리스트 조회
+    // 스터디 그룹 데이터 조회
     @GetMapping
-    public List<StudyGroupUserResponse> studyGroupUserList(
+    public Response<StudyGroupResponse> studyGroupInfo(
+            Authentication authentication
+    ) {
+        return Response.success(
+                StudyGroupResponse.fromStudyGroupDto(
+                    studyGroupService.studyGroupInfo(authentication.getName())
+            )
+        );
+    }
+
+    // 스터디 그룹원 리스트 조회
+    @GetMapping("/member")
+    public Response<List<StudyGroupUserResponse>> studyGroupUserList(
             Authentication authentication
     ) {
         List<UserStudyGroupDto> userStudyGroupDtos =
                 studyGroupService.studyGroupMemberList(authentication.getName());
 
-        return userStudyGroupDtos
-                .stream()
-                .map(StudyGroupUserResponse::fromUserStudyGroupDto)
-                .toList();
+        return Response.success(
+                userStudyGroupDtos
+                    .stream()
+                    .map(StudyGroupUserResponse::fromUserStudyGroupDto)
+                    .toList()
+        );
     }
 
     // 스터디 그룹 생성

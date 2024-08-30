@@ -27,6 +27,19 @@ public class StudyGroupService {
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final ServiceUtils serviceUtils;
 
+    // 스터디 그룹 조회
+    public StudyGroupDto studyGroupInfo(String userId) {
+        // user 확인
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // user study group 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
+
+        return StudyGroupDto.fromEntity(
+                userStudyGroup.getStudyGroup()
+        );
+    }
+
     // 그룹원 리스트 조회
     public List<UserStudyGroupDto> studyGroupMemberList(String userId) {
         // user 확인
@@ -35,7 +48,7 @@ public class StudyGroupService {
         // user study group 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
 
-        List<UserStudyGroup> userStudyGroups = userStudyGroupRepository.findAllByStudyGroupId(userStudyGroup.getId());
+        List<UserStudyGroup> userStudyGroups = userStudyGroupRepository.findAllByStudyGroup(userStudyGroup.getStudyGroup());
 
         return userStudyGroups
                 .stream()

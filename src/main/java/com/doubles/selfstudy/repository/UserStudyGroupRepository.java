@@ -18,9 +18,5 @@ public interface UserStudyGroupRepository extends JpaRepository<UserStudyGroup, 
     void deleteByUserAccount(UserAccount userAccount);
     int countByStudyGroup(StudyGroup studyGroup);
 
-    @Query("SELECT usg " +
-            "FROM UserStudyGroup usg " +
-            "WHERE usg.studyGroup.id = :studyGroupId " +
-            "ORDER BY usg.id DESC")
-    List<UserStudyGroup> findAllByStudyGroupId(@Param("studyGroupId") Long studyGroupId);
+    List<UserStudyGroup> findAllByStudyGroup(StudyGroup studyGroup);
 }
