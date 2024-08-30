@@ -20,7 +20,7 @@
             <div class="p-1">
               <div class="card-body">
                 <div class="col-12">
-                  <table class="table align-items-center justify-content-center mt-0 mb-0">
+                  <table v-if="noticeBoardList.length > 0" class="table align-items-center justify-content-center mt-0 mb-0">
                     <thead>
                       <tr>
                         <th class="col-1 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-12">번호</th>
@@ -56,6 +56,8 @@
                       </tr>
                     </tbody>
                   </table>
+                   <!-- 공지사항이 없을 때 -->
+                   <p v-else class="text-center text-sm">공지사항이 없습니다.</p>
                 </div>
               </div>
               <!-- 페이징 -->
