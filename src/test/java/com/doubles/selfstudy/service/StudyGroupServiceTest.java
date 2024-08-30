@@ -599,7 +599,7 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupLeaderFixture));
-        when(userStudyGroupRepository.findAllByStudyGroupId(studyGroupFixture.getId()))
+        when(userStudyGroupRepository.findAllByStudyGroup(studyGroupFixture))
                 .thenReturn(List.of());
 
         // Then

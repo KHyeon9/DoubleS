@@ -427,7 +427,7 @@ class StudyGroupControllerTest {
         when(myStudyGroupMember).thenReturn(List.of());
 
         // Then
-        mockMvc.perform(get("/api/main/study_group")
+        mockMvc.perform(get("/api/main/study_group/member")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -445,7 +445,7 @@ class StudyGroupControllerTest {
         when(myStudyGroupMember).thenReturn(List.of());
 
         // Then
-        mockMvc.perform(get("/api/main/study_group")
+        mockMvc.perform(get("/api/main/study_group/member")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
@@ -462,7 +462,7 @@ class StudyGroupControllerTest {
                 .when(studyGroupService).studyGroupMemberList(any());
 
         // Then
-        mockMvc.perform(get("/api/main/study_group")
+        mockMvc.perform(get("/api/main/study_group/member")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())

@@ -2,7 +2,11 @@
 insert into user_account(user_id, password, role_type, email, nickname, memo, created_at, modified_at)
 values ('admin', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'ADMIN', 'admin@email.com', 'admin', null, now(), now()),
        ('tester', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', 'tester', null, now(), now()),
-       ('tester2', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', 'tester', null, now(), now());
+       ('tester2', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester2@email.com', 'tester2', null, now(), now()),
+       ('tester3', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester3@email.com', 'tester3', null, now(), now()),
+       ('tester4', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester4@email.com', 'tester4', null, now(), now()),
+       ('tester5', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester5@email.com', 'tester5', null, now(), now()),
+       ('tester6', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester6@email.com', 'tester6', null, now(), now());
 
 -- 공지사항
 insert into notice_board(user_id, title, content, created_by, created_at, modified_by, modified_at)
@@ -132,3 +136,61 @@ values ('tester', 'Java 공부하기', 'Middle', false, now(), now()),
        ('tester', '회사 지원하기', 'Middle', false, now(), now()),
        ('tester', '운동하기', 'Low', true, now(), now()),
        ('tester', '영어 공부하기', 'Middle', false, now(), now());
+
+-- 스터디 그룹
+insert into study_group(study_group_name, description, created_at, created_by, modified_at, modified_by)
+values ('test group', 'description', now(), 'tester', now(), 'tester');
+
+-- 유저 스터디 그룹
+insert into user_study_group(joined_at, study_group_id, user_id, position)
+values (now(), 1, 'tester', 'Leader'),
+       (now(), 1, 'tester3', 'Member'),
+       (now(), 1, 'tester4', 'Member'),
+       (now(), 1, 'tester5', 'Member'),
+       (now(), 1, 'tester6', 'Member');
+
+-- 스터디 그룹 게시글
+insert into study_group_board(user_id, study_group_id, title, content, created_at, created_by, modified_at, modified_by)
+values ('tester', 1, 'title_test1', 'content', now(), 'tester', now(), 'tester'),
+       ('tester6', 1, 'title_test2', 'content', now(), 'tester6', now(), 'tester6'),
+       ('tester3', 1, 'title_test3', 'content', now(), 'tester3', now(), 'tester3'),
+       ('tester', 1, 'title_test4', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test5', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test6', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test7', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test8', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test9', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test10', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test11', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test12', 'content', now(), 'tester', now(), 'tester'),
+       ('tester3', 1, 'title_test13', 'content', now(), 'tester3', now(), 'tester3'),
+       ('tester', 1, 'title_test14', 'content', now(), 'tester', now(), 'tester'),
+       ('tester4', 1, 'title_test15', 'content', now(), 'tester4', now(), 'tester4'),
+       ('tester', 1, 'title_test16', 'content', now(), 'tester', now(), 'tester'),
+       ('tester', 1, 'title_test17', 'content', now(), 'tester', now(), 'tester'),
+       ('tester5', 1, 'title_test18', 'content', now(), 'tester5', now(), 'tester5'),
+       ('tester4', 1, 'title_test19', 'content', now(), 'tester4', now(), 'tester4'),
+       ('tester', 1, 'title_test20', 'content', now(), 'tester', now(), 'tester');
+
+-- 그룹 스터디 게시글 댓글
+insert into study_group_board_comment(user_id, comment, study_group_board_id, created_at, created_by, modified_at, modified_by)
+values ('tester3', 'test_comment1', 20, now(), 'tester3', now(), 'tester3'),
+       ('tester3', 'test_comment2', 20, now(), 'tester3', now(), 'tester3'),
+       ('tester3', 'test_comment3', 20, now(), 'tester3', now(), 'tester3'),
+       ('tester4', 'test_comment4', 20, now(), 'tester4', now(), 'tester4'),
+       ('tester4', 'test_comment5', 20, now(), 'tester4', now(), 'tester4'),
+       ('tester4', 'test_comment6', 20, now(), 'tester4', now(), 'tester4'),
+       ('tester', 'test_comment7', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment8', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment9', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment10', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment11', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment12', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment13', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment14', 18, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment15', 18, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment16', 18, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment17', 18, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment18', 18, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment19', 20, now(), 'tester', now(), 'tester'),
+       ('tester', 'test_comment20', 20, now(), 'tester', now(), 'tester');

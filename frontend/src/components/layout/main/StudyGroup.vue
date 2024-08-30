@@ -1,15 +1,30 @@
 <template>
+  <div v-if="studyGroupName === ''" class="d-sm-flex justify-content-between mb-3">
+    <div>
+      <router-link to="/main/study_group/new" class="btn btn-icon bg-gradient-primary">
+        New Study Group
+      </router-link>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12">
-      <div class="card card-body mb-5">
+      <div v-if="studyGroupName !== ''" class="card card-body mb-5">
         <div class="row align-items-center">
-          <div class="col-sm-auto col-8 my-auto">
+          <div class="col-12 my-auto">
             <div class="h-100">
-              <h5 class="mb-1 font-weight-bolder">
-                Study Group Name
-              </h5>
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-1 font-weight-bolder">
+                  {{ studyGroupData.studyGroupName }}
+                </h5>
+                <router-link 
+                  :to="`/main/study_group/modify/${studyGroupData.id}`"
+                  class="me-2 mt-2"
+                >
+                  <i class="material-icons text-lg position-relative">settings</i>
+                </router-link>
+              </div>
               <p class="mb-0 font-weight-normal text-sm">
-                Description
+                {{ studyGroupData.description }}
               </p>
             </div>
           </div>
@@ -23,145 +38,40 @@
         </div>
         <div class="card-body px-0 pb-2">
           <div class="table-responsive p-0">
-            <table class="table align-items-center mb-0">
+            <!-- 스터디 그룹 정보가 없을 때 -->
+            <div v-if="studyGroupName === ''" class="m-5">
+              <p class="text-center">스터디 그룹에 가입되어 있지 않습니다.</p>
+            </div>
+
+            <!-- 스터디 그룹 정보가 있을 때 -->
+            <table v-else class="table align-items-center mb-0">
               <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">유저 정보</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">직책</th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">가입 날짜</th>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">유저 정보</th>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">직책</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">가입 날짜</th>
                   <th class="text-secondary opacity-7"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr v-for="userInfo in studyGroupMemberList" :key="userInfo.userId">
                   <td>
                     <div class="d-flex px-2 py-1">
                       <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">John Michael</h6>
-                        <p class="text-xs text-secondary mb-0">john@creative-tim.com</p>
+                        <h6 class="mb-0 text-sm">{{ userInfo.nickname }} ({{ userInfo.userId }})</h6>
+                        <p class="text-xs text-secondary mb-0">{{ userInfo.email }}</p>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <p class="text-xs font-weight-bold mb-0">Manager</p>
-                    <p class="text-xs text-secondary mb-0">Organization</p>
+                    <p class="text-sm font-weight-bold mb-0">{{ userInfo.position }}</p>
                   </td>
                   <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
+                    <span class="text-secondary text-sm font-weight-bold">{{ formatDate(userInfo.joinedAt) }}</span>
                   </td>
                   <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                        <p class="text-xs text-secondary mb-0">alexa@creative-tim.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programator</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                        <p class="text-xs text-secondary mb-0">laurent@creative-tim.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Executive</p>
-                    <p class="text-xs text-secondary mb-0">Projects</p>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">19/09/17</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Michael Levi</h6>
-                        <p class="text-xs text-secondary mb-0">michael@creative-tim.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programator</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">24/12/08</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Richard Gran</h6>
-                        <p class="text-xs text-secondary mb-0">richard@creative-tim.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Manager</p>
-                    <p class="text-xs text-secondary mb-0">Executive</p>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">04/10/21</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
-                    </a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2 py-1">
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                        <p class="text-xs text-secondary mb-0">miriam@creative-tim.com</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-xs font-weight-bold mb-0">Programator</p>
-                    <p class="text-xs text-secondary mb-0">Developer</p>
-                  </td>
-                  <td class="align-middle text-center">
-                    <span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-                  </td>
-                  <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                      Edit
+                    <a v-if="myPosition === 'Leader' && userInfo.userId !== userId" class="text-secondary font-weight-bold text-sm" role="button">
+                      <i class="material-icons text-lg position-relative pointer">logout</i>
                     </a>
                   </td>
                 </tr>
@@ -182,7 +92,18 @@
         </div>
         <div class="card-body px-0 pb-2">
           <div class="table-responsive p-0">
-            <table class="table align-items-center justify-content-center mb-0">
+            <!-- 스터디 그룹 정보가 없을 때 -->
+            <div v-if="studyGroupName === ''" class="m-5">
+              <p class="text-center">스터디 그룹에 가입되어 있지 않습니다.</p>
+            </div>
+
+            <!-- 스터디 그룹 게시글이 없을 때 -->
+            <div v-else-if="studyGroupBoardList.length == 0" class="m-5">
+              <p class="text-center">게시글이 없습니다.</p>
+            </div>
+
+            <!-- 스터디 그룹 정보가 있을 때 -->
+            <table v-else class="table align-items-center justify-content-center mb-0">
               <thead>
                 <tr>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
@@ -226,182 +147,100 @@
                     </button>
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/github.svg" class="avatar avatar-sm rounded-circle me-2" alt="invision">
-                      </div>
-                      <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Github</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-sm font-weight-bold mb-0">$5,000</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">done</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">100%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/logo-atlassian.svg" class="avatar avatar-sm rounded-circle me-2" alt="jira">
-                      </div>
-                      <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Atlassian</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-sm font-weight-bold mb-0">$3,400</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">canceled</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">30%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="30" style="width: 30%;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/bootstrap.svg" class="avatar avatar-sm rounded-circle me-2" alt="webdev">
-                      </div>
-                      <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Bootstrap</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-sm font-weight-bold mb-0">$14,000</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">working</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">80%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="80" style="width: 80%;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/logo-slack.svg" class="avatar avatar-sm rounded-circle me-2" alt="slack">
-                      </div>
-                      <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Slack</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-sm font-weight-bold mb-0">$1,000</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">canceled</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">0%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0" style="width: 0%;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/devto.svg" class="avatar avatar-sm rounded-circle me-2" alt="xd">
-                      </div>
-                      <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Devto</h6>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p class="text-sm font-weight-bold mb-0">$2,300</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">done</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">100%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
+          <nav  v-if="studyGroupName !== ''" class="mt-4 me-3 nav nav-bar d-flex justify-content-between" aria-label="Page navigation">
+            <!-- Create Board 버튼 -->
+            <router-link to="/main/study_group/board/new" class="btn btn-icon bg-gradient-primary ms-3">
+              Create Board
+            </router-link>
+            <ul class="pagination">
+              <li class="page-item" :class="{ disabled: page === 0}">
+                <a class="page-link" @click.prevent="prevPageAndFetch">‹</a>
+              </li>
+              <li 
+                v-for="pageNumber in paginatedPageNumbers"
+                :key="pageNumber"
+                class="page-item"
+                :class="{ active: pageNumber - 1 === page }"
+              >
+                <a class="page-link " @click.prevent="goToPageAndFetch(pageNumber - 1)">{{ pageNumber }}</a>
+              </li>
+              <li class="page-item" :class="{ disabled: page === totalPages - 1 }">
+                <a class="page-link" @click.prevent="nextPageAndFetch">›</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
+  import apiClient from '../../../config/authConfig';
+  import { ref, onMounted, computed } from 'vue';
+  import { useFormat } from '../../../utils/format';
+  import { useAuthStore } from '../../../store/authStore.js';
 
+  const authStore = useAuthStore();
+  const userId = authStore.userId;
+  const studyGroupData = ref({});
+  const myPosition = ref('');
+  const studyGroupMemberList = ref([]);
+  const studyGroupBoardList = ref([]);
+
+  const { formatDate } = useFormat();
+
+
+  const getStudyGroupInfo = async () => {
+    try {
+      const response = await apiClient.get('/main/study_group');
+
+      console.log(response.data.result);
+      studyGroupData.value = response.data.result;
+
+    } catch (error) {
+      if (error.response.data.resultCode === 'USER_STUDY_GROUP_NOT_FOUND') {
+        studyGroupName.value = '';
+        studyGroupDescription = '';
+      } else {
+        console.log('스터디 정보를 가져오지 못했습니다.', error);
+        alert('스터디 정보를 가져오는데 오류가 생겼습니다.');
+      }
+    }
+  }
+
+  const getStudyGroupMemberList = async () => {
+    try{
+      const response = await apiClient.get('/main/study_group/member');
+      
+      const memberList = response.data.result;
+
+      studyGroupMemberList.value = memberList;
+
+      for(let member of memberList) {
+        if (member.userId === userId) {
+          myPosition.value = member.position;
+          break;
+        }
+      }
+
+      console.log(myPosition.value);
+
+    } catch (error) {
+      console.log('스터디 그룹원을 가져오지 못했습니다.', error);
+      alert('스터디 그룹원 정보를 가져오는데 오류가 생겼습니다.');
+    }
+  }
+
+  onMounted(() => {
+    getStudyGroupInfo();
+    getStudyGroupMemberList();
+  });
 </script>
 <style scoped>
-  
+  .active a {
+    color: white;
+  }
 </style>
