@@ -7,12 +7,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StudyGroupResponse {
-
+    private Long id;
     private String StudyGroupName;
     private String description;
 
     public static StudyGroupResponse fromStudyGroupDto(StudyGroupDto dto) {
         return new StudyGroupResponse(
+                dto.getId(),
                 dto.getStudyGroupName(),
                 dto.getDescription()
         );
