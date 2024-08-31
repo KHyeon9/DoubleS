@@ -66,9 +66,9 @@
         </li>
         <li class="nav-item">
           <router-link 
-            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/group') }]" 
-            @click="indexStore.changePage('/main/group')"
-            to="/main/group"
+            :class="['nav-link', 'text-white', { 'active bg-gradient-primary': isActive('/main/study_group') }]" 
+            @click="indexStore.changePage('/main/study_group')"
+            to="/main/study_group"
           >
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">group</i>
