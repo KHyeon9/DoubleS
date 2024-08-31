@@ -14,7 +14,7 @@ export const useIndexStore = defineStore('index', {
         '/main/question_board': 'Question Board',
         '/main/question_board/detail': 'Question Board Detail',
         '/main/my_question_board': 'My Question Board',
-        '/main/group': 'Study Group',
+        '/main/study_group': 'Study Group',
         '/main/chat': 'Chatting',
         '/main/alarm': 'Alarm',
         '/main/profile': 'Profile',
