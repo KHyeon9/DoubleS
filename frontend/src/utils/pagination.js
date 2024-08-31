@@ -1,6 +1,5 @@
 // src/utils/pagination.js
 import { ref, computed } from 'vue';
-import moment from 'moment';
 
 export const usePagination = () => {
   const page = ref(0);
