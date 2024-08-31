@@ -23,10 +23,10 @@
                   <table v-if="noticeBoardList.length > 0" class="table align-items-center justify-content-center mt-0 mb-0">
                     <thead>
                       <tr>
-                        <th class="col-1 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-12">번호</th>
-                        <th class="col-6 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-12">제목</th>
-                        <th class="col-3 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성자</th>
-                        <th class="col-2 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">작성일</th>
+                        <th class="col-1 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">번호</th>
+                        <th class="col-6 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">제목</th>
+                        <th class="col-3 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">작성자</th>
+                        <th class="col-2 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">작성일</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -51,7 +51,7 @@
                           <p class="text-sm text-center font-weight-bold mb-0">{{ noticeBoard.user.userId }}</p>
                         </td>
                         <td>
-                          <p class="text-xs text-center font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</p>
+                          <p class="text-xs text-center font-weight-bold mb-0">{{ formatDate(noticeBoard.createdAt) }}</p>
                         </td>
                       </tr>
                     </tbody>

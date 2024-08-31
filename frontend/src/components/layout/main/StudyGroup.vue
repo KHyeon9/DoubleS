@@ -1,5 +1,5 @@
 <template>
-  <div v-if="studyGroupName === ''" class="d-sm-flex justify-content-between mb-3">
+  <div v-if="studyGroupData === null" class="d-sm-flex justify-content-between mb-3">
     <div>
       <router-link to="/main/study_group/new" class="btn btn-icon bg-gradient-primary">
         New Study Group
@@ -8,7 +8,7 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <div v-if="studyGroupName !== ''" class="card card-body mb-5">
+      <div v-if="studyGroupData !== null" class="card card-body mb-5">
         <div class="row align-items-center">
           <div class="col-12 my-auto">
             <div class="h-100">
@@ -16,12 +16,29 @@
                 <h5 class="mb-1 font-weight-bolder">
                   {{ studyGroupData.studyGroupName }}
                 </h5>
-                <router-link 
-                  :to="`/main/study_group/modify/${studyGroupData.id}`"
-                  class="me-2 mt-2"
-                >
-                  <i class="material-icons text-lg position-relative">settings</i>
-                </router-link>
+                <div>
+                  <a
+                    v-if="myPosition === 'Member'"
+                    class="me-2 mt-2"
+                    role="button"
+                  >
+                    <i class="material-icons text-lx position-relative">logout</i>
+                  </a>
+                  <router-link 
+                    v-if="myPosition === 'Leader'"
+                    :to="`/main/study_group/modify`"
+                    class="me-3 mt-2"
+                  >
+                    <i class="material-icons text-lx position-relative">settings</i>
+                  </router-link>
+                  <a
+                    v-if="myPosition === 'Leader'"
+                    class="me-2 mt-2"
+                    role="button"
+                  >
+                    <i class="material-icons text-lx position-relative text-danger">delete</i>
+                  </a>
+                </div>
               </div>
               <p class="mb-0 font-weight-normal text-sm">
                 {{ studyGroupData.description }}
@@ -39,7 +56,7 @@
         <div class="card-body px-0 pb-2">
           <div class="table-responsive p-0">
             <!-- 스터디 그룹 정보가 없을 때 -->
-            <div v-if="studyGroupName === ''" class="m-5">
+            <div v-if="studyGroupData === null" class="m-5">
               <p class="text-center">스터디 그룹에 가입되어 있지 않습니다.</p>
             </div>
 
@@ -93,7 +110,7 @@
         <div class="card-body px-0 pb-2">
           <div class="table-responsive p-0">
             <!-- 스터디 그룹 정보가 없을 때 -->
-            <div v-if="studyGroupName === ''" class="m-5">
+            <div v-if="studyGroupData === null" class="m-5">
               <p class="text-center">스터디 그룹에 가입되어 있지 않습니다.</p>
             </div>
 
@@ -106,51 +123,42 @@
             <table v-else class="table align-items-center justify-content-center mb-0">
               <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Budget</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Completion</th>
+                  <th class="col-1 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">번호</th>
+                  <th class="col-6 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">제목</th>
+                  <th class="col-3 text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">작성자</th>
+                  <th class="col-2 text-center text-uppercase text-secondary text-xs font-weight-bolder text-center opacity-7">작성일</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr v-for="studyGroupBoard in studyGroupBoardList" :key="studyGroupBoard.id">
                   <td>
-                    <div class="d-flex px-2">
-                      <div>
-                        <img src="/assets/img/small-logos/logo-asana.svg" class="avatar avatar-sm rounded-circle me-2" alt="spotify">
-                      </div>
+                    <div class="text-center px-2">
                       <div class="my-auto">
-                        <h6 class="mb-0 text-sm">Asana</h6>
+                        <h6 class="mb-0 text-sm text-center">{{ studyGroupBoard.id }}</h6>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <p class="text-sm font-weight-bold mb-0">$2,500</p>
-                  </td>
-                  <td>
-                    <span class="text-xs font-weight-bold">working</span>
-                  </td>
-                  <td class="align-middle text-center">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <span class="me-2 text-xs font-weight-bold">60%</span>
-                      <div>
-                        <div class="progress">
-                          <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                    <router-link :to="`/main/study_group/board/${studyGroupBoard.id}`">
+                      <div class="text-center px-2">
+                        <div class="my-auto">
+                          <h6 class="mb-0 text-sm">{{ studyGroupBoard.title }}</h6>
                         </div>
                       </div>
-                    </div>
+                    </router-link>
                   </td>
-                  <td class="align-middle">
-                    <button class="btn btn-link text-secondary mb-0">
-                      <i class="fa fa-ellipsis-v text-xs"></i>
-                    </button>
+                  <td>
+                    <p class="text-sm text-center font-weight-bold mb-0">{{ studyGroupBoard.user.userId }}</p>
+                  </td>
+                  <td>
+                    <p class="text-xs text-center font-weight-bold mb-0">{{ formatDate(studyGroupBoard.createdAt) }}</p>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <nav  v-if="studyGroupName !== ''" class="mt-4 me-3 nav nav-bar d-flex justify-content-between" aria-label="Page navigation">
+          <nav  v-if="studyGroupData !== null" class="mt-4 me-3 nav nav-bar d-flex justify-content-between" aria-label="Page navigation">
             <!-- Create Board 버튼 -->
             <router-link to="/main/study_group/board/new" class="btn btn-icon bg-gradient-primary ms-3">
               Create Board
@@ -179,9 +187,10 @@
 </template>
 <script setup>
   import apiClient from '../../../config/authConfig';
-  import { ref, onMounted, computed } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useFormat } from '../../../utils/format';
   import { useAuthStore } from '../../../store/authStore.js';
+  import { usePagination } from '../../../utils/pagination';
 
   const authStore = useAuthStore();
   const userId = authStore.userId;
@@ -192,6 +201,15 @@
 
   const { formatDate } = useFormat();
 
+  const { 
+    page, 
+    totalPages, 
+    nextPage, 
+    prevPage, 
+    goToPage, 
+    paginatedPageNumbers,
+  } = usePagination();
+
 
   const getStudyGroupInfo = async () => {
     try {
@@ -200,16 +218,19 @@
       console.log(response.data.result);
       studyGroupData.value = response.data.result;
 
+      getStudyGroupMemberList();
+      getStudyGroupBoardList();
+
     } catch (error) {
-      if (error.response.data.resultCode === 'USER_STUDY_GROUP_NOT_FOUND') {
-        studyGroupName.value = '';
-        studyGroupDescription = '';
+      if (error.response.data.resultCode == 'USER_STUDY_GROUP_NOT_FOUND') {
+        console.log('가입된 스터디 그룹이 없습니다.', error);
+        studyGroupData.value = null;
       } else {
         console.log('스터디 정보를 가져오지 못했습니다.', error);
         alert('스터디 정보를 가져오는데 오류가 생겼습니다.');
       }
     }
-  }
+  };
 
   const getStudyGroupMemberList = async () => {
     try{
@@ -225,18 +246,50 @@
           break;
         }
       }
-
       console.log(myPosition.value);
 
     } catch (error) {
       console.log('스터디 그룹원을 가져오지 못했습니다.', error);
       alert('스터디 그룹원 정보를 가져오는데 오류가 생겼습니다.');
     }
-  }
+  };
 
+  const getStudyGroupBoardList = async () => {
+    try {
+      const response = await apiClient.get('/main/study_group/board', {
+        params: {
+          page: page.value,
+        },
+      });
+
+      console.log(response.data.result);
+
+      studyGroupBoardList.value = response.data.result.content;
+      totalPages.value = response.data.result.totalPages;
+
+    } catch (error) {
+      console.log('스터디 그룹 게시글을 가져오지 못했습니다.', error);
+      alert('스터디 그룹 게시글 리스트를 가져오는데 오류가 생겼습니다.');
+    }
+  };
+
+  const nextPageAndFetch = () => {
+    nextPage();
+    getStudyGroupBoardList();
+  };
+
+  const prevPageAndFetch = () => {
+    prevPage();
+    getStudyGroupBoardList();
+  };
+
+  const goToPageAndFetch = (pageNumber) => {
+    goToPage(pageNumber);
+    getStudyGroupBoardList();
+  };
+  
   onMounted(() => {
     getStudyGroupInfo();
-    getStudyGroupMemberList();
   });
 </script>
 <style scoped>

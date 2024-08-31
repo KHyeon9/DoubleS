@@ -8,7 +8,7 @@
               {{ notice.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              {{ notice.user.userId }}
+              {{ notice.user?.userId }}
             </p>
             <p class="mb-0 font-weight-normal text-sm">
               {{ formatDate(notice.createdAt) }}

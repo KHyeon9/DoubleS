@@ -72,10 +72,7 @@ public class StudyGroupService {
 
         // 스터디 그룹 생성
         StudyGroup studyGroup = studyGroupRepository.save(StudyGroup.of(studyGroupName, description));
-        userStudyGroupRepository.save(
-                UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)
-        );
-        
+
         // 스터디 그룹에 유저 등록
         userStudyGroupRepository.save(
                 UserStudyGroup.of(userAccount, StudyGroupPosition.Leader, studyGroup)

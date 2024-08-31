@@ -10,8 +10,9 @@
             <h6 class="mb-0">Modify Question Board</h6>
           </div>
           <div class="card-body pt-2">
+            <label class="mb-2 form-label">Title</label>
             <div class="input-group input-group-dynamic">
-              <input v-model="questionBoardTitle" type="text" class="form-control" id="questionBoardTitle" placeholder="Title">
+              <input v-model="questionBoardTitle" type="text" class="form-control" id="questionBoardTitle" placeholder="제목을 입력해주세요.">
             </div>
             <div class="row mt-4">
               <div class="col-12 col-md-12">
@@ -19,8 +20,8 @@
                 <div class="input-group input-group-static">
                   <textarea v-model="questionBoardContent"
                             class="form-control" 
-                            placeholder="Write your Content"
-                             rows="14" spellcheck="false">
+                            placeholder="내용을 입력해주세요."
+                            rows="14" spellcheck="false">
                   </textarea>
                 </div>
               </div>
