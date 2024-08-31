@@ -6,13 +6,13 @@
           <div class="h-100 ms-4">
             <div class="mt-2">
               <i class="material-icons text-lg me-2">sell</i>
-              <span class="text-lg me-3 ">{{ questionBoard.tag.value }}</span>
+              <span class="text-lg me-3 ">{{ questionBoard.tag?.value }}</span>
             </div>
             <h3 class="mb-2">
               {{ questionBoard.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              {{ questionBoard.user.nickname }} ( {{ questionBoard.user.userId }} ) 
+              {{ questionBoard.user?.nickname }} ( {{ questionBoard.user?.userId }} ) 
             </p>
             <p class="mb-0 font-weight-normal text-sm">
               {{ formatDate(questionBoard.createdAt) }}
@@ -22,19 +22,19 @@
         <div class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" >
-              <li v-if="userId == questionBoard.user.userId" class="nav-item" role="presentation">
+              <li v-if="userId == questionBoard.user?.userId" class="nav-item" role="presentation">
                 <router-link :to="`/main/question_board/modify/${questionBoard.id}`"  class="nav-link mb-0 px-0 py-1 " role="tab">
                   <i class="material-icons text-lg position-relative">edit</i>
                   <span class="ms-1">수정</span>
                 </router-link>
               </li>
-              <li v-if="userId == questionBoard.user.userId" class="nav-item" role="presentation">
+              <li v-if="userId == questionBoard.user?.userId" class="nav-item" role="presentation">
                 <button @click="deleteQuestionBoard" class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">delete</i>
                   <span class="ms-1">삭제</span>
                 </button>
               </li>
-              <li v-if="userId != questionBoard.user.userId" class="nav-item" role="presentation">
+              <li v-if="userId != questionBoard.user?.userId" class="nav-item" role="presentation">
                 <a class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">email</i>
                   <span class="ms-1">메세지</span>
@@ -81,9 +81,9 @@
                       </i>
                     </div>
                     <div class="flex-grow-1 ms-3">
-                      <h6 class="h5 mt-0">{{ quesionBoardComment.user.nickname }} 
+                      <h6 class="h5 mt-0">{{ quesionBoardComment.user?.nickname }} 
                         <span class="text-sm text font-weight-normal">
-                          ( {{ quesionBoardComment.user.userId }} )
+                          ( {{ quesionBoardComment.user?.userId }} )
                         </span>
                       </h6>
                       <!-- 댓글 내용이 수정 중이면 textarea로 변경 -->
@@ -109,7 +109,7 @@
                         <p class="text-xs text-end me-4">{{ formatDate(quesionBoardComment.createdAt) }}</p>
                         <p v-if="quesionBoardComment.createdAt != quesionBoardComment.modifiedAt" 
                             class="text-xs text-end me-4">수정됨</p>
-                        <div v-if="quesionBoardComment.user.userId == userId" class="ms-auto text-end">
+                        <div v-if="quesionBoardComment.user?.userId == userId" class="ms-auto text-end">
                           <button  @click="editComment(quesionBoardComment.id, quesionBoardComment.comment)" 
                                     class="btn btn-link text-dark px-3 mb-0">
                             <i class="material-icons text-sm me-2">edit</i>
