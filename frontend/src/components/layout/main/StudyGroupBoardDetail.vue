@@ -19,7 +19,7 @@
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" >
               <li v-if="userId == studyGroupBoard.user?.userId" class="nav-item" role="presentation">
-                <router-link :to="`/main/question_board/modify/${studyGroupBoard.id}`" class="nav-link mb-0 px-0 py-1" role="tab">
+                <router-link :to="`/main/study_group/board/modify/${studyGroupBoard.id}`" class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">edit</i>
                   <span class="ms-1">수정</span>
                 </router-link>
@@ -52,7 +52,7 @@
                     <div class="d-flex">
                       <div class="d-flex align-items-center me-3">
                         <i class="material-icons text-md me-2">mode_comment</i>
-                        <span class="text-md">{{ studyGroupBoard.comments }}</span>
+                        <span class="text-md">{{ comments }}</span>
                       </div>
                       <div class="d-flex ms-auto align-items-center">
                         <router-link to="/main/study_group"  class="btn bg-gradient-dark btn-sm">스터디 그룹 페이지로</router-link >
@@ -82,7 +82,10 @@
                           </div>
                         </div>
                         <div class="ms-auto text-end">
-                          <button class="btn btn-link text-dark px-3 mb-0">
+                          <button 
+                            @click="modifyStudyGroupBoardComment(studyGroupBoardComment.id)"
+                            class="btn btn-link text-dark px-3 mb-0"
+                          >
                             <i class="material-icons text-sm me-2">edit</i>
                             수정
                           </button>
@@ -103,7 +106,7 @@
                             <i class="material-icons text-sm me-2">edit</i>
                             수정
                           </button>
-                          <button @click="deleteComment(studyGroupBoardComment.id)"
+                          <button @click="deleteStudyGroupBoardComment(studyGroupBoardComment.id)"
                                   class="btn btn-link text-danger text-gradient px-3 mb-0"
                           >
                             <i class="material-icons text-sm me-2" >delete</i>
@@ -138,7 +141,7 @@
                         <textarea v-model="studyGroupBoardCommentText" class="form-control" placeholder="Write your comment" rows="4" spellcheck="false"></textarea>
                       </div>
                     </div>
-                    <button 
+                    <button @click="createStudyGroupBoardComment"
                             class="btn bg-gradient-primary btn-sm mt-auto mb-0 ms-2" 
                             type="button" name="button"
                     >
@@ -166,6 +169,7 @@
   const router = useRouter();
   const authStore = useAuthStore();
   const studyGroupBoard = ref({});
+  const comments = ref(0);
   const userId = computed(() => authStore.userId);
   const studyGroupBoardComments = ref([]);
   const studyGroupBoardCommentText = ref('');
@@ -192,6 +196,7 @@
     try {
       const response = await apiClient.get(`/main/study_group/board/${id}`);
       studyGroupBoard.value = response.data.result;
+      comments.value = studyGroupBoard.value.comments;
 
       console.log(response.data.result);
     } catch (error) {
@@ -202,16 +207,97 @@
 
   const getStudyGroupBoardComment = async (id) => {
     try {
-      const response = await apiClient.get(`/main/study_group/board/${id}/comment`);
+      const response = await apiClient.get(`/main/study_group/board/${id}/comment`, {
+        params: {
+          page: page.value,
+        },
+      });
 
       studyGroupBoardComments.value = response.data.result.content;
+
       totalPages.value = response.data.result.totalPages;
       totalElememts.value = response.data.result.totalElements;
 
-      console.log(studyGroupBoardComments.value);
+      console.log(response.data);
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('스터디 그룹 게시글의 댓글을 가져오지 못했습니다.');
+    }
+  };
+
+  const createStudyGroupBoardComment = async () => {
+    if (!studyGroupBoardCommentText.value) {
+      alert('댓글이 입력되지 않았습니다.');
+      return;
+    }
+
+    try {
+      const response = await apiClient.post(`/main/study_group/board/${studyGroupBoard.value.id}/comment`, {
+        comment: studyGroupBoardCommentText.value,
+      });
+
+      console.log(response.data);
+
+      studyGroupBoardCommentText.value = '';
+      comments.value += 1;
+
+      alert('댓글이 생성되었습니다.');
+
+      page.value = totalPages.value;
+      if (totalElememts.value % 10 != 0) {
+        page.value -= 1;
+      }
+
+      await getStudyGroupBoardComment(studyGroupBoard.value.id);
+
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      alert('댓글 생성에 실패했습니다.');
+    }
+  };
+
+  const modifyStudyGroupBoardComment = async (studyGroupBoardCommentId) => {
+    if (!editingCommentText.value) {
+      alert('수정될 댓글이 입력되지 않았습니다.');
+      return;
+    }
+
+    try {
+      const response = await apiClient.put(
+        `/main/study_group/board/${studyGroupBoard.value.id}/comment/${studyGroupBoardCommentId}`, {
+        comment: editingCommentText.value,
+      });
+
+      console.log(response.data.result);
+
+      // 수정 완료 후 댓글 업데이트
+      await getStudyGroupBoardComment(studyGroupBoard.value.id);
+
+      // 수정 상태 초기화
+      cancelEdit();
+
+      alert('댓글이 수정되었습니다.');
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      alert('댓글 수정에 실패했습니다.');
+    }
+  };
+
+  const deleteStudyGroupBoardComment = async (studyGroupBoardCommentId) => {
+    try {
+      const response = await apiClient.delete(
+        `/main/study_group/board/${studyGroupBoard.value.id}/comment/${studyGroupBoardCommentId}`
+      );
+
+      console.log(response.data.result);
+
+      alert('댓글이 삭제되었습니다.');
+
+      // 수정 삭제 후 댓글 업데이트
+      await getStudyGroupBoardComment(studyGroupBoard.value.id);
+    } catch (error) {
+      console.log('에러가 발생했습니다. ', error);
+      alert('댓글 삭제에 실패했습니다.');
     }
   };
 
