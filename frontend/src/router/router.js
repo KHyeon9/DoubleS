@@ -24,6 +24,8 @@ import StudyGroup from "../components/layout/main/StudyGroup.vue";
 import CreateStudyGroup from "../components/layout/main/CreateStudyGroup.vue";
 import ModifyStudyGroup from "../components/layout/main/ModifyStudyGroup.vue";
 import StudyGroupBoardDetail from "../components/layout/main/StudyGroupBoardDetail.vue";
+import CreateStudyGroupBoard from "../components/layout/main/CreateStudyGroupBoard.vue";
+import ModifyStudyGroupBoard from "../components/layout/main/ModifyStudyGroupBoard.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -94,8 +96,16 @@ const router = createRouter({
           component: ModifyStudyGroup,
         },
         {
+          path: 'study_group/board/new', 
+          component: CreateStudyGroupBoard,
+        },
+        {
           path: 'study_group/board/:id', 
           component: StudyGroupBoardDetail,
+        },
+        {
+          path: 'study_group/board/modify/:id', 
+          component: ModifyStudyGroupBoard,
         },
         {
           path: 'chat', 

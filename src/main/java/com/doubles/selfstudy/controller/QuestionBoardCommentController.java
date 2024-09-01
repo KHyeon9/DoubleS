@@ -21,7 +21,6 @@ public class QuestionBoardCommentController {
     // 댓글 리스트
     @GetMapping("/{questionBoardId}/comment")
     public Response<Page<QuestionBoardCommentResponse>> questionBoardCommentList(
-            Authentication authentication,
             @PathVariable Long questionBoardId,
             @PageableDefault(size = 10) Pageable pageable
     ) {

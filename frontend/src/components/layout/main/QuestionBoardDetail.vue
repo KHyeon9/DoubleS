@@ -60,7 +60,7 @@
                       </div>
                       <div class="d-flex align-items-center me-3">
                         <i class="material-icons text-md me-2">mode_comment</i>
-                        <span class="text-md">{{ questionBoard.comments }}</span>
+                        <span class="text-md">{{ comments }}</span>
                       </div>
                       <div @click="like" class="d-flex align-items-center me-3 cursor-pointer">
                         <i class="material-icons text-md me-2">thumb_up</i>
@@ -179,6 +179,7 @@
   const router = useRouter();
   const authStore = useAuthStore();
   const questionBoard = ref({});
+  const comments = ref(0);
   const userId = computed(() => authStore.userId)
   const questionBoardComments = ref([]);
   const quetionBoardCommentText = ref('');
@@ -204,7 +205,7 @@
     try {
       const response = await apiClient.get(`/main/question_board/${id}`);
       questionBoard.value = response.data.result;
-
+      comments.value = questionBoard.value.comments;
       console.log( questionBoard.value);
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
@@ -264,10 +265,15 @@
 
       // 최신 페이지로 이동
       page.value = totalPages.value;
+
       if (totalElememts.value % 10 != 0) {
         page.value -= 1;
       }
+
+      comments.value += 1;
+
       await getQuestionBoardComment(questionBoard.value.id);
+
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);
       alert('댓글 생성에 실패했습니다.');

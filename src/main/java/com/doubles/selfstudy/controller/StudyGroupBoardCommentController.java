@@ -23,7 +23,7 @@ public class StudyGroupBoardCommentController {
     @GetMapping("/{studyGroupBoardId}/comment")
     public Response<Page<StudyGroupBoardCommentResponse>> studyGroupBoardCommentList(
             @PathVariable Long studyGroupBoardId,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10) Pageable pageable
     ) {
         return Response.success(
                 studyGroupBoardCommentService
