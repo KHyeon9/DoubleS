@@ -25,7 +25,7 @@
                 </router-link>
               </li>
               <li v-if="userId == studyGroupBoard.user?.userId" class="nav-item" role="presentation">
-                <button class="nav-link mb-0 px-0 py-1" role="tab">
+                <button @click="deleteStudyGroupBoard(studyGroupBoard.id)" class="nav-link mb-0 px-0 py-1" role="tab">
                   <i class="material-icons text-lg position-relative">delete</i>
                   <span class="ms-1">삭제</span>
                 </button>
@@ -224,6 +224,21 @@
       alert('스터디 그룹 게시글의 댓글을 가져오지 못했습니다.');
     }
   };
+
+  const deleteStudyGroupBoard = async (studyGroupBoardId) => {
+    try {
+      const response = await apiClient.delete(`/main/study_group/board/${studyGroupBoardId}`);
+
+      console.log(response.data.result);
+
+      alert('게시글이 삭제되었습니다.');
+
+      router.push('/main/study_group');
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('스터디 그룹 게시글을 삭제하지 못했습니다.');
+    }
+  }
 
   const createStudyGroupBoardComment = async () => {
     if (!studyGroupBoardCommentText.value) {
