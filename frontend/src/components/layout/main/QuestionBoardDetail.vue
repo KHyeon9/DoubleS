@@ -238,6 +238,8 @@
         const response = await apiClient.delete(`/main/question_board/${questionBoard.value.id}`);
         console.log(response);
 
+        alert('게시글이 삭제되었습니다.');
+
         router.push('/main/question_board');
       }
     } catch (error) {
