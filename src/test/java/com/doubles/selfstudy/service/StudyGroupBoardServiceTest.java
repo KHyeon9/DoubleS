@@ -10,8 +10,8 @@ import com.doubles.selfstudy.fixture.StudyGroupBoardFixture;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
+import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
-import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
 import org.junit.jupiter.api.Test;
@@ -40,6 +40,8 @@ class StudyGroupBoardServiceTest {
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
     private StudyGroupBoardRepository studyGroupBoardRepository;
+    @MockBean
+    private StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
 
     @Test
     void 스터디_그룹_게시글_생성_성공한_경우() {
@@ -308,5 +310,30 @@ class StudyGroupBoardServiceTest {
 
         // Then
         assertDoesNotThrow(() -> studyGroupBoardService.studyGroupBoardList(userId, pageable));
+    }
+
+    @Test
+    void 스터디_그룹_게시글_상세_조회_성공() {
+        // Given
+        String userId = "userId";
+        String password = "password";
+        Long studyGroupBoardId = 1L;
+
+        UserAccount userAccount = UserAccountFixture.get(userId, password);
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup userStudyGroup = UserStudyGroupFixture.getLeader(userId, studyGroup);
+        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get(userAccount, studyGroup, "title", "content");
+
+        // When
+        when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroup));
+        when(studyGroupBoardRepository.findById(studyGroupBoardId))
+                .thenReturn(Optional.of(studyGroupBoard));
+        when(studyGroupBoardCommentRepository.countByStudyGroupBoard(studyGroupBoard))
+                .thenReturn(0);
+
+        // Then
+        assertDoesNotThrow(() -> studyGroupBoardService.studyGroupBoardDetail(userId, studyGroupBoardId));
     }
 }

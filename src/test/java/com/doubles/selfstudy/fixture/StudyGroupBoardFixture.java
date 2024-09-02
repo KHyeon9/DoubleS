@@ -13,4 +13,8 @@ public class StudyGroupBoardFixture {
 
         return StudyGroupBoard.of(1L, userAccount, studyGroup, title, content);
     }
+
+    public static StudyGroupBoard get(UserAccount userAccount, StudyGroup studyGroup, String title, String content) {
+        return StudyGroupBoard.of(1L, userAccount, studyGroup, title, content);
+    }
 }
