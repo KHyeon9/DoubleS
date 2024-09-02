@@ -37,9 +37,21 @@ public class StudyGroupBoardService {
     }
 
     // 스터디 그룹 게시글 상세 조회
-    public StudyGroupBoardDto studyGroupBoardDetail(Long studyGroupBoardId) {
+    public StudyGroupBoardDto studyGroupBoardDetail(String userId, Long studyGroupBoardId) {
+        // 유저 확인
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+        
+        // 스터디 그룹 유저인지 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
+
         // 스터디 그룹 게시판 조회
         StudyGroupBoard studyGroupBoard = serviceUtils.getStudyGroupBoardOrException(studyGroupBoardId);
+
+        if (userStudyGroup.getStudyGroup() != studyGroupBoard.getStudyGroup()) {
+            throw new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION,
+                        "스터디 그룹에 가입되어 있지 않습니다."
+                    );
+        }
 
         // 댓글 수 조회
         int comments = studyGroupBoardCommentRepository.countByStudyGroupBoard(studyGroupBoard);

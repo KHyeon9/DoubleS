@@ -275,7 +275,7 @@ class StudyGroupBoardControllerTest {
         // Given
 
         // When
-        when(studyGroupBoardService.studyGroupBoardDetail(any()))
+        when(studyGroupBoardService.studyGroupBoardDetail(any(), any()))
                 .thenReturn(StudyGroupBoardDto.fromEntity(StudyGroupBoardFixture.get("userId", "title", "content")));
 
         // Then
@@ -292,7 +292,7 @@ class StudyGroupBoardControllerTest {
         // Given
 
         // When
-        when(studyGroupBoardService.studyGroupBoardDetail(any()))
+        when(studyGroupBoardService.studyGroupBoardDetail(any(), any()))
                 .thenReturn(StudyGroupBoardDto.fromEntity(StudyGroupBoardFixture.get("userId", "title", "content")));
 
         // Then
@@ -310,7 +310,7 @@ class StudyGroupBoardControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.POST_NOT_FOUND))
-                .when(studyGroupBoardService).studyGroupBoardDetail(any());
+                .when(studyGroupBoardService).studyGroupBoardDetail(any(), any());
 
         // Then
         mockMvc.perform(get("/api/main/study_group/board/1")
@@ -318,5 +318,22 @@ class StudyGroupBoardControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_게시글_상세_조회시_해당_스터디_그룹에_가입되지_않은_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
+                .when(studyGroupBoardService).studyGroupBoardDetail(any(), any());
+
+        // Then
+        mockMvc.perform(get("/api/main/study_group/board/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
     }
 }

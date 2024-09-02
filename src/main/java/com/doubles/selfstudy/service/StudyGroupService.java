@@ -8,6 +8,7 @@ import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
 import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
@@ -25,6 +26,8 @@ public class StudyGroupService {
     private final StudyGroupRepository studyGroupRepository;
     private final UserStudyGroupRepository userStudyGroupRepository;
     private final StudyGroupBoardRepository studyGroupBoardRepository;
+    private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
+
     private final ServiceUtils serviceUtils;
 
     // 스터디 그룹 조회
@@ -102,6 +105,15 @@ public class StudyGroupService {
     public void deleteStudyGroup(String userId) {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
+
+        // 삭제되는 게시글들 조회
+        List<Long> boardIds = studyGroupBoardRepository
+                .findBoardIdsByStudyGroupId(userStudyGroup.getStudyGroup().getId());
+        
+        // 댓글 한번에 삭제
+        if (!boardIds.isEmpty()) {
+            studyGroupBoardCommentRepository.deleteAllByStudyGroupBoardIdIn(boardIds);
+        }
 
         studyGroupBoardRepository.deleteAllByStudyGroup(userStudyGroup.getStudyGroup());
         userStudyGroupRepository.deleteById(userStudyGroup.getId());

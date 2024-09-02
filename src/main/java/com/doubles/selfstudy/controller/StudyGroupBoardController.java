@@ -35,12 +35,13 @@ public class StudyGroupBoardController {
     // 스터디 그룹 게시글 상세 조회
     @GetMapping("/{studyGroupBoardId}")
     public Response<StudyGroupBoardResponse> studyGroupBoardDetail(
+        Authentication authentication,
         @PathVariable Long studyGroupBoardId
     ) {
         return Response.success(
                 StudyGroupBoardResponse.fromStudyGroupBoardDto(
                         studyGroupBoardService
-                                .studyGroupBoardDetail(studyGroupBoardId)
+                                .studyGroupBoardDetail(authentication.getName(), studyGroupBoardId)
                 )
         );
     }
