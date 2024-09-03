@@ -2,9 +2,11 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.UserAccount;
+import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.UserStudyGroupRepository;
 import com.doubles.selfstudy.utils.JwtTokenUtils;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
+    private final UserStudyGroupRepository userStudyGroupRepository;
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
 
@@ -63,7 +68,13 @@ public class UserAccountService {
         // 아이디 가져옴
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
-        return UserAccountDto.fromEntity(userAccount);
+        // 스터디 그룹 참여 여부 확인
+        Optional<UserStudyGroup> userStudyGroup =
+                userStudyGroupRepository.findByUserAccount(userAccount);
+
+        boolean nowStudyGroupInvite = userStudyGroup.isPresent();
+
+        return UserAccountDto.fromEntity(userAccount, nowStudyGroupInvite);
     }
 
     // 유저 정보 수정

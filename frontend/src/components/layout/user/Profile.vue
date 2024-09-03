@@ -61,7 +61,7 @@
                 <hr class="horizontal gray-light my-4">
                 <ul class="list-group">
                   <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">Email:</strong> &nbsp; {{ profileData.email }}</li>
-                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">스터디 그룹 여부:</strong> &nbsp; 참여중</li>
+                  <li class="list-group-item border-0 ps-0 text-md"><strong class="text-dark">스터디 그룹 여부:</strong> &nbsp; {{ profileData.nowStudyGroupInvite ? '참여중' : '미참여' }}</li>
                 </ul>
               </div>
               <div class="col-12 mt-4">

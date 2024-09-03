@@ -355,9 +355,9 @@ class StudyGroupControllerTest {
         String deleteUserId = "deleteUserId";
 
         // When & Then
-        mockMvc.perform(delete("/api/main/study_group/invite")
+        mockMvc.perform(delete("/api/main/study_group/exit")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deleteUserId))
+                        .param("deleteUserId", deleteUserId)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -370,9 +370,9 @@ class StudyGroupControllerTest {
         String deleteUserId = "deleteUserId";
 
         // When & Then
-        mockMvc.perform(delete("/api/main/study_group/invite")
+        mockMvc.perform(delete("/api/main/study_group/exit")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deleteUserId))
+                        .param("deleteUserId", deleteUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -389,9 +389,9 @@ class StudyGroupControllerTest {
                 .when(studyGroupService).deleteStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(delete("/api/main/study_group/invite")
+        mockMvc.perform(delete("/api/main/study_group/exit")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deleteUserId))
+                        .param("deleteUserId", deleteUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.USER_NOT_FOUND.getStatus().value()));
@@ -408,7 +408,7 @@ class StudyGroupControllerTest {
                 .when(studyGroupService).deleteStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(delete("/api/main/study_group/invite")
+        mockMvc.perform(delete("/api/main/study_group/exit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(deleteUserId))
                 )

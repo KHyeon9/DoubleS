@@ -33,6 +33,7 @@
                   </router-link>
                   <a
                     v-if="myPosition === 'Leader'"
+                    @click="deleteStudyGroup"
                     class="me-2 mt-2"
                     role="button"
                   >
@@ -87,7 +88,10 @@
                     <span class="text-secondary text-sm font-weight-bold">{{ formatDate(userInfo.joinedAt) }}</span>
                   </td>
                   <td class="align-middle">
-                    <a v-if="myPosition === 'Leader' && userInfo.userId !== userId" class="text-secondary font-weight-bold text-sm" role="button">
+                    <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"
+                      @click="exitStudyGroup(userInfo.userId)" 
+                      class="text-secondary font-weight-bold text-sm" role="button"
+                    >
                       <i class="material-icons text-lg position-relative pointer">logout</i>
                     </a>
                   </td>
@@ -191,8 +195,10 @@
   import { useFormat } from '../../../utils/format';
   import { useAuthStore } from '../../../store/authStore.js';
   import { usePagination } from '../../../utils/pagination';
+  import { useRouter } from 'vue-router';
 
   const authStore = useAuthStore();
+  const router = useRouter();
   const userId = authStore.userId;
   const studyGroupData = ref({});
   const myPosition = ref('');
@@ -270,6 +276,43 @@
     } catch (error) {
       console.log('스터디 그룹 게시글을 가져오지 못했습니다.', error);
       alert('스터디 그룹 게시글 리스트를 가져오는데 오류가 생겼습니다.');
+    }
+  };
+
+  const exitStudyGroup = async (userId) => {
+    try {
+      const response = await apiClient.delete(`/main/study_group/exit`, {
+        params: {
+          deleteUserId: userId,
+        },
+      });
+
+      console.log(response.data.result);
+
+      alert(`ID가 ${userId}인 유저가 스터디 그룹에서 삭제되었습니다.`);
+
+      getStudyGroupMemberList();
+
+    } catch (error) {
+      console.log('스터디 그룹에서 해당 유저를 삭제하지 못했습니다.', error);
+      alert('스터디 그룹에서 해당 유저를 삭제하는데 오류가 생겼습니다.');
+    }
+  };
+
+  const deleteStudyGroup = async () => {
+    if (confirm('스터디 그룹을 삭제하시겠습니까?')) {
+      try {
+        const response = await apiClient.delete('/main/study_group');
+
+        console.log(response.data.result);
+
+        alert('스터디 그룹이 삭제되었습니다.');
+
+        getStudyGroupInfo();
+      } catch (error) {
+        console.log('스터디 그룹을 삭제하지 못했습니다.', error);
+        alert('스터디 그룹을 삭제하는데 오류가 생겼습니다.');
+      }
     }
   };
 

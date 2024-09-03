@@ -101,11 +101,11 @@ public class StudyGroupController {
         return Response.success();
     }
 
-    // 그룹 강퇴
-    @DeleteMapping("/invite")
+    // 그룹 강퇴, 퇴장
+    @DeleteMapping("/exit")
     private Response<Void> deleteStudyGroupMember(
             Authentication authentication,
-            @RequestBody String deleteUserId
+            @RequestParam String deleteUserId
     ) {
         studyGroupService.deleteStudyGroupMember(authentication.getName(), deleteUserId);
 

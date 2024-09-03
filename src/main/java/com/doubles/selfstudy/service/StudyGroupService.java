@@ -116,7 +116,7 @@ public class StudyGroupService {
         }
 
         studyGroupBoardRepository.deleteAllByStudyGroup(userStudyGroup.getStudyGroup());
-        userStudyGroupRepository.deleteById(userStudyGroup.getId());
+        userStudyGroupRepository.deleteAllByStudyGroup(userStudyGroup.getStudyGroup());
         studyGroupRepository.deleteById(userStudyGroup.getStudyGroup().getId());
     }
 
