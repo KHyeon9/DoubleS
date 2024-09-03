@@ -2,6 +2,7 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.UserAccount;
+import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -63,7 +64,12 @@ public class UserAccountService {
         // 아이디 가져옴
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
-        return UserAccountDto.fromEntity(userAccount);
+        // 스터디 그룹 참여 여부 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(userAccount);
+
+        boolean nowStudyGroupInvite = userStudyGroup != null;
+
+        return UserAccountDto.fromEntity(userAccount, nowStudyGroupInvite);
     }
 
     // 유저 정보 수정

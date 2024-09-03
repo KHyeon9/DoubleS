@@ -1,9 +1,12 @@
 package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.entity.UserAccount;
+import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
 import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.UserStudyGroupRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +29,8 @@ class UserAccountServiceTest {
     private UserAccountService userAccountService;
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
     private BCryptPasswordEncoder encoder;
 
@@ -225,9 +230,12 @@ class UserAccountServiceTest {
         String userId = "userId";
         String password = "password";
         UserAccount fixture = get(userId, password);
+        UserStudyGroup userStudyGroup = UserStudyGroupFixture.get(fixture);
 
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
+        when(userStudyGroupRepository.findByUserAccount(fixture))
+                .thenReturn(Optional.of(userStudyGroup));
 
         // Then
         assertDoesNotThrow(() -> userAccountService.getUserInfo(userId));

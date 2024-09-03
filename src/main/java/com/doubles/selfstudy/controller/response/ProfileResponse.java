@@ -17,6 +17,7 @@ public class ProfileResponse {
     private String email;
     private String memo;
     private RoleType roleType;
+    private boolean nowStudyGroupInvite;
     private List<QuestionBoardResponse> questionBoardList;
 
     public static ProfileResponse fromUserAccountDtoAndQuestionBoardListDto(UserAccountDto dto, List<QuestionBoardDto> questionBoardList) {
@@ -26,6 +27,7 @@ public class ProfileResponse {
                 dto.getEmail(),
                 dto.getMemo(),
                 dto.getRoleType(),
+                dto.isNowStudyGroupInvite(),
                 questionBoardList
                         .stream()
                         .map(QuestionBoardResponse::fromQuestionBoardDto)
@@ -34,11 +36,13 @@ public class ProfileResponse {
     }
 
     public static ProfileResponse fromUserAccountDto(UserAccountDto dto) {
-        return new ProfileResponse(dto.getUserId(),
+        return new ProfileResponse(
+                dto.getUserId(),
                 dto.getNickname(),
                 dto.getEmail(),
                 dto.getMemo(),
                 dto.getRoleType(),
+                dto.isNowStudyGroupInvite(),
                 null
         );
     }
