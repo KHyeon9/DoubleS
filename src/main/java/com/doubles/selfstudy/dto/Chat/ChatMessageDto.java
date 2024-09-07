@@ -22,7 +22,7 @@ public class ChatMessageDto {
     private String message;
     private LocalDateTime createdAt;
 
-    public ChatMessageDto fromEntity(ChatMessage entity) {
+    public static ChatMessageDto fromEntity(ChatMessage entity) {
         return new ChatMessageDto(
                 entity.getId(),
                 ChatRoomDto.fromEntity(entity.getChatRoom()),
