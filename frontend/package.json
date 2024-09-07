@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.2",
     "jquery": "^3.7.1",
     "moment": "^2.30.1",

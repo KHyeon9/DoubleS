@@ -16,10 +16,12 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not founded"),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not founded"),
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "Todo not founded"),
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "Chat room not founded"),
     USER_STUDY_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "User Study Group not founded"),
     STUDY_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "Study Group not founded"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Comment not founded"),
     ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post"),
+    CHAT_ROOM_IS_EXIST(HttpStatus.CONFLICT, "Chat room is exist"),
     STUDY_GROUP_FULL(HttpStatus.UNPROCESSABLE_ENTITY, "Study Group is full"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Permission is invalid"),
     ;
