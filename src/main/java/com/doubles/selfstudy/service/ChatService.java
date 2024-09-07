@@ -79,7 +79,7 @@ public class ChatService {
 
     // 채팅 메세지 생성
     @Transactional
-    public void insertChatMessage(Long chatRoomId, String userId, String message) {
+    public void newChatMessage(Long chatRoomId, String userId, String message) {
         // 채팅룸 조회
         ChatRoom chatRoom = serviceUtils.getChatRoomOrException(chatRoomId);
 
