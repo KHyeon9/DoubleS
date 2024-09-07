@@ -69,6 +69,7 @@ public class QuestionBoardService {
         return results.map(result -> QuestionBoardDto.fromEntity((QuestionBoard) result[0], (Long) result[1], (Long) result[2]));
     }
 
+    // 프로필의 질문 게시글 조회
     public List<QuestionBoardDto> profileQuestionBoardList(String userId) {
         // 유저 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
