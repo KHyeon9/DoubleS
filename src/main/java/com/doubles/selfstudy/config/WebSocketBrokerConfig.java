@@ -1,14 +1,19 @@
 package com.doubles.selfstudy.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 @Configuration
 public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final JwtTokenProvider jwtTokenProvider; // JWT를 검증하는 로직을 가진 서비스
 
     // 메시지를 중간에서 라우팅할 때 사용하는 메시지 브로커를 구성
     @Override
@@ -26,8 +31,12 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 클라이언트가 연결할 엔드포인트
-        registry.addEndpoint("/ws/init")  // ex) ws://localhost:8080/chatting
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+        registry.addEndpoint("/ws/init")  // ex) ws://localhost:8080/ws/init
+                .setAllowedOriginPatterns("*");
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new JwtChannelInterceptor(jwtTokenProvider));
     }
 }
