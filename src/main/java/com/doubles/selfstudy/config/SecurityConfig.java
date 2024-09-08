@@ -34,6 +34,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/ws/init/**").permitAll()  // WebSocket 엔드포인트 허용
                         .requestMatchers("/api/login", "/api/regist").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/main/notice_board").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/main/notice_board/*").hasRole("ADMIN")
