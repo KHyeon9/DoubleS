@@ -23,7 +23,7 @@ public class JwtTokenUtils {
     }
     
     // claim 추출
-    private static Claims extractClaims(String token, String key) {
+    public static Claims extractClaims(String token, String key) {
         return Jwts
                 .parser() // JWT 파서 객체 생성 (JWT에서 헤더, 페이로드, 서명 추출에 사용하기 위해)
                 .verifyWith(getKey(key)) // 서명 검증에 사용할 키 설정

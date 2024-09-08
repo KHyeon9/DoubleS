@@ -194,3 +194,15 @@ values ('tester3', 'test_comment1', 20, now(), 'tester3', now(), 'tester3'),
        ('tester', 'test_comment18', 18, now(), 'tester', now(), 'tester'),
        ('tester', 'test_comment19', 20, now(), 'tester', now(), 'tester'),
        ('tester', 'test_comment20', 20, now(), 'tester', now(), 'tester');
+
+-- 채팅룸
+insert into chat_room(user1_id, user2_id, created_at)
+values ('tester', 'tester2', now()),
+       ('tester', 'tester3', now()),
+       ('tester', 'tester4', now()),
+       ('tester', 'tester5', now());
+
+-- 채팅 메세지
+insert into chat_message(room_id, user_id, message, created_at)
+values (1, 'tester', '안녕하세요', DATE_ADD(NOW(), INTERVAL -2 DAY)),
+       (1, 'tester2', '안녕하세요!', DATE_ADD(NOW(), INTERVAL -1 DAY));
