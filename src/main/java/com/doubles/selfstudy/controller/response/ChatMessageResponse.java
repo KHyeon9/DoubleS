@@ -10,17 +10,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ChatMessageResponse {
 
-    private Long id;
-    private ChatRoomResponse chatRoom;
-    private UserResponse userAccount;
+    private Long chatRoomId;
+    private String userId;
     private String message;
     private LocalDateTime createdAt;
 
     public static ChatMessageResponse fromChatMessageDto(ChatMessageDto dto) {
         return new ChatMessageResponse(
-                dto.getId(),
-                ChatRoomResponse.fromChatRoomDto(dto.getChatRoom()),
-                UserResponse.fromUserAccountDto(dto.getUserAccount()),
+                dto.getChatRoom().getId(),
+                dto.getUserAccount().getUserId(),
                 dto.getMessage(),
                 dto.getCreatedAt()
         );
