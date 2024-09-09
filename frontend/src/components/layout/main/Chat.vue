@@ -7,10 +7,10 @@
       <div class="col-auto my-auto">
         <div class="h-100">
           <h5 class="mb-1">
-            Richard Davis
+            {{ nickname }}
           </h5>
           <p class="mb-0 font-weight-normal text-sm">
-            CEO / Co-Founder
+            {{ userId }}
           </p>
         </div>
       </div>
@@ -27,53 +27,30 @@
               </div>
             </div>
             <div class="card-body p-2">
-              <a href="javascript:;" class="d-block p-2 border-radius-lg bg-gradient-primary">
+              <a href="javascript:;" class="d-block m-2 border-radius-lg bg-gradient-primary">
                 <div class="d-flex p-2">
                   <div class="ms-3">
                     <div class="justify-content-between align-items-center">
                       <h6 class="text-white mb-0">Charlie Watson
                         <span class="badge badge-success"></span>
                       </h6>
+                      <p class="text-muted text-xs mb-2">1 hour ago</p>
                       <p class="text-white mb-0 text-sm">Typing...</p>
                     </div>
                   </div>
                 </div>
               </a>
-              <a href="javascript:;" class="d-block p-2">
+              <a v-for="chatRoom in chatRoomList" 
+                :key="chatRoom.id" 
+                @click="connect(chatRoom.id, chatRoom.user1, chatRoom.user2)"
+                class="d-block m-2 border-radius-lg bg-light"
+              >
                 <div class="d-flex p-2">
                   <div class="ms-3">
-                    <h6 class="mb-0">Jane Doe</h6>
+                    <h6 v-if="userId === chatRoom.user1.userId" class="mb-0">{{ chatRoom.user2.userId }}</h6>
+                    <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0">{{ chatRoom.user1.userId }}</h6>
                     <p class="text-muted text-xs mb-2">1 hour ago</p>
                     <span class="text-muted text-sm col-11 p-0 text-truncate d-block">Computer users and programmers</span>
-                  </div>
-                </div>
-              </a>
-              <a href="javascript:;" class="d-block p-2">
-                <div class="d-flex p-2">
-                  <div class="ms-3">
-                    <h6 class="mb-0">Mila Skylar</h6>
-                    <p class="text-muted text-xs mb-2">24 min ago</p>
-                    <span class="text-muted text-sm col-11 p-0 text-truncate d-block">You can subscribe to receive weekly...</span>
-                  </div>
-                </div>
-              </a>
-              <a href="javascript:;" class="d-block p-2">
-                <div class="d-flex p-2">
-                  <div class="ms-3">
-                    <h6 class="mb-0">Sofia Scarlett</h6>
-                    <p class="text-muted text-xs mb-2">7 hours ago</p>
-                    <span class="text-muted text-sm col-11 p-0 text-truncate d-block">It’s an effective resource regardless..</span>
-                  </div>
-                </div>
-              </a>
-              <a href="javascript:;" class="d-block p-2">
-                <div class="d-flex p-2">
-                  <div class="ms-3">
-                    <div class="justify-content-between align-items-center">
-                      <h6 class="mb-0">Tom Klein</h6>
-                      <p class="text-muted text-xs mb-2">1 day ago</p>
-                    </div>
-                    <span class="text-muted text-sm col-11 p-0 text-truncate d-block">Be sure to check it out if your dev pro...</span>
                   </div>
                 </div>
               </a>
@@ -88,15 +65,10 @@
                   <div class="col-md-9 col-lg-10">
                     <div class="d-flex align-items-center">
                       <div class="ms-3">
-                        <h6 class="mb-0 d-block text-white">Charlie Watson</h6>
-                        <span class="text-sm text-white opacity-8">last seen today at 1:53am</span>
+                        <h6 class="mb-0 d-block text-white">{{ nowChatUserUserNickname }}</h6>
+                        <span class="text-sm text-white opacity-8">{{ nowChatUserUserId }}</span>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-1 my-auto">
-                    <button class="btn btn-icon-only text-white mb-0 me-3 me-sm-0" type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Video call">
-                      <i class="material-icons">videocam</i>
-                    </button>
                   </div>
                   <div class="col-1 my-auto">
                     <div class="dropdown">
@@ -138,140 +110,57 @@
                 </div>
               </div>
             </div>
-            <div class="card-body overflow-auto overflow-x-hidden">
-              <div class="row justify-content-start mb-4">
+            <div class="chat card-body overflow-auto overflow-x-hidden">
+              <div v-if="websocketClient === ''" class="mb-4">
                 <div class="col-auto">
                   <div class="card ">
                     <div class="card-body py-2 px-3">
-                      <p class="mb-1">
-                        It contains a lot of good lessons about effective practices
+                      <p class="mb-1 text-center">
+                        채팅방을 선택해주세요!
                       </p>
-                      <div class="d-flex align-items-center text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>3:14am</small>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row justify-content-end text-right mb-4">
-                <div class="col-auto">
-                  <div class="card bg-gradient-primary">
-                    <div class="card-body py-2 px-3 text-white">
-                      <p class="mb-1">
-                        Can it generate daily design links that include essays and data visualizations ?<br>
-                      </p>
-                      <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:42pm</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row mt-4">
-                <div class="col-md-12 text-center">
-                  <span class="badge text-dark">Wed, 3:27pm</span>
-                </div>
-              </div>
-              <div class="row justify-content-start mb-4">
+              <div v-else-if="chatMessageList && chatMessageList.length === 0" class="mb-4">
                 <div class="col-auto">
                   <div class="card ">
                     <div class="card-body py-2 px-3">
-                      <p class="mb-1">
-                       Yeah! Responsive Design is geared towards those trying to build web apps
+                      <p class="mb-1 text-center">
+                        채팅창이 연결되었습니다!
                       </p>
-                      <div class="d-flex align-items-center text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:31pm</small>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row justify-content-end text-right mb-4">
-                <div class="col-auto">
-                  <div class="card bg-gradient-primary">
-                    <div class="card-body py-2 px-3 text-white">
-                      <p class="mb-1">
-                        xcellent, I want it now !
-                      </p>
-                      <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:42pm</small>
+              <div v-else v-for="message in chatMessageList" class="message">
+                <div v-if="message.userId !== userId" class="row justify-content-start mb-4">
+                  <div class="col-auto">
+                    <div class="card ">
+                      <div class="card-body py-2 px-3">
+                        <p class="mb-1">
+                          {{ message.message }}
+                        </p>
+                        <div class="d-flex align-items-center text-sm opacity-6">
+                          <i class="ni ni-check-bold text-sm me-1"></i>
+                          <small>3:14am</small>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="row justify-content-start mb-4">
-                <div class="col-auto">
-                  <div class="card ">
-                    <div class="card-body py-2 px-3">
-                      <p class="mb-1">
-                        You can easily get it; The content here is all free
-                      </p>
-                      <div class="d-flex align-items-center text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:42pm</small>
+                <div v-if="message.userId === userId" class="row justify-content-end text-right mb-4">
+                  <div class="col-auto">
+                    <div class="card bg-gradient-primary">
+                      <div class="card-body py-2 px-3 text-white">
+                        <p class="mb-1">
+                          {{ message.message }}
+                        </p>
+                        <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
+                          <i class="ni ni-check-bold text-sm me-1"></i>
+                          <small>4:42pm</small>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-end text-right mb-4">
-                <div class="col-auto">
-                  <div class="card bg-gradient-primary">
-                    <div class="card-body py-2 px-3 text-white">
-                      <p class="mb-1">
-                        Awesome, blog is important source material for anyone who creates apps? <br>
-                        Beacuse these blogs offer a lot of information about website development.
-                      </p>
-                      <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:42pm</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-start mb-4">
-                <div class="col-5">
-                  <div class="card ">
-                    <div class="card-body p-2">
-                      <div class="col-12 p-0">
-                        test
-                      </div>
-                      <div class="d-flex align-items-center text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:47pm</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-end text-right mb-4">
-                <div class="col-auto">
-                  <div class="card bg-gradient-primary">
-                    <div class="card-body py-2 px-3 text-white">
-                      <p class="mb-0">
-                        At the end of the day … the native dev apps is where users are
-                      </p>
-                      <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                        <i class="ni ni-check-bold text-sm me-1"></i>
-                        <small>4:42pm</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row justify-content-start">
-                <div class="col-auto">
-                  <div class="card ">
-                    <div class="card-body py-2 px-3">
-                      <p class="mb-0">
-                        Charlie is Typing...
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -295,8 +184,112 @@
   </div>
 </template>
 <script setup>
+  import { onBeforeMount, onMounted, onUnmounted, computed, ref } from 'vue';
+  import { useRouter, useRoute } from 'vue-router';
+  import { Client } from '@stomp/stompjs';
+  import apiClient from '../../../config/authConfig';
+  import { useAuthStore } from '../../../store/authStore';
+
+  const { replace, push } = useRouter();
+
+  const authStore = useAuthStore();
+  const nickname = computed(() => authStore.nickname);
+  const userId = computed(() => authStore.userId);
+  
+  const chatRoomList = ref([]);
+  const chatMessageList = ref([]);
+
+  const nowChatUserUserId = ref('');
+  const nowChatUserUserNickname = ref('');
+  let websocketClient = '';
+
+  const connect = (chatRoomId, user1, user2) => {
+
+    if (user1.userId === userId) {
+      nowChatUserUserId.value = user2.userId;
+      nowChatUserUserNickname.value = user2.nickname;
+    } else {
+      nowChatUserUserId.value = user1.userId;
+      nowChatUserUserNickname.value = user1.nickname;
+    }
+
+    // 다른 채팅을 눌렀을 때, 이전에 연결된 웹소켓 종료
+    if (websocketClient && websocketClient.active) {
+      websocketClient.deactivate();  // 연결을 종료
+      console.log('연결 종료');
+    }
+
+    chatMessageList.value = [];
+
+    const url = 'ws://localhost:8080/ws/init';
+    const token = authStore.token;
+
+    console.log('chatRoomId', chatRoomId);
+
+    websocketClient = new Client({
+      brokerURL: url,
+      connectHeaders: {
+        Authorization: `Bearer ${token}`
+      },
+      onConnect: async () => {
+        console.log('onConnect 실행')
+        
+        await websocketClient.subscribe(`/sub/chat/room/${chatRoomId}`, msg => {
+          try {
+            const messageBody = JSON.parse(msg.body);
+            chatMessageList.value.push(messageBody);
+            console.log(messageBody);
+          } catch (error) {
+            console.log('메세지를 가져오는데 에러가 발생했습니다. ', error);
+            alert('메세지를 가져오는데 에러가 발생했습니다.');
+          }
+        });
+        
+        await websocketClient.publish({
+          destination: `/pub/chat/room/${chatRoomId}/entered`,
+          body: JSON.stringify({ chatRoomId: chatRoomId })
+        });
+
+      },
+      onStompError: (frame) => {
+        console.error('STOMP error:', frame);
+      },
+      onWebSocketError: (error) => {
+        console.error('웹 소켓 error:', error);
+      }
+    });
+
+    websocketClient.activate();
+  };
+
+  const getChatRoomList = async () => {
+    try {
+      const response = await apiClient.get(`/main/chat/room`);
+
+      console.log(response.data.result);
+
+      chatRoomList.value = response.data.result;
+
+    } catch (error) {
+      onsole.log('채팅방을 가져오지 못했습니다.', error);
+      alert('채팅방을 가져오는데 오류가 생겼습니다.');
+    }
+  };
+
+  onMounted(() => {
+    getChatRoomList();
+  });
+
+  onUnmounted(() => {
+    if (websocketClient && websocketClient.active) {
+      websocketClient.deactivate();  // 연결을 종료
+      console.log('연결 종료');
+    }
+  });
 
 </script>
 <style scoped>
-  
+  .chat {
+    height: 600px;
+  }
 </style>
