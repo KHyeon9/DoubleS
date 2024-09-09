@@ -61,16 +61,7 @@ public class ChatController {
         messageTemplate(chatRoomId, response);
     }
 
-
     private void messageTemplate(Long chatRoomId, ChatMessageResponse message) {
-        // Map<String, Object> headerMap = messageWriterHeader(writerUserId);
-
         simpMessagingTemplate.convertAndSend(DEFAULT_URL + chatRoomId, message);
     }
-
-//    private Map<String, Object> messageWriterHeader(String writerUserId) {
-//        Map<String, Object> headerMap = new HashMap<>();
-//        headerMap.put("userId", writerUserId);
-//        return headerMap;
-//    }
 }
