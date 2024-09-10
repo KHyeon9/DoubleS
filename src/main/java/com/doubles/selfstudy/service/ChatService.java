@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +32,16 @@ public class ChatService {
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 채팅룸 리스트 조회
-        return chatRoomRepository
-                .findAllChatRoomsByUser(userAccount)
-                .stream()
-                .map(ChatRoomDto::fromEntity)
-                .toList();
+        List<Object[]> results = chatRoomRepository.findAllChatRoomsByUser(userAccount);
+
+        return results.stream().map(
+                result -> ChatRoomDto
+                        .fromEntity(
+                                (ChatRoom) result[0],
+                                (String) result[1],
+                                (LocalDateTime) result[2]
+                        )
+        ).toList();
     }
 
     // 채팅 메세지 리스트 조회
