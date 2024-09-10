@@ -22,3 +22,7 @@ jwt:
   token:
     # 30 days
     expired-time-ms: 2592000000
+logging:
+  level:
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG

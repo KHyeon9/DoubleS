@@ -62,7 +62,7 @@
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
               <div class="bg-gradient-primary shadow-primary border-radius-lg p-3">
                 <div class="row">
-                  <div class="col-md-9 col-lg-10">
+                  <div class="col-md-9 col-lg-11">
                     <div class="d-flex align-items-center">
                       <div class="ms-3">
                         <h6 class="mb-0 d-block text-white">{{ nowChatUserUserNickname }}</h6>
@@ -142,8 +142,7 @@
                           {{ message.message }}
                         </p>
                         <div class="d-flex align-items-center text-sm opacity-6">
-                          <i class="ni ni-check-bold text-sm me-1"></i>
-                          <small>3:14am</small>
+                          <small>{{ formatDateTime(message.createdAt) }}</small>
                         </div>
                       </div>
                     </div>
@@ -157,8 +156,7 @@
                           {{ message.message }}
                         </p>
                         <div class="d-flex align-items-center justify-content-end text-sm opacity-6">
-                          <i class="ni ni-check-bold text-sm me-1"></i>
-                          <small>4:42pm</small>
+                          <small>{{ formatDateTime(message.createdAt) }}</small>
                         </div>
                       </div>
                     </div>
@@ -167,11 +165,10 @@
               </div>
             </div>
             <div class="card-footer d-block">
-              <form class="align-items-center">
+              <form class="align-items-center" @submit.prevent="sendMessage">
                 <div class="input-group input-group-outline d-flex">
-                  <label class="form-label">Type your message</label>
-                  <input type="text" class="form-control form-control-lg" onfocus="focused(this)" onfocusout="defocused(this)">
-                  <button class="btn bg-gradient-primary mb-0">
+                  <input v-model="message" type="text" placeholder="메세지를 입력해주세요." class="form-control form-control-lg">
+                  <button type="submit" class="btn bg-gradient-primary mb-0">
                     <i class="material-icons">send</i>
                   </button>
                 </div>
@@ -184,13 +181,13 @@
   </div>
 </template>
 <script setup>
-  import { onBeforeMount, onMounted, onUnmounted, computed, ref } from 'vue';
-  import { useRouter, useRoute } from 'vue-router';
+  import { nextTick, onMounted, onUnmounted, computed, ref } from 'vue';
   import { Client } from '@stomp/stompjs';
   import apiClient from '../../../config/authConfig';
   import { useAuthStore } from '../../../store/authStore';
+  import { useFormat } from '../../../utils/format'
 
-  const { replace, push } = useRouter();
+  const { formatDateTime } = useFormat();
 
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
@@ -201,9 +198,35 @@
 
   const nowChatUserUserId = ref('');
   const nowChatUserUserNickname = ref('');
+  const nowChatRoomId = ref(0);
+
+  const message = ref('');
   let websocketClient = '';
 
+  const sendMessage = async () => {
+    if (!websocketClient) {
+      alert('채팅방을 선택해 주세요.');
+      return;
+    }
+
+    console.log('userId : ', userId.value);
+    console.log('chatRoomId : ', nowChatRoomId.value);
+    console.log('message : ', message.value);
+
+    await websocketClient.publish({
+      destination: `/pub/chat/room/${nowChatRoomId.value}`,
+      body: JSON.stringify({
+        sendUserId: userId.value,
+        chatRoomId: nowChatRoomId.value,
+        message: message.value
+      })
+    });
+
+    message.value = '';
+  }
+
   const connect = (chatRoomId, user1, user2) => {
+    nowChatRoomId.value = chatRoomId;
 
     if (user1.userId === userId) {
       nowChatUserUserId.value = user2.userId;
@@ -234,7 +257,7 @@
       onConnect: async () => {
         console.log('onConnect 실행')
         
-        await websocketClient.subscribe(`/sub/chat/room/${chatRoomId}`, msg => {
+        await websocketClient.subscribe(`/sub/chat/room/${chatRoomId}`, async msg => {
           try {
             const messageBody = JSON.parse(msg.body);
             chatMessageList.value.push(messageBody);
@@ -243,6 +266,9 @@
             console.log('메세지를 가져오는데 에러가 발생했습니다. ', error);
             alert('메세지를 가져오는데 에러가 발생했습니다.');
           }
+
+          await nextTick();
+          scrollToBottom();
         });
         
         await websocketClient.publish({
@@ -274,6 +300,11 @@
       onsole.log('채팅방을 가져오지 못했습니다.', error);
       alert('채팅방을 가져오는데 오류가 생겼습니다.');
     }
+  };
+
+  const scrollToBottom = () => {
+    const chatContainer = document.querySelector('.chat');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
   };
 
   onMounted(() => {

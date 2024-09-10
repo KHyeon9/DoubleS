@@ -16,13 +16,28 @@ public class ChatRoomDto {
     private Long id;
     private UserAccountDto user1;
     private UserAccountDto user2;
+    private String lastMessage;
+    private LocalDateTime lastMessageTime;
     private LocalDateTime createdAt;
+
+    public static ChatRoomDto fromEntity(ChatRoom entity, String lastMessage, LocalDateTime lastMessageTime) {
+        return new ChatRoomDto(
+                entity.getId(),
+                UserAccountDto.fromEntity(entity.getUser1()),
+                UserAccountDto.fromEntity(entity.getUser2()),
+                lastMessage,
+                lastMessageTime,
+                entity.getCreatedAt()
+        );
+    }
 
     public static ChatRoomDto fromEntity(ChatRoom entity) {
         return new ChatRoomDto(
                 entity.getId(),
                 UserAccountDto.fromEntity(entity.getUser1()),
                 UserAccountDto.fromEntity(entity.getUser2()),
+                null,
+                null,
                 entity.getCreatedAt()
         );
     }
