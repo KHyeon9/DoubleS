@@ -1,9 +1,12 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.ChatMessage;
 import com.doubles.selfstudy.entity.ChatRoom;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.ChatMessageFixture;
+import com.doubles.selfstudy.fixture.ChatRoomFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.ChatMessageRepository;
 import com.doubles.selfstudy.repository.ChatRoomRepository;
@@ -16,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -119,17 +123,26 @@ class ChatServiceTest {
     void 채팅_메세지_생성에_성공한_경우() {
         // Given
         Long chatRoomId = 1L;
-        String userId = "userId";
+        String userId1 = "userId1";
+        String userId2 = "userId2";
         String message = "message";
+
+        UserAccount user1 = UserAccountFixture.get(userId1, "password");
+        UserAccount user2 = UserAccountFixture.get(userId2, "password");
+
+        ChatRoom chatRoom = ChatRoomFixture.get(user1, user2);
+        ChatMessage chatMessage = ChatMessageFixture.get(chatRoom, user1, "message");
 
         // When
         when(chatRoomRepository.findById(chatRoomId))
-                .thenReturn(Optional.of(mock(ChatRoom.class)));
-        when(userAccountRepository.findById(userId))
-                .thenReturn(Optional.of(mock(UserAccount.class)));
+                .thenReturn(Optional.of(chatRoom));
+        when(userAccountRepository.findById(userId1))
+                .thenReturn(Optional.of(user1));
+        when(chatMessageRepository.save(any()))
+                .thenReturn(chatMessage);
 
         // Then
-        assertDoesNotThrow(() -> chatService.newChatMessage(chatRoomId, userId, message));
+        assertDoesNotThrow(() -> chatService.newChatMessage(chatRoomId, userId1, message));
     }
 
     @Test
@@ -155,19 +168,25 @@ class ChatServiceTest {
     void 채팅_메세지_생성시_로그인하지_않은_경우_에러_반환() {
         // Given
         Long chatRoomId = 1L;
-        String userId = "userId";
+        String userId1 = "userId1";
+        String userId2 = "userId2";
         String message = "message";
+
+        UserAccount user1 = UserAccountFixture.get(userId1, "password");
+        UserAccount user2 = UserAccountFixture.get(userId2, "password");
+
+        ChatRoom chatRoom = ChatRoomFixture.get(user1, user2);
 
         // When
         when(chatRoomRepository.findById(chatRoomId))
-                .thenReturn(Optional.of(mock(ChatRoom.class)));
-        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(chatRoom));
+        when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> chatService.newChatMessage(chatRoomId, userId, message)
+                () -> chatService.newChatMessage(chatRoomId, userId1, message)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
