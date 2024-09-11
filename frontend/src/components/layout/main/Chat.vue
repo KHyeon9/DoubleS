@@ -26,31 +26,31 @@
                 <input type="text" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
               </div>
             </div>
-            <div class="card-body p-2">
-              <a href="javascript:;" class="d-block m-2 border-radius-lg bg-gradient-primary">
-                <div class="d-flex p-2">
+            <div class="chatRoomList card-body p-2">
+              <a v-if="chatRoomList.length == 0" class="d-block m-2 border-radius-lg bg-light">
+                <div class="d-flex p-3">
                   <div class="ms-3">
                     <div class="justify-content-between align-items-center">
-                      <h6 class="text-white mb-0">Charlie Watson
+                      <h6 class="text-muted mb-0">채팅방이 없습니다.
                         <span class="badge badge-success"></span>
                       </h6>
-                      <p class="text-muted text-xs mb-2">1 hour ago</p>
-                      <p class="text-white mb-0 text-sm">Typing...</p>
                     </div>
                   </div>
                 </div>
               </a>
-              <a v-for="chatRoom in chatRoomList" 
+              <a v-else v-for="chatRoom in chatRoomList" 
                 :key="chatRoom.id" 
                 @click="connect(chatRoom.id, chatRoom.user1, chatRoom.user2)"
-                class="d-block m-2 border-radius-lg bg-light"
+                class="chatRoom d-block m-2 border-radius-lg"
+                :class="[activeLink === chatRoom.id ? 'bg-gradient-primary' : 'bg-light']"
               >
                 <div class="d-flex p-2">
                   <div class="ms-3">
-                    <h6 v-if="userId === chatRoom.user1.userId" class="mb-0">{{ chatRoom.user2.userId }}</h6>
-                    <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0">{{ chatRoom.user1.userId }}</h6>
-                    <p class="text-muted text-xs mb-2">1 hour ago</p>
-                    <span class="text-muted text-sm col-11 p-0 text-truncate d-block">Computer users and programmers</span>
+                    <h6 v-if="userId === chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user2.userId }}</h6>
+                    <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user1.userId }}</h6>
+                    <p class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">1 hour ago</p>
+                    <span v-if="chatRoom.lastMessage !== null" class="text-sm col-12 p-0 text-truncate d-block" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">{{ chatRoom.lastMessage }}</span>
+                    <span v-else class="text-sm col-12 p-0 d-block" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">전송된 메세지가 없습니다.</span>
                   </div>
                 </div>
               </a>
@@ -189,6 +189,8 @@
 
   const { formatDateTime } = useFormat();
 
+  const activeLink = ref(0);
+
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
   const userId = computed(() => authStore.userId);
@@ -226,6 +228,8 @@
   }
 
   const connect = (chatRoomId, user1, user2) => {
+    setActive(chatRoomId);
+
     nowChatRoomId.value = chatRoomId;
 
     if (user1.userId === userId) {
@@ -302,6 +306,10 @@
     }
   };
 
+  const setActive = (chatRoomId) => {
+    activeLink.value = chatRoomId;
+  };
+
   const scrollToBottom = () => {
     const chatContainer = document.querySelector('.chat');
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -321,6 +329,10 @@
 </script>
 <style scoped>
   .chat {
+    height: 600px;
+  }
+
+  .chatRoomList {
     height: 600px;
   }
 </style>
