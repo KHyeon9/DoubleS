@@ -67,7 +67,7 @@
                     <div class="d-flex align-items-center">
                       <div class="ms-3">
                         <h6 v-if="nowChatUserId === ''" class="mb-0 d-block text-white"></h6>
-                        <h6 v-else class="mb-0 d-block text-white">{{ nowChatUserNickname }} ({{ nowChatUserId }})</h6>
+                        <h6 v-else class="mb-0 d-block text-white">{{ nowChatUserNickname }} <span class="text-s fw-light">( {{ nowChatUserId }} )</span></h6>
                         <span v-if="nowChatUserId === ''" class="text-sm text-white opacity-8"></span>
                         <span v-else-if="chatMessageList.length === 0" class="text-sm text-white opacity-8">채팅을 입력해주세요.</span>
                         <span v-else class="text-sm text-white opacity-8">{{ nowChatDiscription }}</span>
