@@ -40,7 +40,7 @@
               </a>
               <a v-else v-for="chatRoom in chatRoomList" 
                 :key="chatRoom.id" 
-                @click="connect(chatRoom.id, chatRoom.user1, chatRoom.user2)"
+                @click="connect(chatRoom.id, chatRoom.user1, chatRoom.user2, formatDatediff(chatRoom.lastMessageTime))"
                 class="chatRoom d-block m-2 border-radius-lg"
                 :class="[activeLink === chatRoom.id ? 'bg-gradient-primary' : 'bg-light']"
               >
@@ -48,7 +48,8 @@
                   <div class="ms-3">
                     <h6 v-if="userId === chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user2.userId }}</h6>
                     <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user1.userId }}</h6>
-                    <p class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">1 hour ago</p>
+                    <p v-if="chatRoom.lastMessageTime === null" class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">&nbsp;</p>
+                    <p v-else class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">{{ formatDatediff(chatRoom.lastMessageTime) }}</p>
                     <span v-if="chatRoom.lastMessage !== null" class="text-sm col-12 p-0 text-truncate d-block" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">{{ chatRoom.lastMessage }}</span>
                     <span v-else class="text-sm col-12 p-0 d-block" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">전송된 메세지가 없습니다.</span>
                   </div>
@@ -65,8 +66,11 @@
                   <div class="col-md-9 col-lg-11">
                     <div class="d-flex align-items-center">
                       <div class="ms-3">
-                        <h6 class="mb-0 d-block text-white">{{ nowChatUserUserNickname }}</h6>
-                        <span class="text-sm text-white opacity-8">{{ nowChatUserUserId }}</span>
+                        <h6 v-if="nowChatUserId === ''" class="mb-0 d-block text-white"></h6>
+                        <h6 v-else class="mb-0 d-block text-white">{{ nowChatUserNickname }} ({{ nowChatUserId }})</h6>
+                        <span v-if="nowChatUserId === ''" class="text-sm text-white opacity-8"></span>
+                        <span v-else-if="chatMessageList.length === 0" class="text-sm text-white opacity-8">채팅을 입력해주세요.</span>
+                        <span v-else class="text-sm text-white opacity-8">{{ nowChatDiscription }}</span>
                       </div>
                     </div>
                   </div>
@@ -186,8 +190,9 @@
   import apiClient from '../../../config/authConfig';
   import { useAuthStore } from '../../../store/authStore';
   import { useFormat } from '../../../utils/format'
+  import moment from 'moment';
 
-  const { formatDateTime } = useFormat();
+  const { formatDateTime, formatDatediff } = useFormat();
 
   const activeLink = ref(0);
 
@@ -198,8 +203,9 @@
   const chatRoomList = ref([]);
   const chatMessageList = ref([]);
 
-  const nowChatUserUserId = ref('');
-  const nowChatUserUserNickname = ref('');
+  const nowChatUserNickname = ref('');
+  const nowChatUserId = ref('');
+  const nowChatDiscription = ref('');
   const nowChatRoomId = ref(0);
 
   const message = ref('');
@@ -224,27 +230,36 @@
       })
     });
 
+    chatRoomList.value[nowChatRoomId.value - 1].lastMessageTime = moment();
+    chatRoomList.value[nowChatRoomId.value - 1].lastMessage = message.value;
+
     message.value = '';
   }
 
-  const connect = (chatRoomId, user1, user2) => {
+  const connect = (chatRoomId, user1, user2, date) => {
     setActive(chatRoomId);
-
-    nowChatRoomId.value = chatRoomId;
-
-    if (user1.userId === userId) {
-      nowChatUserUserId.value = user2.userId;
-      nowChatUserUserNickname.value = user2.nickname;
-    } else {
-      nowChatUserUserId.value = user1.userId;
-      nowChatUserUserNickname.value = user1.nickname;
-    }
 
     // 다른 채팅을 눌렀을 때, 이전에 연결된 웹소켓 종료
     if (websocketClient && websocketClient.active) {
       websocketClient.deactivate();  // 연결을 종료
+      nowChatUserId.value = '';
+      nowChatUserNickname.value = '';
+      nowChatDiscription.value = '';
+      getChatRoomList();
       console.log('연결 종료');
     }
+
+    nowChatRoomId.value = chatRoomId;
+
+    if (user1.userId === userId.value) {
+      nowChatUserId.value = user2.userId;
+      nowChatUserNickname.value = user2.nickname;
+    } else {
+      nowChatUserId.value = user1.userId;
+      nowChatUserNickname.value = user1.nickname;
+    }
+
+    nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
 
     chatMessageList.value = [];
 
@@ -322,6 +337,9 @@
   onUnmounted(() => {
     if (websocketClient && websocketClient.active) {
       websocketClient.deactivate();  // 연결을 종료
+      nowChatUserId.value = '';
+      nowChatUserNickname.value = '';
+      nowChatDiscription.value = '';
       console.log('연결 종료');
     }
   });
@@ -334,5 +352,9 @@
 
   .chatRoomList {
     height: 600px;
+  }
+
+  .dropdown-menu::before {
+    content: none;
   }
 </style>
