@@ -27,9 +27,30 @@ export const useFormat = () => {
     return input.format('hh:mm A');
   };
 
+  const formatDatediff = (date) => {
+    const now = moment();  // 현재 날짜와 시간
+    const givenDate = moment(date);  // 비교할 날짜
+
+    // 날짜 비교
+    const yearsDiff = now.diff(givenDate, 'years');
+    const monthsDiff = now.diff(givenDate, 'months');
+    const daysDiff = now.diff(givenDate, 'days');
+
+    if (yearsDiff > 0) {
+      return `${yearsDiff}년 전`;
+    } else if (monthsDiff > 0) {
+      return `${monthsDiff}개월 전`;
+    } else if (daysDiff > 0) {
+      return `${daysDiff}일 전`;
+    } else {
+      return '오늘';
+    }
+  };
+
   return {
     formattedContent,
     formatDate,
-    formatDateTime
+    formatDateTime,
+    formatDatediff
   };
 }
