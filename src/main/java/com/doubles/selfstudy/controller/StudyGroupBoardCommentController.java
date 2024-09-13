@@ -41,7 +41,7 @@ public class StudyGroupBoardCommentController {
             Authentication authentication,
             @PathVariable Long studyGroupBoardId,
             @RequestBody StudyGroupBoardCommentRequest request
-            ) {
+    ) {
         studyGroupBoardCommentService.createStudyGroupBoardCommnet(
                 authentication.getName(),
                 studyGroupBoardId,
