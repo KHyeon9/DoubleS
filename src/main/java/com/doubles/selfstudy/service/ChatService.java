@@ -44,6 +44,24 @@ public class ChatService {
         ).toList();
     }
 
+    // 닉네임에 따른 채팅룸 리스트 조회
+    public List<ChatRoomDto> chatRoomListByNickname(String userId, String nickname) {
+        // 유저 조회
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 채팅룸 리스트를 닉네임으로 검색
+        List<Object[]> results = chatRoomRepository.findAllChatRoomsByUserAndNickname(userAccount, nickname);
+
+        return results.stream().map(
+                result -> ChatRoomDto
+                        .fromEntity(
+                                (ChatRoom) result[0],
+                                (String) result[1],
+                                (LocalDateTime) result[2]
+                        )
+        ).toList();
+    }
+
     // 채팅 메세지 리스트 조회
     public List<ChatMessageDto> chatMessageListByChatRoomId(Long chatRoomId) {
         // 채팅룸 조회
@@ -96,6 +114,36 @@ public class ChatService {
         ChatMessage chatMessage = ChatMessage.of(chatRoom, userAccount, message);
 
         return ChatMessageDto.fromEntity(chatMessageRepository.save(chatMessage));
+    }
+
+    @Transactional
+    public void deleteChatRoom(Long chatRoomId, String userId) {
+        // 채팅룸 찾기
+        ChatRoom chatRoom = serviceUtils.getChatRoomOrException(chatRoomId);
+
+        // 유저 찾기
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        ChatMessage message = null;
+
+        // id 제거
+        if (chatRoom.getUser1() == userAccount) {
+            chatRoom.setUser1(null);
+            message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+        } else if (chatRoom.getUser2() == userAccount) {
+            chatRoom.setUser2(null);
+            message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+        }
+
+        if (message != null) {
+            chatMessageRepository.save(message);
+        }
+
+        // 아이디 2개다 null이면 채팅방 삭제
+        if (chatRoom.getUser1() == null && chatRoom.getUser2() == null) {
+            chatMessageRepository.findAllByChatRoom(chatRoom);
+            chatRoomRepository.delete(chatRoom);
+        }
     }
 
 }
