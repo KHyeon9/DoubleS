@@ -31,12 +31,37 @@ public class ChatRoomController {
         );
     }
 
+    @GetMapping("/{nickname}")
+    public Response<List<ChatRoomResponse>> chatRoomList(
+            Authentication authentication,
+            @PathVariable String nickname
+    ) {
+        List<ChatRoomDto> chatRoomList = chatService.chatRoomListByNickname(authentication.getName(), nickname);
+
+        return Response.success(
+                chatRoomList
+                        .stream()
+                        .map(ChatRoomResponse::fromChatRoomDto)
+                        .toList()
+        );
+    }
+
     @PostMapping
     public Response<Void> createChatRoom(
             Authentication authentication,
             @RequestParam String toUserId
     ) {
         chatService.newChatRoom(authentication.getName(), toUserId);
+
+        return Response.success();
+    }
+
+    @DeleteMapping
+    public Response<Void> deleteChatRoom(
+            Authentication authentication,
+            @RequestParam Long chatRoomId
+    ) {
+        chatService.deleteChatRoom(chatRoomId, authentication.getName());
 
         return Response.success();
     }
