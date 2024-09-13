@@ -16,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -189,5 +191,89 @@ class ChatServiceTest {
                 () -> chatService.newChatMessage(chatRoomId, userId1, message)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 채팅룸_삭제_성공한_경우() {
+        // Given
+        Long chatRoomId = 1L;
+        String userId = "userId";
+
+        // When
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(mock(ChatRoom.class)));
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+
+        // Then
+        assertDoesNotThrow(() -> chatService.deleteChatRoom(chatRoomId, userId));
+    }
+
+    @Test
+    void 채팅룸_삭제시_채팅룸이_없는_경우_에러_반환() {
+        // Given
+        Long chatRoomId = 1L;
+        String userId = "userId";
+
+        // When
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> chatService.deleteChatRoom(chatRoomId, userId)
+        );
+        assertEquals(ErrorCode.CHAT_ROOM_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 채팅룸_삭제시_로그인하지_않은_경우_에러_반환() {
+        // Given
+        Long chatRoomId = 1L;
+        String userId = "userId";
+
+        // When
+        when(chatRoomRepository.findById(chatRoomId))
+                .thenReturn(Optional.of(mock(ChatRoom.class)));
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> chatService.deleteChatRoom(chatRoomId, userId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 채팅룸_조회_성공한_경우() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(chatRoomRepository.findAllChatRoomsByUser(any()))
+                .thenReturn(List.of());
+
+        // Then
+        assertDoesNotThrow(() -> chatService.chatRoomList(userId));
+    }
+
+    @Test
+    void 채팅룸_닉네임으로_조회_성공한_경우() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(chatRoomRepository.findAllChatRoomsByUserAndNickname(any(), anyString()))
+                .thenReturn(List.of());
+
+        // Then
+        assertDoesNotThrow(() -> chatService.chatRoomList(userId));
     }
 }
