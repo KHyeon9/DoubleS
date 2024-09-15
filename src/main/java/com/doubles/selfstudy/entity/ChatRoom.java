@@ -24,6 +24,9 @@ public class ChatRoom {
     @JoinColumn(name = "user2_id")
     private UserAccount user2;
 
+    @Column(name = "leave_user")
+    private String leaveUserId;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -44,7 +47,8 @@ public class ChatRoom {
     }
 
     @PrePersist
-    void createdAt() {
+    void prePersist() {
+        this.leaveUserId = null;
         this.createdAt = LocalDateTime.now();
     }
 }
