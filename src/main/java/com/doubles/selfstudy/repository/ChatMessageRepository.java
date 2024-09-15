@@ -11,4 +11,7 @@ import java.util.List;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     // 채팅룸의 메세지 조회
     List<ChatMessage> findAllByChatRoom(ChatRoom chatRoom);
+    
+    // 같은 채팅룸의 메세지 모두 삭제
+    void deleteAllByChatRoom(ChatRoom chatRoom);
 }
