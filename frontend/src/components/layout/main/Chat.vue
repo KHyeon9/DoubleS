@@ -20,11 +20,12 @@
         <div class="col-md-5 col-lg-4">
           <div class="card blur shadow-blur max-height-vh-70 overflow-auto overflow-x-hidden mb-5 mb-lg-0">
             <div class="card-header p-3">
-              <h6>Friends</h6>
-              <div class="input-group input-group-outline">
-                <label class="form-label">Search contact</label>
-                <input type="text" class="form-control" onfocus="focused(this)" onfocusout="defocused(this)">
-              </div>
+              <h6>Chat Users</h6>
+              <form @submit.prevent="getChatRoomListByNickname">
+                <div class="input-group input-group-outline">
+                  <input v-model="searchNickname" type="text" class="form-control" placeholder="닉네임을 검색해보세요!">
+                </div>
+              </form>
             </div>
             <div class="chatRoomList card-body p-2">
               <a v-if="chatRoomList.length == 0" class="d-block m-2 border-radius-lg bg-light">
@@ -75,28 +76,18 @@
                     </div>
                   </div>
                   <div class="col-1 my-auto">
-                    <div class="dropdown">
-                      <button class="btn btn-icon-only text-white mb-0" type="button" data-bs-toggle="dropdown">
+                    <div class="setting-container">
+                      <button class="btn btn-icon-only text-white" type="button" data-bs-toggle="dropdown">
                         <i class="material-icons">settings</i>
                       </button>
-                      <ul class="dropdown-menu dropdown-menu-end me-sm-n2 p-2" aria-labelledby="chatmsg">
+                      <ul class="dropdown-menu dropdown-menu-end p-2">
                         <li>
-                          <a class="dropdown-item border-radius-md" href="javascript:;">
+                          <a @click="goProfile" class="dropdown-item border-radius-md">
                             Profile
                           </a>
                         </li>
                         <li>
-                          <a class="dropdown-item border-radius-md" href="javascript:;">
-                            Mute conversation
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item border-radius-md" href="javascript:;">
-                            Block
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item border-radius-md" href="javascript:;">
+                          <a @click="clearChat" class="dropdown-item border-radius-md">
                             Clear chat
                           </a>
                         </li>
@@ -104,7 +95,7 @@
                           <hr class="dropdown-divider">
                         </li>
                         <li>
-                          <a class="dropdown-item border-radius-md text-danger" href="javascript:;">
+                          <a @click="deleteChatRoom" class="dropdown-item border-radius-md text-danger">
                             Delete chat
                           </a>
                         </li>
@@ -191,24 +182,28 @@
   import { useAuthStore } from '../../../store/authStore';
   import { useFormat } from '../../../utils/format'
   import moment from 'moment';
+  import { useRouter } from 'vue-router';
 
   const { formatDateTime, formatDatediff } = useFormat();
+  const router = useRouter();
 
   const activeLink = ref(0);
 
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
   const userId = computed(() => authStore.userId);
-  
+
   const chatRoomList = ref([]);
   const chatMessageList = ref([]);
-
+  
   const nowChatUserNickname = ref('');
   const nowChatUserId = ref('');
   const nowChatDiscription = ref('');
   const nowChatRoomId = ref(0);
-
+  
+  const searchNickname = ref('');
   const message = ref('');
+
   let websocketClient = '';
 
   const sendMessage = async () => {
@@ -245,7 +240,15 @@
       nowChatUserId.value = '';
       nowChatUserNickname.value = '';
       nowChatDiscription.value = '';
-      getChatRoomList();
+
+      console.log(searchNickname.value);
+
+      if (searchNickname.value !== '') {
+        getChatRoomListByNickname(searchNickname.value);
+      } else{
+        getChatRoomList();
+      }
+
       console.log('연결 종료');
     }
 
@@ -316,9 +319,72 @@
       chatRoomList.value = response.data.result;
 
     } catch (error) {
-      onsole.log('채팅방을 가져오지 못했습니다.', error);
+      console.log('채팅방을 가져오지 못했습니다.', error);
       alert('채팅방을 가져오는데 오류가 생겼습니다.');
     }
+  };
+
+  const getChatRoomListByNickname = async () => {
+    try {
+      const response = await apiClient.get(`/main/chat/room/${searchNickname.value}`);
+
+      console.log(response.data.result);
+
+      chatRoomList.value = response.data.result;
+
+    } catch (error) {
+      console.log('닉네임으로 채팅방을 가져오지 못했습니다.', error);
+      alert('닉네임으로 채팅방을 가져오는데 오류가 생겼습니다.');
+    }
+  };
+
+  const deleteChatRoom = async () => {
+    if (nowChatRoomId.value === 0) {
+      alert('채팅방이 선택되어 있지 않습니다.');
+      return;
+    }
+
+    try {
+      const response = await apiClient.delete(`/main/chat/room`, {
+        params: {
+          chatRoomId: nowChatRoomId.value,
+        }
+      });
+
+      nowChatUserId.value = '';
+      nowChatUserNickname.value = '';
+      nowChatDiscription.value = '';
+      nowChatRoomId.value = 0;
+      websocketClient = '';
+      clearChat();
+
+      console.log('채팅방이 삭제되었습니다.', response);
+
+      getChatRoomList();
+
+    } catch (error) {
+      console.log('채팅방을 삭제하지 못했습니다.', error);
+      alert('채팅방을 삭제하는데 오류가 생겼습니다.');
+    }
+  };
+
+  const goProfile = () => {
+    if (nowChatUserId.value !== '') {
+      router.push(`/main/profile/${nowChatUserId.value}`);
+    } else {
+      alert('채팅방이 선택되어 있지 않습니다.');
+    }
+  };
+
+  
+
+  const clearChat = () => {
+    if (nowChatRoomId.value === 0) {
+      alert('채팅방이 선택되어 있지 않습니다.');
+      return;
+    }
+
+    chatMessageList.value = [];
   };
 
   const setActive = (chatRoomId) => {
@@ -357,4 +423,9 @@
   .dropdown-menu::before {
     content: none;
   }
+
+  .dropdown-menu {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  }
+
 </style>

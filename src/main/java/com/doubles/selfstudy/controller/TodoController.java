@@ -55,7 +55,7 @@ public class TodoController {
             Authentication authentication,
             @PathVariable Long todoId,
             @RequestBody TodoRequest request
-            ) {
+    ) {
         TodoDto todoDto = todoService.modifyTodoInfo(
                 authentication.getName(),
                 todoId,
