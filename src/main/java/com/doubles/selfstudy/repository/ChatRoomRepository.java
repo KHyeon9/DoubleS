@@ -19,8 +19,9 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             "LEFT JOIN FETCH cr.user2 u2 " +
             "LEFT JOIN ChatMessage cm ON cm.chatRoom = cr AND cm.createdAt = " +
             "       (SELECT MAX(cm2.createdAt) FROM ChatMessage cm2 WHERE cm2.chatRoom = cr) " +
-            "WHERE u1 = :user OR u2 = :user")
-    List<Object[]> findAllChatRoomsByUser(@Param("user") UserAccount user);
+            "WHERE (u1 = :user OR u2 = :user) " +
+            "AND (cr.leaveUserId IS NULL OR cr.leaveUserId != :userId)")
+    List<Object[]> findAllChatRoomsByUser(@Param("user") UserAccount user, @Param("userId") String userId);
 
     // 유저 닉네임으로 검색
     @Query("SELECT DISTINCT cr, cm.message, cm.createdAt " +
@@ -30,8 +31,9 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             "LEFT JOIN ChatMessage cm ON cm.chatRoom = cr AND cm.createdAt = " +
             "       (SELECT MAX(cm2.createdAt) FROM ChatMessage cm2 WHERE cm2.chatRoom = cr) " +
             "WHERE (u1 = :user OR u2 = :user) " +
-            "AND (CASE WHEN u1 = :user THEN u2.nickname ELSE u1.nickname END) = :nickname")
-    List<Object[]> findAllChatRoomsByUserAndNickname(@Param("user") UserAccount user, @Param("nickname") String nickname);
+            "AND (CASE WHEN u1 = :user THEN u2.nickname ELSE u1.nickname END) LIKE %:nickname% " +
+            "AND (:userId IS NULL OR cr.leaveUserId != :userId)")
+    List<Object[]> findAllChatRoomsByUserAndNickname(@Param("user") UserAccount user, @Param("userId") String userId, @Param("nickname") String nickname);
 
     @Query("SELECT cr FROM ChatRoom cr WHERE (cr.user1 = :user1 AND cr.user2 = :user2) OR (cr.user1 = :user2 AND cr.user2 = :user1)")
     Optional<ChatRoom> findByUsers(@Param("user1") UserAccount user1, @Param("user2") UserAccount user2);
