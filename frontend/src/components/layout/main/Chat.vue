@@ -182,10 +182,11 @@
   import { useAuthStore } from '../../../store/authStore';
   import { useFormat } from '../../../utils/format'
   import moment from 'moment';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
 
   const { formatDateTime, formatDatediff } = useFormat();
   const router = useRouter();
+  const route = useRoute();
 
   const activeLink = ref(0);
 
@@ -225,8 +226,16 @@
       })
     });
 
-    chatRoomList.value[nowChatRoomId.value - 1].lastMessageTime = moment();
-    chatRoomList.value[nowChatRoomId.value - 1].lastMessage = message.value;
+    if (nowChatDiscription.value !== `마지막 메세지는 오늘 입니다.`) {
+      nowChatDiscription.value = `마지막 메세지는 오늘 입니다.`;
+    }
+
+    const chatRoom = chatRoomList.value.find(room => room.id === nowChatRoomId.value);
+
+    if (chatRoom) {
+      chatRoom.lastMessageTime = moment();
+      chatRoom.lastMessage = message.value;
+    }
 
     message.value = '';
   }
@@ -262,7 +271,11 @@
       nowChatUserNickname.value = user1.nickname;
     }
 
-    nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
+    if(date === null) {
+      nowChatDiscription.value = `마지막 메세지는 오늘 입니다.`;
+    } else {
+      nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
+    }
 
     chatMessageList.value = [];
 
@@ -376,8 +389,6 @@
     }
   };
 
-  
-
   const clearChat = () => {
     if (nowChatRoomId.value === 0) {
       alert('채팅방이 선택되어 있지 않습니다.');
@@ -397,6 +408,16 @@
   };
 
   onMounted(() => {
+    console.log('라우터 상태:', history.state);
+    
+    const chatRoomData = history.state.chatRoomData;
+    if (chatRoomData) {
+      console.log(chatRoomData);
+      connect(chatRoomData.id, chatRoomData.user1, chatRoomData.user2, chatRoomData.lastMessageTime);
+    } else {
+      console.log('채팅방 데이터가 없습니다.');
+    }
+
     getChatRoomList();
   });
 

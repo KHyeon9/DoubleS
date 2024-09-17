@@ -20,9 +20,9 @@
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" role="tablist">
               <li class="nav-item">
-                <a class="nav-link mb-0 px-0 py-1 " role="tab">
-                  <i class="material-icons text-lg position-relative">email</i>
-                  <span class="ms-1">Messages</span>
+                <a @click="goToChatPage(profileData.userId)" class="nav-link mb-0 px-0 py-1 " role="tab">
+                  <i class="material-icons text-lg position-relative">chat</i>
+                  <span class="ms-1">채팅</span>
                 </a>
               </li>
               <li v-if="userId === profileData.userId" class="nav-item">
@@ -31,7 +31,7 @@
                   :to="`/main/profile/modify/${userId}`"
                 >
                   <i class="material-icons text-lg position-relative">settings</i>
-                  <span class="ms-1">Modify</span>
+                  <span class="ms-1">수정</span>
                 </router-link>
               </li>
             </ul>
@@ -103,7 +103,8 @@
   import { useRoute } from 'vue-router';
   import apiClient from '../../../config/authConfig';
   import { useAuthStore } from '../../../store/authStore.js';
-
+  import router from '../../../router/router.js';
+  
   const route = useRoute();
   const authStore = useAuthStore();
   const userId = computed(() => authStore.userId);
@@ -122,6 +123,28 @@
     }
   };
 
+  const goToChatPage = async (userId) => {
+    try {
+      const response = await apiClient.post('/main/chat/room', null, {
+        params: {
+          toUserId: userId,
+        },
+      });
+
+      const chatRoomData = response.data.result;
+
+      console.log(chatRoomData);
+
+      router.push({
+        path: '/main/chat',
+        state: { chatRoomData: chatRoomData } 
+      });
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('채팅관련 에러가 발생했습니다.');
+    }
+  };
+
   const truncateText = (text, len) => {
     // 전체 길이가 maxLength보다 작으면 그대로 반환
     if (text.length <= len) {
@@ -130,8 +153,6 @@
 
     return text.slice(0, len) + '...';
   };
-
-  
 
   onMounted(() => {
     getProfile(route.params.userId);
@@ -143,7 +164,7 @@
       getProfile(newUserId);
     }
   );
-  </script>
+</script>
 <style scoped>
   
 </style>
