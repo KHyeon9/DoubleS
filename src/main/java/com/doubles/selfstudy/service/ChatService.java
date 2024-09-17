@@ -62,6 +62,20 @@ public class ChatService {
         ).toList();
     }
 
+    // 채팅룸 유저 아이디로 조회
+    public ChatRoomDto getChatRoomByUserIds(String fromUserId, String toUserId) {
+        return ChatRoomDto.fromEntity(
+                serviceUtils.getChatRoomByUserIdsOrException(fromUserId, toUserId)
+        );
+    }
+
+    // 채팅룸id로 채팅룸 조회
+    public ChatRoomDto getChatRoomByChatRoomId(Long chatRoomId) {
+        return ChatRoomDto.fromEntity(
+                serviceUtils.getChatRoomOrException(chatRoomId)
+        );
+    }
+
     // 채팅 메세지 리스트 조회
     public List<ChatMessageDto> chatMessageListByChatRoomId(Long chatRoomId) {
         // 채팅룸 조회
@@ -77,7 +91,7 @@ public class ChatService {
 
     // 채팅룸 생성
     @Transactional
-    public void newChatRoom(String fromUserId, String toUserId) {
+    public ChatRoomDto newChatRoom(String fromUserId, String toUserId) {
         // 채팅룸 생성하는 유저 조회
         UserAccount user1 = serviceUtils.getUserAccountOrException(fromUserId);
 
@@ -98,7 +112,7 @@ public class ChatService {
         ChatRoom newChatRoom = ChatRoom.of(user1, user2);
         
         // 저장
-        chatRoomRepository.save(newChatRoom);
+        return ChatRoomDto.fromEntity(chatRoomRepository.save(newChatRoom));
     }
 
     // 채팅 메세지 생성

@@ -17,6 +17,7 @@ public class ChatRoomController {
 
     private final ChatService chatService;
 
+    // 채팅룸 리스트 반환
     @GetMapping
     public Response<List<ChatRoomResponse>> chatRoomList(
             Authentication authentication
@@ -31,6 +32,7 @@ public class ChatRoomController {
         );
     }
 
+    // 채팅룸 리스트 닉네임으로 검색
     @GetMapping("/{nickname}")
     public Response<List<ChatRoomResponse>> chatRoomList(
             Authentication authentication,
@@ -46,16 +48,46 @@ public class ChatRoomController {
         );
     }
 
+    // 채팅룸이 존재하면 조회
+    @GetMapping("/user/{toUserId}")
+    public Response<ChatRoomResponse> getChatRoomByToUserId(
+            Authentication authentication,
+            @PathVariable String toUserId
+    ) {
+        return Response.success(
+                ChatRoomResponse.fromChatRoomDto(
+                    chatService.getChatRoomByUserIds(authentication.getName(), toUserId)
+                )
+        );
+    }
+
+    // 채팅룸 id로 채팅룸 데이터 조회
+    @GetMapping("/id/{chatRoomId}")
+    public Response<ChatRoomResponse> getChatRoomByChatRoomId(
+            @PathVariable Long chatRoomId
+    ) {
+        return Response.success(
+                ChatRoomResponse.fromChatRoomDto(
+                        chatService.getChatRoomByChatRoomId(chatRoomId)
+                )
+        );
+    }
+
+    // 채팅룸 생성
     @PostMapping
-    public Response<Void> createChatRoom(
+    public Response<ChatRoomResponse> createChatRoom(
             Authentication authentication,
             @RequestParam String toUserId
     ) {
-        chatService.newChatRoom(authentication.getName(), toUserId);
-
-        return Response.success();
+        System.out.println("toUserId : " + toUserId);
+        return Response.success(
+                ChatRoomResponse.fromChatRoomDto(
+                    chatService.newChatRoom(authentication.getName(), toUserId)
+                )
+        );
     }
 
+    // 채팅룸 삭제
     @DeleteMapping
     public Response<Void> deleteChatRoom(
             Authentication authentication,
