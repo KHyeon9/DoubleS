@@ -145,4 +145,13 @@ public class ServiceUtils {
                 )
         );
     }
+
+    // 채팅룸을 유저 아이디 2개로 조회
+    public ChatRoom getChatRoomByUserIdsOrException(String userId1, String userId2) {
+        return chatRoomRepository.findByUserIds(userId1, userId2).orElseThrow(() ->
+            new DoubleSApplicationException(ErrorCode.CHAT_ROOM_NOT_FOUND,
+                   "채팅룸을 찾지 못했습니다."
+            )
+        );
+    }
 }
