@@ -14,6 +14,7 @@
               class="form-control"
               @focus="handleFindUserIdFocus"
               @blur="handleFindUserIdBlur"
+              @keyup.enter="findUserProfile"
             >
           </div>
         </div>
