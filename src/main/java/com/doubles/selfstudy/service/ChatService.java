@@ -64,9 +64,21 @@ public class ChatService {
 
     // 채팅룸 유저 아이디로 조회
     public ChatRoomDto getChatRoomByUserIds(String fromUserId, String toUserId) {
-        return ChatRoomDto.fromEntity(
-                serviceUtils.getChatRoomByUserIdsOrException(fromUserId, toUserId)
-        );
+        // 채팅룸 조회
+        ChatRoom chatRoom = serviceUtils.getChatRoomByUserIdsOrException(fromUserId, toUserId);
+
+        // 마지막 메세지 조회
+        ChatMessage chatMessage = serviceUtils.getChatMessageByChatRoomIdOrNull(chatRoom.getId());
+
+        if (chatMessage != null) {
+            return ChatRoomDto.fromEntity(
+                    chatRoom,
+                    chatMessage.getMessage(),
+                    chatMessage.getCreatedAt()
+            );
+        }
+
+        return ChatRoomDto.fromEntity(chatRoom);
     }
 
     // 채팅룸id로 채팅룸 조회
