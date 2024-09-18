@@ -120,6 +120,10 @@ const router = createRouter({
           component: Profile,
         },
         {
+          path: 'profile/user/:userId', 
+          component: Profile,
+        },
+        {
           path: 'profile/modify/:userId', 
           component: ModifiyProfile,
         },

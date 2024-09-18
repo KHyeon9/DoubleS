@@ -14,6 +14,7 @@
               class="form-control"
               @focus="handleFindUserIdFocus"
               @blur="handleFindUserIdBlur"
+              @keyup.enter="findUserProfile"
             >
           </div>
         </div>
@@ -135,6 +136,7 @@
 
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
+  const userId = computed(() => authStore.userId);
 
   const findUserId = ref('');
   const isFindIdFocused = ref(false);
@@ -148,10 +150,13 @@
       const response = await apiClient.get(`/main/check/${findUserId.value}`);
       
       console.log(response.data.result);
+      console.log(userId.value);
       
-      if (response.data.result) {
+      if (findUserId.value !== userId.value) {
+        router.push(`/main/profile/user/${findUserId.value}`);
+      } else {
         router.push(`/main/profile/${findUserId.value}`);
-      } 
+      }
 
       findUserId.value = '';
     } catch (error) {

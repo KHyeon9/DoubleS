@@ -271,11 +271,7 @@
       nowChatUserNickname.value = user1.nickname;
     }
 
-    if(date === null) {
-      nowChatDiscription.value = `마지막 메세지는 오늘 입니다.`;
-    } else {
-      nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
-    }
+    nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
 
     chatMessageList.value = [];
 
@@ -413,7 +409,7 @@
     const chatRoomData = history.state.chatRoomData;
     if (chatRoomData) {
       console.log(chatRoomData);
-      connect(chatRoomData.id, chatRoomData.user1, chatRoomData.user2, chatRoomData.lastMessageTime);
+      connect(chatRoomData.id, chatRoomData.user1, chatRoomData.user2, formatDatediff(chatRoomData.lastMessageTime));
     } else {
       console.log('채팅방 데이터가 없습니다.');
     }

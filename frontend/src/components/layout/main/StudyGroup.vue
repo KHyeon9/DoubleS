@@ -65,10 +65,11 @@
             <table v-else class="table align-items-center mb-0">
               <thead>
                 <tr>
-                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">유저 정보</th>
-                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">직책</th>
-                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">가입 날짜</th>
-                  <th class="text-secondary opacity-7"></th>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 col-5">유저 정보</th>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2 col-2">직책</th>
+                  <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7 col-3">가입 날짜</th>
+                  <th class="text-secondary opacity-7 col-1"></th>
+                  <th class="text-secondary opacity-7 col-1"></th>
                 </tr>
               </thead>
               <tbody>
@@ -86,6 +87,13 @@
                   </td>
                   <td class="align-middle text-center">
                     <span class="text-secondary text-sm font-weight-bold">{{ formatDate(userInfo.joinedAt) }}</span>
+                  </td>
+                  <td class="align-middle">
+                    <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"
+                      class="text-secondary font-weight-bold text-sm" role="button"
+                    >
+                      <i class="material-icons text-lg position-relative pointer">workspace_premium</i>
+                    </a>
                   </td>
                   <td class="align-middle">
                     <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"

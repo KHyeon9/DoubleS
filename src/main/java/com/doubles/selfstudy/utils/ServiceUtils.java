@@ -25,6 +25,7 @@ public class ServiceUtils {
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
@@ -153,5 +154,10 @@ public class ServiceUtils {
                    "채팅룸을 찾지 못했습니다."
             )
         );
+    }
+
+    // 채팅룸 id로 마지막 메세지 검색
+    public ChatMessage getChatMessageByChatRoomIdOrNull(Long chatRoomId) {
+        return chatMessageRepository.findLastMessageByChatRoomId(chatRoomId).orElse(null);
     }
 }
