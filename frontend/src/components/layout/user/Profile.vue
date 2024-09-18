@@ -140,8 +140,21 @@
         state: { chatRoomData: chatRoomData } 
       });
     } catch (error) {
-      console.log('에러가 발생했습니다.', error);
-      alert('채팅관련 에러가 발생했습니다.');
+      if (error.response.data.resultCode === 'CHAT_ROOM_IS_EXIST') {
+        console.log('채팅방이 존재합니다.');
+        if(confirm('채팅방이 존재합니다. 채팅방으로 이동하시겠습니까?')) {
+          const response = await apiClient.get(`/main/chat/room/user/${userId}`);
+          const chatRoomData = response.data.result;
+
+          router.push({
+            path: '/main/chat',
+            state: { chatRoomData: chatRoomData } 
+          });
+        }
+      } else {
+        console.log('에러가 발생했습니다.', error);
+        alert('채팅관련 에러가 발생했습니다.');
+      }
     }
   };
 
