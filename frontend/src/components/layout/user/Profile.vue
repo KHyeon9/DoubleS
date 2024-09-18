@@ -19,10 +19,16 @@
         <div class="col-lg-3 col-md-4 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
           <div class="nav-wrapper position-relative end-0">
             <ul class="nav nav-pills nav-fill p-1" role="tablist">
-              <li class="nav-item">
-                <a @click="goToChatPage(profileData.userId)" class="nav-link mb-0 px-0 py-1 " role="tab">
+              <li v-if="userId !== profileData.userId" class="nav-item">
+                <a @click="goToChatPage(profileData.userId)" class="nav-link mb-0 px-0 py-1 " role="button">
                   <i class="material-icons text-lg position-relative">chat</i>
                   <span class="ms-1">채팅</span>
+                </a>
+              </li>
+              <li v-if="userId !== profileData.userId && !profileData.nowStudyGroupInvite" class="nav-item">
+                <a class="nav-link mb-0 px-0 py-1 " role="button">
+                  <i class="material-icons text-lg position-relative">group</i>
+                  <span class="ms-1">그룹 초대</span>
                 </a>
               </li>
               <li v-if="userId === profileData.userId" class="nav-item">
