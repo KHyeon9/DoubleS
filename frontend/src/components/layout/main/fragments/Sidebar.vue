@@ -160,13 +160,17 @@
   const userId = computed(() => authStore.userId);
 
   const isActive = (path) => {
-    const nowPath = path.split('/');
+    if (route.path.startsWith('/main/profile/user')) {
+      return;
+    }
 
+    const nowPath = path.split('/');
+    
     if (nowPath.length == 2) {
       return route.path === path;
     }
     
-    return  route.path.startsWith(path);
+    return route.path.startsWith(path);
   };
 
   const logout = () => {
