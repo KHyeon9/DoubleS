@@ -90,13 +90,24 @@ public class StudyGroupController {
         return Response.success();
     }
 
-    // 그룹 초대
+    // 그룹 초대 알림 전송
     @PostMapping("/invite")
     private Response<Void> inviteStudyGroupMember(
             Authentication authentication,
-            @RequestBody String inviteUserId
+            @RequestParam String inviteUserId
     ) {
-        studyGroupService.inviteStudyGroupMember(authentication.getName(), inviteUserId);
+        studyGroupService.inviteAlarmStudyGroupMember(authentication.getName(), inviteUserId);
+
+        return Response.success();
+    }
+
+    // 그룹 초대 확인
+    @PostMapping("/join")
+    private Response<Void> joinStudyGroup(
+            Authentication authentication,
+            @RequestParam String leaderUserId
+    ) {
+        studyGroupService.joinStudyGroupMember(authentication.getName(), leaderUserId);
 
         return Response.success();
     }
