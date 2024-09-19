@@ -26,7 +26,7 @@
                 </a>
               </li>
               <li v-if="userId !== profileData.userId && !profileData.nowStudyGroupInvite" class="nav-item">
-                <a class="nav-link mb-0 px-0 py-1 " role="button">
+                <a @click="inviteStudyGroup(profileData.userId)" class="nav-link mb-0 px-0 py-1 " role="button">
                   <i class="material-icons text-lg position-relative">group</i>
                   <span class="ms-1">그룹 초대</span>
                 </a>
@@ -160,6 +160,28 @@
       } else {
         console.log('에러가 발생했습니다.', error);
         alert('채팅관련 에러가 발생했습니다.');
+      }
+    }
+  };
+
+  const inviteStudyGroup = async (userId) => {
+    try {
+      const response = await apiClient.post('/main/study_group/invite', null, {
+        params: {
+          inviteUserId: userId,
+        },
+      });
+
+      console.log(response.data.result);
+
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      if (error.response.data.resultCode === 'INVALID_PERMISSION') {
+        alert('스터디 그룹 초대에 대한 권한이 없습니다.');
+      } else if (error.response.data.resultCode === 'STUDY_GROUP_FULL') {
+        alert('스터디 그룹이 가득차 초대할 수 없습니다.');
+      } else {
+        alert('스터디 그룹 초대에 에러가 발생했습니다.');
       }
     }
   };
