@@ -11,25 +11,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AlarmResponse {
 
-    private Long id;
-    private UserResponse user;
     private AlarmType alarmType;
-    private String fromUserId;
     private Long targetId;
-    private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private String data;
+    private Long alarmCount;
 
     public static AlarmResponse fromAlarmDto(AlarmDto dto) {
         return new AlarmResponse(
-                dto.getId(),
-                UserResponse.fromUserAccountDto(dto.getUser()),
                 dto.getAlarmType(),
-                dto.getFromUserId(),
                 dto.getTargetId(),
-                dto.getContent(),
-                dto.getCreatedAt(),
-                dto.getModifiedAt()
+                dto.getData(),
+                dto.getAlarmCount()
         );
     }
 }

@@ -13,25 +13,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AlarmDto {
 
-    private Long id;
-    private UserAccountDto user;
     private AlarmType alarmType;
-    private String fromUserId;
     private Long targetId;
-    private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private String data;
+    private Long alarmCount;
 
-    public static AlarmDto fromEntity(Alarm entity) {
+    public static AlarmDto fromEntity(AlarmType alarmType, Long targetId, String data, Long alarmCount) {
         return new AlarmDto(
-                entity.getId(),
-                UserAccountDto.fromEntity(entity.getUserAccount()),
-                entity.getAlarmType(),
-                entity.getFromUserId(),
-                entity.getTargetId(),
-                entity.getContent(),
-                entity.getCreatedAt(),
-                entity.getModifiedAt()
+                alarmType,
+                targetId,
+                data,
+                alarmCount
         );
     }
 }
