@@ -39,55 +39,47 @@ public class Alarm {
     @Column(name = "target_id")
     private Long targetId;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "data")
+    private String data;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
-
     protected Alarm() {}
 
-    private Alarm(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private Alarm(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId, String data, LocalDateTime createdAt) {
         this.userAccount = userAccount;
         this.alarmType = alarmType;
         this.fromUserId = fromUserId;
         this.targetId = targetId;
+        this.data = data;
         this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
     }
 
-    public static Alarm of(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId) {
+    public static Alarm of(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId, String data) {
         return Alarm.of(
                 userAccount,
                 alarmType,
                 fromUserId,
                 targetId,
-                null,
+                data,
                 null
         );
     }
 
-    public static Alarm of(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public static Alarm of(UserAccount userAccount, AlarmType alarmType, String fromUserId, Long targetId, String data, LocalDateTime createdAt) {
         return new Alarm(
                 userAccount,
                 alarmType,
                 fromUserId,
                 targetId,
-                createdAt,
-                modifiedAt
+                data,
+                createdAt
         );
     }
 
     @PrePersist
-    void createdAt() {
+    void prePersist() {
         this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    void modifiedAt() {
-        this.modifiedAt = LocalDateTime.now();
     }
 }
