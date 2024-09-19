@@ -1,11 +1,14 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.dto.question.QuestionBoardCommentDto;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardComment;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionBoardCommentService {
 
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
+    private final AlarmRepository alarmRepository;
     private final ServiceUtils serviceUtils;
 
     // 질문 게시글 댓글 리스트 조회
@@ -43,6 +47,17 @@ public class QuestionBoardCommentService {
 
         // 댓글 저장
         questionBoardCommentRepository.save(QuestionBoardComment.of(comment, userAccount, questionBoard));
+
+        // 알람 저장
+        Alarm alarm = Alarm.of(
+                questionBoard.getUserAccount(),
+                AlarmType.NEW_COMMENT_ON_POST,
+                userId,
+                questionBoardId,
+                questionBoard.getTitle()
+            );
+
+        alarmRepository.save(alarm);
     }
 
     // 질문 게시글 댓글 수정

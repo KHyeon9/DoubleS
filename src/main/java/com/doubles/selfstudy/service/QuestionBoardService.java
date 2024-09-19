@@ -1,12 +1,15 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.dto.question.QuestionBoardDto;
 import com.doubles.selfstudy.dto.question.QuestionBoardTag;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
@@ -26,6 +29,7 @@ public class QuestionBoardService {
     private final QuestionBoardRepository questionBoardRepository;
     private final QuestionBoardLikeRepository questionBoardLikeRepository;
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
+    private final AlarmRepository alarmRepository;
     private final ServiceUtils serviceUtils;
 
     // 질문 게시글 리스트
@@ -156,8 +160,10 @@ public class QuestionBoardService {
                     )
                 );
         }
-        
+
         // 게시글과 관련된 모든 것 삭제
+        alarmRepository.deleteByTargetIdAndAlarmType(questionBoardId, AlarmType.NEW_LIKE_ON_POST);
+        alarmRepository.deleteByTargetIdAndAlarmType(questionBoardId, AlarmType.NEW_COMMENT_ON_POST);
         questionBoardLikeRepository.deleteAllByQuestionBoardId(questionBoardId);
         questionBoardCommentRepository.deleteAllByQuestionBoardId(questionBoardId);
         questionBoardRepository.delete(questionBoard);
@@ -185,6 +191,16 @@ public class QuestionBoardService {
 
         // 좋아요 저장
         questionBoardLikeRepository.save(QuestionBoardLike.of(questionBoard, userAccount));
+
+        Alarm alarm = Alarm.of(
+                questionBoard.getUserAccount(),
+                AlarmType.NEW_LIKE_ON_POST,
+                userId,
+                questionBoardId,
+                questionBoard.getTitle()
+        );
+
+        alarmRepository.save(alarm);
     }
 
     // 좋아요 삭제

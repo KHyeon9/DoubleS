@@ -2,11 +2,14 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.Chat.ChatMessageDto;
 import com.doubles.selfstudy.dto.Chat.ChatRoomDto;
+import com.doubles.selfstudy.dto.alarm.AlarmType;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.ChatMessage;
 import com.doubles.selfstudy.entity.ChatRoom;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.ChatMessageRepository;
 import com.doubles.selfstudy.repository.ChatRoomRepository;
 import com.doubles.selfstudy.utils.ServiceUtils;
@@ -24,6 +27,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final AlarmRepository alarmRepository;
     private final ServiceUtils serviceUtils;
 
     // 채팅룸 리스트 조회
@@ -138,6 +142,19 @@ public class ChatService {
 
         // 메세지 생성
         ChatMessage chatMessage = ChatMessage.of(chatRoom, userAccount, message);
+
+        // 알림 저장
+        UserAccount alarmUser = null;
+
+        if (chatRoom.getUser1() == userAccount) {
+            alarmUser = chatRoom.getUser2();
+        } else {
+            alarmUser = chatRoom.getUser1();
+        }
+
+        // 알람 저장
+        Alarm alarm = Alarm.of(alarmUser, AlarmType.NEW_CHAT_MESSAGE, userId, chatRoom.getId(), alarmUser.getUserId());
+        alarmRepository.save(alarm);
 
         return ChatMessageDto.fromEntity(chatMessageRepository.save(chatMessage));
     }

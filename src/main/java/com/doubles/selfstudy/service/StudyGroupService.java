@@ -1,17 +1,16 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupDto;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
 import com.doubles.selfstudy.dto.studygroup.UserStudyGroupDto;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
-import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
-import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
-import com.doubles.selfstudy.repository.StudyGroupRepository;
-import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import com.doubles.selfstudy.repository.*;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,7 @@ public class StudyGroupService {
     private final UserStudyGroupRepository userStudyGroupRepository;
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
+    private final AlarmRepository alarmRepository;
 
     private final ServiceUtils serviceUtils;
 
@@ -120,11 +120,34 @@ public class StudyGroupService {
         studyGroupRepository.deleteById(userStudyGroup.getStudyGroup().getId());
     }
 
-    // 스터디 그룹 초대
+    // 스터디 그룹 권한 확인 및 알림 전송
+    // TODO: 테스트 필요
     @Transactional
-    public void inviteStudyGroupMember(String userId, String inviteUserId) {
+    public void inviteAlarmStudyGroupMember(String userId, String inviteUserId) {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
+
+        if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) >= 5) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.STUDY_GROUP_FULL,
+                    "해당 스터디 그룹은 이미 최대 인원입니다."
+            );
+        }
+
+        // 초대할 user 확인
+        UserAccount inviteMemberAccount = serviceUtils.getUserAccountOrException(inviteUserId);
+
+        // 알람 생성
+        Alarm inviteAlarm = Alarm.of(inviteMemberAccount, AlarmType.INVITE_STUDY_GROUP, userId, userStudyGroup.getStudyGroup().getId(), userStudyGroup.getStudyGroup().getStudyGroupName());
+        alarmRepository.save(inviteAlarm);
+    }
+
+    // 스터디 그룹 초대
+    // TODO: 위에 알람이 추가됨으로써 수정 가능성이 생김
+    @Transactional
+    public void joinStudyGroupMember(String inviteUserId, String leaderUserId) {
+        // study group 권한 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(leaderUserId);
 
         if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) > 5) {
             throw new DoubleSApplicationException(
