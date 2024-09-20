@@ -1,9 +1,11 @@
 package com.doubles.selfstudy.controller;
 
 import com.doubles.selfstudy.dto.Chat.ChatRoomDto;
+import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.ChatRoomFixture;
+import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.service.ChatService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,8 +30,6 @@ class ChatRoomControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private ChatService chatService;
@@ -39,9 +38,17 @@ class ChatRoomControllerTest {
     @WithMockUser
     void 채팅룸_생성_성공() throws Exception {
         // Given
+        String userId = "userId";
         String toUserId = "toUserId";
 
-        // When & Then
+        UserAccount user1 = UserAccountFixture.get(userId, "password");
+        UserAccount user2 = UserAccountFixture.get(toUserId, "password");
+
+        // When
+        when(chatService.newChatRoom(any(), any()))
+                .thenReturn(ChatRoomDto.fromEntity(ChatRoomFixture.get(user1, user2)));
+
+        // then
         mockMvc.perform(post("/api/main/chat/room")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("toUserId", toUserId)
@@ -54,9 +61,17 @@ class ChatRoomControllerTest {
     @WithAnonymousUser
     void 채팅룸_생성시_로그인하지_않은_경우_에러_발생() throws Exception {
         // Given
+        String userId = "userId";
         String toUserId = "toUserId";
 
-        // When & Then
+        UserAccount user1 = UserAccountFixture.get(userId, "password");
+        UserAccount user2 = UserAccountFixture.get(toUserId, "password");
+
+        // When
+        when(chatService.newChatRoom(any(), any()))
+                .thenReturn(ChatRoomDto.fromEntity(ChatRoomFixture.get(user1, user2)));
+
+        // Then
         mockMvc.perform(post("/api/main/chat/room")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("toUserId", toUserId)

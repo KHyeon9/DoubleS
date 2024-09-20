@@ -1,6 +1,7 @@
 package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.dto.question.QuestionBoardTag;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardLike;
 import com.doubles.selfstudy.entity.UserAccount;
@@ -8,10 +9,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
-import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
-import com.doubles.selfstudy.repository.QuestionBoardLikeRepository;
-import com.doubles.selfstudy.repository.QuestionBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +39,8 @@ class QuestionBoardServiceTest {
     private QuestionBoardLikeRepository questionBoardLikeRepository;
     @MockBean
     private QuestionBoardCommentRepository questionBoardCommentRepository;
+    @MockBean
+    private AlarmRepository alarmRepository;
 
     @Test
     void 질문_게시글_작성이_성공한_경우() {
@@ -329,6 +329,8 @@ class QuestionBoardServiceTest {
         // When
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
+        when(alarmRepository.save(any()))
+                .thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> questionBoardService.questionBoardLike(userId, questionBoard.getId()));

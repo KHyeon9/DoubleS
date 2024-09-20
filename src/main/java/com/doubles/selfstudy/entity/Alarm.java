@@ -26,7 +26,7 @@ public class Alarm {
     private Long id;
     
     // 알람 받을 사람
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
 

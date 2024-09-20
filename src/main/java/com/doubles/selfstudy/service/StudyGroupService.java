@@ -149,7 +149,7 @@ public class StudyGroupService {
         // study group 권한 확인
         UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupAndPermissionCheck(leaderUserId);
 
-        if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) > 5) {
+        if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) >= 5) {
             throw new DoubleSApplicationException(
                     ErrorCode.STUDY_GROUP_FULL,
                     "해당 스터디 그룹은 이미 최대 인원입니다."

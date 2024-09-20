@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.ChatMessage;
 import com.doubles.selfstudy.entity.ChatRoom;
 import com.doubles.selfstudy.entity.UserAccount;
@@ -8,6 +9,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.ChatMessageFixture;
 import com.doubles.selfstudy.fixture.ChatRoomFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.ChatMessageRepository;
 import com.doubles.selfstudy.repository.ChatRoomRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -37,6 +39,8 @@ class ChatServiceTest {
     private ChatRoomRepository chatRoomRepository;
     @MockBean
     private ChatMessageRepository chatMessageRepository;
+    @MockBean
+    private AlarmRepository alarmRepository;
 
     @Test
     void 채팅룸_생성_성공한_경우() {
@@ -46,6 +50,8 @@ class ChatServiceTest {
         UserAccount user1 = UserAccountFixture.get(userId1, "password");
         UserAccount user2 = UserAccountFixture.get(userId2, "password");
 
+        ChatRoom chatRoom = ChatRoom.of(user1, user2);
+
         // When
         when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.of(user1));
@@ -53,6 +59,8 @@ class ChatServiceTest {
                 .thenReturn(Optional.of(user2));
         when(chatRoomRepository.findByUsers(user1, user2))
                 .thenReturn(Optional.empty());
+        when(chatRoomRepository.save(any()))
+                .thenReturn(chatRoom);
 
         // Then
         assertDoesNotThrow(() -> chatService.newChatRoom(userId1, userId2));
@@ -142,6 +150,8 @@ class ChatServiceTest {
                 .thenReturn(Optional.of(user1));
         when(chatMessageRepository.save(any()))
                 .thenReturn(chatMessage);
+        when(alarmRepository.save(any()))
+                .thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> chatService.newChatMessage(chatRoomId, userId1, message));
@@ -255,7 +265,7 @@ class ChatServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
-        when(chatRoomRepository.findAllChatRoomsByUser(any()))
+        when(chatRoomRepository.findAllChatRoomsByUser(any(), anyString()))
                 .thenReturn(List.of());
 
         // Then
@@ -270,7 +280,7 @@ class ChatServiceTest {
         // When
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
-        when(chatRoomRepository.findAllChatRoomsByUserAndNickname(any(), anyString()))
+        when(chatRoomRepository.findAllChatRoomsByUserAndNickname(any(), anyString(), anyString()))
                 .thenReturn(List.of());
 
         // Then

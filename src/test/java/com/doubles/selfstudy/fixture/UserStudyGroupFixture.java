@@ -21,7 +21,7 @@ public class UserStudyGroupFixture {
         return UserStudyGroup.of(userAccount, StudyGroupPosition.Member, studyGroup);
     }
 
-    public static UserStudyGroup get( UserAccount userAccount) {
+    public static UserStudyGroup get(UserAccount userAccount) {
         StudyGroup studyGroup = StudyGroup.of("group name", "description");
 
         return UserStudyGroup.of(userAccount, StudyGroupPosition.Member, studyGroup);

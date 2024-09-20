@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.QuestionBoard;
 import com.doubles.selfstudy.entity.QuestionBoardComment;
 import com.doubles.selfstudy.entity.UserAccount;
@@ -8,6 +9,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardCommentFixture;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
 import com.doubles.selfstudy.repository.QuestionBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -37,6 +39,8 @@ class QuestionBoardCommentServiceTest {
     private UserAccountRepository userAccountRepository;
     @MockBean
     private QuestionBoardCommentRepository questionBoardCommentRepository;
+    @MockBean
+    private AlarmRepository alarmRepository;
 
     @Test
     void 질문_게시글_댓글_생성_성공() {
@@ -52,6 +56,7 @@ class QuestionBoardCommentServiceTest {
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.save(any())).thenReturn(mock(QuestionBoardComment.class));
+        when(alarmRepository.save(any())).thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> questionBoardCommentService.createQuestionBoardComment(userId, questionBoard.getId(), comment));
