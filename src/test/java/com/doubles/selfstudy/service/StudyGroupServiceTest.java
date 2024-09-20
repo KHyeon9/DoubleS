@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.config.DatabaseCleanup;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
@@ -7,9 +8,12 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +39,8 @@ class StudyGroupServiceTest {
     private StudyGroupRepository studyGroupRepository;
     @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
+    @MockBean
+    private AlarmRepository alarmRepository;
 
     @Test
     void 스터디_그룹_생성에_성공한_경우() {
@@ -314,85 +320,238 @@ class StudyGroupServiceTest {
     }
 
     @Test
-    void 스터디_그룹에_초대가_성공한_경우() {
+    void 스터디_그룹_가입_알림_전송이_성공한_경우() {
         // Given
-        String userId = "userId";
+        String leaderUserId = "leaderUserId";
         String inviteUserId = "inviteUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
-        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupLeaderFixture));
-        when(studyGroupRepository.findById(userStudyGroupLeaderFixture.getStudyGroup().getId()))
-                .thenReturn(Optional.of(studyGroupFixture));
         when(userAccountRepository.findById(inviteUserId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
 
         // Then
-        assertDoesNotThrow(() -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId));
+        assertDoesNotThrow(() -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId));
     }
 
     @Test
-    void 스터디_그룹에_초대시_로그인하지_않은_없는_경우_에러_반환() {
+    void 스터디_그룹_가입_알림_전송시_로그인_안한_경우_에러_반환() {
         // Given
-        String userId = "userId";
+        String leaderUserId = "leaderUserId";
         String inviteUserId = "inviteUserId";
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
+                () -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
-    void 스터디_그룹에_초대시_인원이_다찬_경우_에러_반환() {
+    void 스터디_그룹_가입_알림_전송시_전송_유저가_그룹을_탈퇴한_경우_에러_반환() {
         // Given
-        String userId = "userId";
+        String leaderUserId = "leaderUserId";
         String inviteUserId = "inviteUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
-        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
-                .thenReturn(Optional.of(userStudyGroupLeaderFixture));
-        when(userStudyGroupRepository.countByStudyGroup(studyGroupFixture))
-                .thenReturn(6);
+                .thenReturn(Optional.empty());
 
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
+                () -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId)
+        );
+        assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹_가입_알림_전송시_전송_유저가_리더가_아닌_경우_에러_반환() {
+        // Given
+        String notLeaderUserId = "notLeaderUserId";
+        String inviteUserId = "inviteUserId";
+        String studyGroupName = "studyGroupName";
+        String description = "description";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(notLeaderUserId, studyGroupFixture);
+        UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(notLeaderUserId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupMemberFixture));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.inviteAlarmStudyGroupMember(notLeaderUserId, inviteUserId)
+        );
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹_가입_알림_전송시_그룹이_다찬_경우_에러_반환() {
+        // Given
+        String leaderUserId = "leaderUserId";
+        String inviteUserId = "inviteUserId";
+        String studyGroupName = "studyGroupName";
+        String description = "description";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
+        UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(leaderUserId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupLeaderFixture));
+        when(userStudyGroupRepository.countByStudyGroup(userStudyGroupLeaderFixture.getStudyGroup()))
+                .thenReturn(5);
+
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId)
         );
         assertEquals(ErrorCode.STUDY_GROUP_FULL, e.getErrorCode());
     }
 
     @Test
-    void 스터디_그룹에_초대시_스터디_그룹에_가입_안한_경우_에러_반환() {
+    void 스터디_그룹_가입_알림_전송시_초대한_유저가_없는_경우_에러_반환() {
         // Given
-        String userId = "userId";
+        String leaderUserId = "leaderUserId";
         String inviteUserId = "inviteUserId";
+        String studyGroupName = "studyGroupName";
+        String description = "description";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
+        UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(leaderUserId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupLeaderFixture));
+        when(userAccountRepository.findById(inviteUserId))
+                .thenReturn(Optional.empty());
+
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹에_가입에_성공한_경우() {
+        // Given
+        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
+        String studyGroupName = "studyGroupName";
+        String description = "description";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
+        UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(leaderUserId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupLeaderFixture));
+        when(userAccountRepository.findById(inviteUserId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(studyGroupRepository.findById(userStudyGroupLeaderFixture.getStudyGroup().getId()))
+                .thenReturn(Optional.of(studyGroupFixture));
+
+
+        // Then
+        assertDoesNotThrow(() -> studyGroupService.joinStudyGroupMember(inviteUserId, leaderUserId));
+    }
+
+    @Test
+    void 스터디_그룹에_가입시_로그인하지_않은_경우_에러_반환() {
+        // Given
+        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
+
+        // When
+        when(userAccountRepository.findById(inviteUserId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.joinStudyGroupMember(inviteUserId, leaderUserId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹에_가입시_인원이_다찬_경우_에러_반환() {
+        // Given
+        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
+        String studyGroupName = "studyGroupName";
+        String description = "description";
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
+
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
+        UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(leaderUserId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupLeaderFixture));
+        when(userStudyGroupRepository.countByStudyGroup(studyGroupFixture))
+                .thenReturn(5);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.joinStudyGroupMember(inviteUserId, leaderUserId)
+        );
+        assertEquals(ErrorCode.STUDY_GROUP_FULL, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹에_가입시_초대자가_스터디_그룹에_탈퇴한_경우_에러_반환() {
+        // Given
+        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
+
+        // When
+        when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
         when(userStudyGroupRepository.findByUserAccount(any()))
                 .thenReturn(Optional.empty());
@@ -400,25 +559,25 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
+                () -> studyGroupService.joinStudyGroupMember(inviteUserId, leaderUserId)
         );
         assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
-    void 스터디_그룹에_초대시_초대받는_사람이_없는_경우_에러_반환() {
+    void 스터디_그룹에_가입시_초대받는_사람이_없는_경우_에러_반환() {
         // Given
-        String userId = "userId";
         String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
         StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
-        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(userId, studyGroupFixture);
+        UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupLeaderFixture));
@@ -430,25 +589,25 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
+                () -> studyGroupService.joinStudyGroupMember(inviteUserId, leaderUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 
     @Test
-    void 스터디_그룹에_초대시_리더가_아닌_경우_에러_반환() {
+    void 스터디_그룹에_가입시_초대한_유저가_리더가_아닌_경우_에러_반환() {
         // Given
-        String userId = "userId";
         String inviteUserId = "inviteUserId";
+        String notLeaderUserId = "notLeaderUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
         StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
-        UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(userId, studyGroupFixture);
+        UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(notLeaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
-        when(userAccountRepository.findById(userId))
+        when(userAccountRepository.findById(notLeaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupMemberFixture));
@@ -460,7 +619,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.inviteStudyGroupMember(userId, inviteUserId)
+                () -> studyGroupService.joinStudyGroupMember(inviteUserId, notLeaderUserId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }

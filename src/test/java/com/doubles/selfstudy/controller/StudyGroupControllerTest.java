@@ -263,14 +263,14 @@ class StudyGroupControllerTest {
 
     @Test
     @WithMockUser
-    void 스터디_그룹_초대_성공() throws Exception {
+    void 스터디_그룹_초대_알림_전송_성공() throws Exception {
         // Given
         String inviteUserId = "inviteUserId";
 
-        // When & Then
+        // When&Then
         mockMvc.perform(post("/api/main/study_group/invite")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(inviteUserId))
+                        .param("inviteUserId", inviteUserId)
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -278,14 +278,14 @@ class StudyGroupControllerTest {
 
     @Test
     @WithAnonymousUser
-    void 스터디_그룹_초대시_로그인이_안된_경우_에러_반환() throws Exception {
+    void 스터디_그룹_초대_알림_전송시_로그인을_안한_경우_에러_발생() throws Exception {
         // Given
         String inviteUserId = "inviteUserId";
 
-        // When & Then
+        // When&Then
         mockMvc.perform(post("/api/main/study_group/invite")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(inviteUserId))
+                        .param("inviteUserId", inviteUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
@@ -293,18 +293,48 @@ class StudyGroupControllerTest {
 
     @Test
     @WithMockUser
-    void 스터디_그룹_초대시_그룹이_꽉찬_경우_에러_반환() throws Exception {
+    void 스터디_그룹_가입_성공() throws Exception {
         // Given
-        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
+
+        // When & Then
+        mockMvc.perform(post("/api/main/study_group/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("leaderUserId", leaderUserId)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 스터디_그룹_가입시_로그인이_안된_경우_에러_반환() throws Exception {
+        // Given
+        String leaderUserId = "leaderUserId";
+
+        // When & Then
+        mockMvc.perform(post("/api/main/study_group/join")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("leaderUserId", leaderUserId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_가입시_그룹이_꽉찬_경우_에러_반환() throws Exception {
+        // Given
+        String leaderUserId = "leaderUserId";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.STUDY_GROUP_FULL))
-                .when(studyGroupService).inviteStudyGroupMember(any(), any());
+                .when(studyGroupService).joinStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(post("/api/main/study_group/invite")
+        mockMvc.perform(post("/api/main/study_group/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(inviteUserId))
+                        .param("leaderUserId", leaderUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.STUDY_GROUP_FULL.getStatus().value()));
@@ -312,18 +342,18 @@ class StudyGroupControllerTest {
 
     @Test
     @WithMockUser
-    void 스터디_그룹_초대시_초대_유저가_없는_경우_에러_반환() throws Exception {
+    void 스터디_그룹_가입시_초대_유저가_없는_경우_에러_반환() throws Exception {
         // Given
-        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND))
-                .when(studyGroupService).inviteStudyGroupMember(any(), any());
+                .when(studyGroupService).joinStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(post("/api/main/study_group/invite")
+        mockMvc.perform(post("/api/main/study_group/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(inviteUserId))
+                        .param("leaderUserId", leaderUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.USER_NOT_FOUND.getStatus().value()));
@@ -331,18 +361,18 @@ class StudyGroupControllerTest {
 
     @Test
     @WithMockUser
-    void 스터디_그룹_초대시_초대시_리더가_아닌_경우_에러_반환() throws Exception {
+    void 스터디_그룹_가입시_초대시_리더가_아닌_경우_에러_반환() throws Exception {
         // Given
-        String inviteUserId = "inviteUserId";
+        String leaderUserId = "leaderUserId";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
-                .when(studyGroupService).inviteStudyGroupMember(any(), any());
+                .when(studyGroupService).joinStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(post("/api/main/study_group/invite")
+        mockMvc.perform(post("/api/main/study_group/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(inviteUserId))
+                        .param("leaderUserId", leaderUserId)
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
