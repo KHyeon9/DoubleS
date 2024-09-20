@@ -79,7 +79,6 @@ public class ChatRoomController {
             Authentication authentication,
             @RequestParam String toUserId
     ) {
-        System.out.println("toUserId : " + toUserId);
         return Response.success(
                 ChatRoomResponse.fromChatRoomDto(
                     chatService.newChatRoom(authentication.getName(), toUserId)
