@@ -16,8 +16,9 @@
 * Lombok
 * MySQL 8
 * JWT 0.12.5
-* Vue3 + Vite
 * WebSocket
+* Vue3 + Vite
+* Pinia
 
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
