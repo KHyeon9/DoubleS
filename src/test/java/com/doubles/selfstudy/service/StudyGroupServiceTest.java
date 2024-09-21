@@ -1,6 +1,5 @@
 package com.doubles.selfstudy.service;
 
-import com.doubles.selfstudy.config.DatabaseCleanup;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
@@ -12,8 +11,6 @@ import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.StudyGroupRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
-import org.checkerframework.checker.units.qual.A;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -523,8 +520,8 @@ class StudyGroupServiceTest {
         String leaderUserId = "leaderUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
@@ -571,8 +568,8 @@ class StudyGroupServiceTest {
         String leaderUserId = "leaderUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
         UserStudyGroup userStudyGroupLeaderFixture = UserStudyGroupFixture.getLeader(leaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
@@ -601,8 +598,8 @@ class StudyGroupServiceTest {
         String notLeaderUserId = "notLeaderUserId";
         String studyGroupName = "studyGroupName";
         String description = "description";
-        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
 
+        StudyGroup studyGroupFixture = StudyGroupFixture.get(studyGroupName, description);
         UserStudyGroup userStudyGroupMemberFixture = UserStudyGroupFixture.getMember(notLeaderUserId, studyGroupFixture);
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
@@ -620,6 +617,188 @@ class StudyGroupServiceTest {
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
                 () -> studyGroupService.joinStudyGroupMember(inviteUserId, notLeaderUserId)
+        );
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경이_성공한_경우() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
+        UserStudyGroup leaderFixture = UserStudyGroupFixture.getLeader(nowLeaderId, studyGroupFixture);
+        UserStudyGroup memberFixture = UserStudyGroupFixture.getLeader(changeLeaderId, studyGroupFixture);
+        UserStudyGroup ChangeLeaderFixture = UserStudyGroupFixture.getLeader(changeLeaderId, studyGroupFixture);
+        UserAccount nowLeader = leaderFixture.getUserAccount();
+        UserAccount changeLeader = memberFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.of(nowLeader));
+        when(userStudyGroupRepository.findByUserAccount(nowLeader))
+                .thenReturn(Optional.of(leaderFixture));
+        when(userAccountRepository.findById(changeLeaderId))
+                .thenReturn(Optional.of(changeLeader));
+        when(userStudyGroupRepository.findByUserAccount(changeLeader))
+                .thenReturn(Optional.of(memberFixture));
+        when(userStudyGroupRepository.saveAndFlush(any()))
+                .thenReturn(ChangeLeaderFixture);
+
+        // Then
+        assertDoesNotThrow(() -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId));
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_로그인이_안된_경우_에러_반환() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_가입된_스터디_그룹이_없는_경우_에러_반환() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(userStudyGroupRepository.findByUserAccount(any()))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId)
+        );
+        assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_리더가_아닌_경우_에러_반환() {
+        // Given
+        String notLeaderId = "notLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
+        UserStudyGroup notLeaderFixture = UserStudyGroupFixture.getMember(notLeaderId, studyGroupFixture);
+        UserStudyGroup memberFixture = UserStudyGroupFixture.getMember(changeLeaderId, studyGroupFixture);
+        UserAccount nowLeader = notLeaderFixture.getUserAccount();
+        UserAccount changeLeader = memberFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(notLeaderId))
+                .thenReturn(Optional.of(nowLeader));
+        when(userStudyGroupRepository.findByUserAccount(nowLeader))
+                .thenReturn(Optional.of(notLeaderFixture));
+        when(userAccountRepository.findById(changeLeaderId))
+                .thenReturn(Optional.of(changeLeader));
+        when(userStudyGroupRepository.findByUserAccount(changeLeader))
+                .thenReturn(Optional.of(memberFixture));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(notLeaderId, changeLeaderId)
+        );
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_상대_아이디가_없는_경우_에러_반환() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
+        UserStudyGroup leaderFixture = UserStudyGroupFixture.getLeader(nowLeaderId, studyGroupFixture);
+        UserAccount nowLeader = leaderFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.of(nowLeader));
+        when(userStudyGroupRepository.findByUserAccount(nowLeader))
+                .thenReturn(Optional.of(leaderFixture));
+        when(userAccountRepository.findById(changeLeaderId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_상대방이_스터디_그룹이_없는_경우_에러_반환() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
+        UserStudyGroup leaderFixture = UserStudyGroupFixture.getLeader(nowLeaderId, studyGroupFixture);
+        UserAccount nowLeader = leaderFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.of(nowLeader));
+        when(userStudyGroupRepository.findByUserAccount(nowLeader))
+                .thenReturn(Optional.of(leaderFixture));
+        when(userAccountRepository.findById(changeLeaderId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(userStudyGroupRepository.findByUserAccount(any()))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId)
+        );
+        assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹의_리더_변경시_스터디_그룹이_다른_경우_에러_반환() {
+        // Given
+        String nowLeaderId = "nowLeaderId";
+        String changeLeaderId= "changeLeaderId";
+
+        StudyGroup studyGroupFixture = StudyGroupFixture.get();
+        StudyGroup studyGroupFixture2 = StudyGroupFixture.get("studyGroupName2", "description2");
+        UserStudyGroup leaderFixture = UserStudyGroupFixture.getLeader(nowLeaderId, studyGroupFixture);
+        UserStudyGroup memberFixture = UserStudyGroupFixture.getLeader(changeLeaderId, studyGroupFixture2);
+        UserAccount nowLeader = leaderFixture.getUserAccount();
+        UserAccount changeLeader = memberFixture.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(nowLeaderId))
+                .thenReturn(Optional.of(nowLeader));
+        when(userStudyGroupRepository.findByUserAccount(nowLeader))
+                .thenReturn(Optional.of(leaderFixture));
+        when(userAccountRepository.findById(changeLeaderId))
+                .thenReturn(Optional.of(changeLeader));
+        when(userStudyGroupRepository.findByUserAccount(changeLeader))
+                .thenReturn(Optional.of(memberFixture));
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
