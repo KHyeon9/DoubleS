@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -164,6 +165,38 @@ public class StudyGroupService {
         UserStudyGroup inviteUserStudyGroup = UserStudyGroup.of(inviteMemberAccount, StudyGroupPosition.Member, studyGroup);
 
         userStudyGroupRepository.save(inviteUserStudyGroup);
+    }
+
+    // 스터디 그룹 리더 변경
+    @Transactional
+    public UserStudyGroupDto changeStudyGroupLeader(String nowLeaderId, String changeLeaderId) {
+        // 리더 확인
+        UserStudyGroup nowLeader = serviceUtils.getUserStudyGroupAndPermissionCheck(nowLeaderId);
+
+        // 리더로 변경될 유저 확인
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(changeLeaderId);
+        UserStudyGroup changeLeader = serviceUtils.getUserStudyGroupOrException(userAccount);
+
+        if (!Objects.equals(nowLeader.getStudyGroup().getId(), changeLeader.getStudyGroup().getId())) {
+            throw new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION, "스터디 그룹이 다릅니다.");
+        }
+
+        // 리더 변경
+        nowLeader.setPosition(StudyGroupPosition.Member);
+        changeLeader.setPosition(StudyGroupPosition.Leader);
+
+        // 리더가 된 사람에게 알람 전송
+        Alarm alarm = Alarm.of(
+                userAccount,
+                AlarmType.CHANGE_LEADER,
+                nowLeaderId,
+                nowLeader.getStudyGroup().getId(),
+                nowLeaderId
+        );
+
+        alarmRepository.save(alarm);
+
+        return  UserStudyGroupDto.fromEntity(userStudyGroupRepository.saveAndFlush(changeLeader));
     }
 
     // 스터디 그룹원 삭제
