@@ -14,9 +14,10 @@
 * Spring Security
 * Spring Boot DevTools
 * Lombok
-* MySQL8
+* MySQL 8
 * JWT 0.12.5
 * Vue3 + Vite
+* WebSocket
 
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
