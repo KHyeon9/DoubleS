@@ -91,6 +91,7 @@
                   <td class="align-middle">
                     <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"
                       class="text-secondary font-weight-bold text-sm" role="button"
+                      @click="changeLeader(userInfo.userId)"
                     >
                       <i class="material-icons text-lg position-relative pointer">change_circle</i>
                     </a>
@@ -304,6 +305,27 @@
       } else {
         alert('스터디 그룹에서 해당 유저를 삭제하는데 오류가 생겼습니다.');
       }
+    }
+  };
+
+  const changeLeader = async (userId) => {
+    // 리더 변경
+    try {
+      const response = await apiClient.put('/main/study_group/change_leader', null, {
+        params: {
+          changeLeaderId: userId
+        },
+      });
+
+      console.log(response.data.result);
+
+      alert(`ID가 ${userId}인 유저로 리더가 변경되었습니다.`);
+
+      getStudyGroupMemberList();
+
+    } catch (error) {
+      console.log('스터디 그룹에서 리더를 변경하지 못했습니다.', error);
+      alert('스터디 그룹에서 리더를 변경하는데 오류가 생겼습니다.');
     }
   };
 
