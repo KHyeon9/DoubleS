@@ -4,6 +4,7 @@ import com.doubles.selfstudy.controller.request.StudyGroupRequest;
 import com.doubles.selfstudy.controller.response.Response;
 import com.doubles.selfstudy.controller.response.StudyGroupResponse;
 import com.doubles.selfstudy.controller.response.StudyGroupUserResponse;
+import com.doubles.selfstudy.controller.response.UserStudyGroupResponse;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupDto;
 import com.doubles.selfstudy.dto.studygroup.UserStudyGroupDto;
 import com.doubles.selfstudy.service.StudyGroupService;
@@ -110,6 +111,19 @@ public class StudyGroupController {
         studyGroupService.joinStudyGroupMember(authentication.getName(), leaderUserId);
 
         return Response.success();
+    }
+
+    // 스터디 그룹 리더 변경
+    @PutMapping("/change_leader")
+    private Response<UserStudyGroupResponse> changeStudyGroupLeader(
+            Authentication authentication,
+            @RequestParam String changeLeaderId
+    ) {
+        return Response.success(
+                UserStudyGroupResponse.fromUserStudyGroupDto(
+                        studyGroupService.changeStudyGroupLeader(authentication.getName(), changeLeaderId)
+                )
+        );
     }
 
     // 그룹 강퇴
