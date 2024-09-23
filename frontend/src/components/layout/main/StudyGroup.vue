@@ -18,9 +18,9 @@
                 </h5>
                 <div>
                   <a
-                    v-if="myPosition === 'Member'"
-                    class="me-2 mt-2"
+                    class="me-3 mt-2"
                     role="button"
+                    @click="exitStudyGroup"
                   >
                     <i class="material-icons text-lx position-relative">logout</i>
                   </a>
@@ -92,12 +92,12 @@
                     <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"
                       class="text-secondary font-weight-bold text-sm" role="button"
                     >
-                      <i class="material-icons text-lg position-relative pointer">workspace_premium</i>
+                      <i class="material-icons text-lg position-relative pointer">change_circle</i>
                     </a>
                   </td>
                   <td class="align-middle">
                     <a v-if="myPosition === 'Leader' && userInfo.userId !== userId"
-                      @click="exitStudyGroup(userInfo.userId)" 
+                      @click="forceExitStudyGroup(userInfo.userId)" 
                       class="text-secondary font-weight-bold text-sm" role="button"
                     >
                       <i class="material-icons text-lg position-relative pointer">logout</i>
@@ -287,9 +287,30 @@
     }
   };
 
-  const exitStudyGroup = async (userId) => {
+  const exitStudyGroup = async () => {
+    // 스터디 그룹 탈퇴
     try {
-      const response = await apiClient.delete(`/main/study_group/exit`, {
+      const response = await apiClient.delete('/main/study_group/exit');
+
+      console.log(response.data.result);
+
+      alert('스터디 그룹에서 탈퇴했습니다.');
+
+      getStudyGroupInfo();
+    } catch (error) {
+      console.log('그룹 탈퇴에 실패했습니다.', error);
+      if (error.response.data.resultCode == 'LEADER_NOT_EXIT') {
+        alert('리더는 그룹 멤버가 없거나 리더를 넘겨야 탈퇴가 가능합니다.');
+      } else {
+        alert('스터디 그룹에서 해당 유저를 삭제하는데 오류가 생겼습니다.');
+      }
+    }
+  };
+
+  const forceExitStudyGroup = async (userId) => {
+    // 강제 퇴장
+    try {
+      const response = await apiClient.delete(`/main/study_group/force_exit`, {
         params: {
           deleteUserId: userId,
         },
