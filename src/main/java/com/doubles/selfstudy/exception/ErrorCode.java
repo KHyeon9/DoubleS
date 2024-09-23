@@ -23,6 +23,7 @@ public enum ErrorCode {
     ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post"),
     CHAT_ROOM_IS_EXIST(HttpStatus.CONFLICT, "Chat room is exist"),
     STUDY_GROUP_FULL(HttpStatus.UNPROCESSABLE_ENTITY, "Study Group is full"),
+    LEADER_NOT_EXIT(HttpStatus.UNPROCESSABLE_ENTITY, "Leader not exit"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Permission is invalid"),
     ;
 

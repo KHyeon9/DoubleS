@@ -17,14 +17,14 @@ public class UserStudyGroupDto {
     private Long id;
     private UserAccountDto user;
     private StudyGroupPosition position;
-    private StudyGroup studyGroup;
+    private StudyGroupDto studyGroup;
     private LocalDateTime joinedAt;
 
-    public static UserStudyGroupDto of(UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup, LocalDateTime joinedAt) {
+    public static UserStudyGroupDto of(UserAccountDto user, StudyGroupPosition position, StudyGroupDto studyGroup, LocalDateTime joinedAt) {
         return UserStudyGroupDto.of(null, user, position, studyGroup, joinedAt);
     }
 
-    public static UserStudyGroupDto of(Long id, UserAccountDto user, StudyGroupPosition position, StudyGroup studyGroup, LocalDateTime joinedAt) {
+    public static UserStudyGroupDto of(Long id, UserAccountDto user, StudyGroupPosition position, StudyGroupDto studyGroup, LocalDateTime joinedAt) {
         return new UserStudyGroupDto(id, user, position, studyGroup, joinedAt);
     }
 
@@ -33,7 +33,7 @@ public class UserStudyGroupDto {
                 entity.getId(),
                 UserAccountDto.fromEntity(entity.getUserAccount()),
                 entity.getPosition(),
-                entity.getStudyGroup(),
+                StudyGroupDto.fromEntity(entity.getStudyGroup()),
                 entity.getJoinedAt()
         );
     }

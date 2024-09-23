@@ -824,7 +824,7 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(mock(UserAccount.class)));
 
         // Then
-        assertDoesNotThrow(() -> studyGroupService.deleteStudyGroupMember(userId, deleteUserId));
+        assertDoesNotThrow(() -> studyGroupService.forceExitStudyGroupMember(userId, deleteUserId));
     }
 
     @Test
@@ -840,7 +840,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.deleteStudyGroupMember(userId, deleteUserId)
+                () -> studyGroupService.forceExitStudyGroupMember(userId, deleteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -860,7 +860,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.deleteStudyGroupMember(userId, deleteUserId)
+                () -> studyGroupService.forceExitStudyGroupMember(userId, deleteUserId)
         );
         assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
     }
@@ -888,7 +888,7 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.deleteStudyGroupMember(userId, deleteUserId)
+                () -> studyGroupService.forceExitStudyGroupMember(userId, deleteUserId)
         );
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
@@ -916,9 +916,110 @@ class StudyGroupServiceTest {
         // Then
         DoubleSApplicationException e = assertThrows(
                 DoubleSApplicationException.class,
-                () -> studyGroupService.deleteStudyGroupMember(userId, deleteUserId)
+                () -> studyGroupService.forceExitStudyGroupMember(userId, deleteUserId)
         );
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹_멤버_탈퇴_성공() {
+        // Given
+        String userId = "userId";
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup memberStudyGroup = UserStudyGroupFixture.getMember(userId, studyGroup);
+        UserAccount deleteUserAccount = memberStudyGroup.getUserAccount();
+        
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(deleteUserAccount));
+        when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
+                .thenReturn(Optional.of(memberStudyGroup));
+        
+        // Then
+        assertDoesNotThrow(() -> studyGroupService.exitStudyGroupMySelf(userId));
+    }
+
+    @Test
+    void 스터디_그룹_리더_탈퇴_성공() {
+        // Given
+        String userId = "userId";
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup leaderStudyGroup = UserStudyGroupFixture.getLeader(userId, studyGroup);
+        UserAccount deleteUserAccount = leaderStudyGroup.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(deleteUserAccount));
+        when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
+                .thenReturn(Optional.of(leaderStudyGroup));
+        when(userStudyGroupRepository.countByStudyGroup(studyGroup))
+                .thenReturn(1);
+
+        // Then
+        assertDoesNotThrow(() -> studyGroupService.exitStudyGroupMySelf(userId));
+    }
+
+    @Test
+    void 스터디_그룹_멤버_탈퇴시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.exitStudyGroupMySelf(userId)
+        );
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹_멤버_탈퇴시_스터디_그룹_가입이_안된_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup memberStudyGroup = UserStudyGroupFixture.getMember(userId, studyGroup);
+        UserAccount deleteUserAccount = memberStudyGroup.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(deleteUserAccount));
+        when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.exitStudyGroupMySelf(userId)
+        );
+        assertEquals(ErrorCode.USER_STUDY_GROUP_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 스터디_그룹_리더_탈퇴시_스터디_그룹원이_2명_이상인_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup leaderStudyGroup = UserStudyGroupFixture.getLeader(userId, studyGroup);
+        UserAccount deleteUserAccount = leaderStudyGroup.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(deleteUserAccount));
+        when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
+                .thenReturn(Optional.of(leaderStudyGroup));
+        when(userStudyGroupRepository.countByStudyGroup(studyGroup))
+                .thenReturn(2);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> studyGroupService.exitStudyGroupMySelf(userId)
+        );
+        assertEquals(ErrorCode.LEADER_NOT_EXIT, e.getErrorCode());
     }
 
     @Test

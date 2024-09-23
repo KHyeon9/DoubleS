@@ -199,15 +199,39 @@ public class StudyGroupService {
         return  UserStudyGroupDto.fromEntity(userStudyGroupRepository.saveAndFlush(changeLeader));
     }
 
-    // 스터디 그룹원 삭제
+    // 스터디 그룹원 강제 퇴장
     @Transactional
-    public void deleteStudyGroupMember(String userId, String deleteUserId) {
-        // 유저 권한 확인
+    public void forceExitStudyGroupMember(String userId, String deleteUserId) {
+        // 유저 권한 확인 및 데이터 가져오기
         serviceUtils.getUserStudyGroupAndPermissionCheck(userId);
 
         // 삭제할 유저확인
         UserAccount deleteMemberAccount = serviceUtils.getUserAccountOrException(deleteUserId);
 
+        userStudyGroupRepository.deleteByUserAccount(deleteMemberAccount);
+    }
+
+    // 스터디 그룹 퇴장
+    @Transactional
+    public void exitStudyGroupMySelf(String userId) {
+        // 삭제할 유저확인
+        UserAccount deleteMemberAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 그룹에 가입 되어 있는지 확인
+        UserStudyGroup userStudyGroup = serviceUtils.getUserStudyGroupOrException(deleteMemberAccount);
+
+        if (userStudyGroup.getPosition() == StudyGroupPosition.Leader) {
+            if (userStudyGroupRepository.countByStudyGroup(userStudyGroup.getStudyGroup()) == 1) {
+                deleteStudyGroup(userId);
+                return;
+            }
+            throw new DoubleSApplicationException(
+                    ErrorCode.LEADER_NOT_EXIT,
+                    "그룹원이 있으면 리더는 나갈 수 없습니다. 리더를 바꾸거나 그룹원을 비우세요."
+            );
+        }
+
+        // 삭제
         userStudyGroupRepository.deleteByUserAccount(deleteMemberAccount);
     }
 }
