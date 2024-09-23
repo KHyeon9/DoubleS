@@ -385,7 +385,7 @@ class StudyGroupControllerTest {
         String deleteUserId = "deleteUserId";
 
         // When & Then
-        mockMvc.perform(delete("/api/main/study_group/exit")
+        mockMvc.perform(delete("/api/main/study_group/force_exit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deleteUserId", deleteUserId)
                 )
@@ -400,7 +400,7 @@ class StudyGroupControllerTest {
         String deleteUserId = "deleteUserId";
 
         // When & Then
-        mockMvc.perform(delete("/api/main/study_group/exit")
+        mockMvc.perform(delete("/api/main/study_group/force_exit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deleteUserId", deleteUserId)
                 )
@@ -416,10 +416,10 @@ class StudyGroupControllerTest {
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND))
-                .when(studyGroupService).deleteStudyGroupMember(any(), any());
+                .when(studyGroupService).forceExitStudyGroupMember(any(), any());
 
         // Then
-        mockMvc.perform(delete("/api/main/study_group/exit")
+        mockMvc.perform(delete("/api/main/study_group/force_exit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("deleteUserId", deleteUserId)
                 )
@@ -428,22 +428,99 @@ class StudyGroupControllerTest {
     }
 
     @Test
-    @WithAnonymousUser
+    @WithMockUser
     void 스터디_그룹_강제_퇴장시_리더가_아닌_경우_에러_반환() throws Exception {
         // Given
         String deleteUserId = "deleteUserId";
 
         // When
         doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
-                .when(studyGroupService).deleteStudyGroupMember(any(), any());
+                .when(studyGroupService).forceExitStudyGroupMember(any(), any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/study_group/force_exit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("deleteUserId", deleteUserId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_탈퇴_성공() throws Exception {
+        // Given
+
+        // When & Then
+        mockMvc.perform(delete("/api/main/study_group/exit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 스터디_그룹_탈퇴시_로그인_안한_경우_에러_발생() throws Exception {
+        // Given
+
+        // When & Then
+        mockMvc.perform(delete("/api/main/study_group/exit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_탈퇴시_유저가_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND))
+                .when(studyGroupService).exitStudyGroupMySelf(any());
 
         // Then
         mockMvc.perform(delete("/api/main/study_group/exit")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(deleteUserId))
                 )
                 .andDo(print())
-                .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
+                .andExpect(status().is(ErrorCode.USER_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_탈퇴시_가입된_스터디_그룹이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.USER_STUDY_GROUP_NOT_FOUND))
+                .when(studyGroupService).exitStudyGroupMySelf(any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/study_group/exit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.USER_STUDY_GROUP_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룹_리더가_그룹원_2명이상_있는데_탈퇴할_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.LEADER_NOT_EXIT))
+                .when(studyGroupService).exitStudyGroupMySelf(any());
+
+        // Then
+        mockMvc.perform(delete("/api/main/study_group/exit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.LEADER_NOT_EXIT.getStatus().value()));
     }
 
     @Test
