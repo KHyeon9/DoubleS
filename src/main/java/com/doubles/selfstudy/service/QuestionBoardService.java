@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -191,16 +192,19 @@ public class QuestionBoardService {
 
         // 좋아요 저장
         questionBoardLikeRepository.save(QuestionBoardLike.of(questionBoard, userAccount));
+        
+        // 작성자가 자기 게시글 좋아요를 제외하고 알람 저장
+        if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userId)) {
+            Alarm alarm = Alarm.of(
+                    questionBoard.getUserAccount(),
+                    AlarmType.NEW_LIKE_ON_POST,
+                    userId,
+                    questionBoardId,
+                    questionBoard.getTitle()
+            );
 
-        Alarm alarm = Alarm.of(
-                questionBoard.getUserAccount(),
-                AlarmType.NEW_LIKE_ON_POST,
-                userId,
-                questionBoardId,
-                questionBoard.getTitle()
-        );
-
-        alarmRepository.save(alarm);
+            alarmRepository.save(alarm);
+        }
     }
 
     // 좋아요 삭제
