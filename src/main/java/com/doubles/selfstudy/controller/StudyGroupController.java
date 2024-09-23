@@ -112,13 +112,23 @@ public class StudyGroupController {
         return Response.success();
     }
 
-    // 그룹 강퇴, 퇴장
-    @DeleteMapping("/exit")
-    private Response<Void> deleteStudyGroupMember(
+    // 그룹 강퇴
+    @DeleteMapping("/force_exit")
+    private Response<Void> forceExitStudyGroupMember(
             Authentication authentication,
             @RequestParam String deleteUserId
     ) {
-        studyGroupService.deleteStudyGroupMember(authentication.getName(), deleteUserId);
+        studyGroupService.forceExitStudyGroupMember(authentication.getName(), deleteUserId);
+
+        return Response.success();
+    }
+
+    // 그룹 탈퇴
+    @DeleteMapping("/exit")
+    private Response<Void> exitStudyGroup(
+            Authentication authentication
+    ) {
+        studyGroupService.exitStudyGroupMySelf(authentication.getName());
 
         return Response.success();
     }
