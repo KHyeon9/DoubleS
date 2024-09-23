@@ -3,9 +3,12 @@ package com.doubles.selfstudy.controller;
 import com.doubles.selfstudy.controller.request.StudyGroupRequest;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupDto;
 import com.doubles.selfstudy.dto.studygroup.UserStudyGroupDto;
+import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
+import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
 import com.doubles.selfstudy.service.StudyGroupService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -376,6 +379,103 @@ class StudyGroupControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룸_리더_변경에_성공() throws Exception {
+        // Given
+        String changeLeaderId = "changeLeaderId";
+        UserAccount changeUser = UserAccountFixture.get(changeLeaderId, "password");
+
+        // When
+        when(studyGroupService.changeStudyGroupLeader(any(), eq(changeLeaderId)))
+                .thenReturn(UserStudyGroupDto.fromEntity(UserStudyGroupFixture.get(changeUser)));
+
+        // Then
+        mockMvc.perform(put("/api/main/study_group/change_leader")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("changeLeaderId", changeLeaderId)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 스터디_그룸_리더_변경시_로그인이_안된_경우_에러_발생() throws Exception {
+        // Given
+        String changeLeaderId = "changeLeaderId";
+        UserAccount changeUser = UserAccountFixture.get(changeLeaderId, "password");
+
+        // When
+        when(studyGroupService.changeStudyGroupLeader(any(), eq(changeLeaderId)))
+                .thenReturn(UserStudyGroupDto.fromEntity(UserStudyGroupFixture.get(changeUser)));
+
+        // Then
+        mockMvc.perform(put("/api/main/study_group/change_leader")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("changeLeaderId", changeLeaderId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룸_리더_변경시_리더가_아니거나_스터디_그룹이_다른_경우_에러_발생() throws Exception {
+        // Given
+        String changeLeaderId = "changeLeaderId";
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.INVALID_PERMISSION))
+                .when(studyGroupService).changeStudyGroupLeader(any(), eq(changeLeaderId));
+
+        // Then
+        mockMvc.perform(put("/api/main/study_group/change_leader")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("changeLeaderId", changeLeaderId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_PERMISSION.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룸_리더_변경시_유저가_없는_에러_발생() throws Exception {
+        // Given
+        String changeLeaderId = "changeLeaderId";
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND))
+                .when(studyGroupService).changeStudyGroupLeader(any(), eq(changeLeaderId));
+
+        // Then
+        mockMvc.perform(put("/api/main/study_group/change_leader")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("changeLeaderId", changeLeaderId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.USER_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 스터디_그룸_리더_변경시_스터디_그룹이_없는_경우_에러_발생() throws Exception {
+        // Given
+        String changeLeaderId = "changeLeaderId";
+
+        // When
+        doThrow(new DoubleSApplicationException(ErrorCode.USER_STUDY_GROUP_NOT_FOUND))
+                .when(studyGroupService).changeStudyGroupLeader(any(), eq(changeLeaderId));
+
+        // Then
+        mockMvc.perform(put("/api/main/study_group/change_leader")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("changeLeaderId", changeLeaderId)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.USER_STUDY_GROUP_NOT_FOUND.getStatus().value()));
     }
 
     @Test
