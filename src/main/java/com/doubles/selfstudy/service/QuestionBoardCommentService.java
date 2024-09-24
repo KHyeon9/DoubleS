@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class QuestionBoardCommentService {
@@ -48,16 +50,18 @@ public class QuestionBoardCommentService {
         // 댓글 저장
         questionBoardCommentRepository.save(QuestionBoardComment.of(comment, userAccount, questionBoard));
 
-        // 알람 저장
-        Alarm alarm = Alarm.of(
-                questionBoard.getUserAccount(),
-                AlarmType.NEW_COMMENT_ON_POST,
-                userId,
-                questionBoardId,
-                questionBoard.getTitle()
+        // 게시글 작성자가 아닌 경우 알람 저장
+        if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userId)) {
+            Alarm alarm = Alarm.of(
+                    questionBoard.getUserAccount(),
+                    AlarmType.NEW_COMMENT_ON_POST,
+                    userId,
+                    questionBoardId,
+                    questionBoard.getTitle()
             );
 
-        alarmRepository.save(alarm);
+            alarmRepository.save(alarm);
+        }
     }
 
     // 질문 게시글 댓글 수정

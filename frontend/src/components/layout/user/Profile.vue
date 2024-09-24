@@ -172,7 +172,9 @@
         },
       });
 
-      console.log(response.data.result);
+      console.log(response);
+
+      alert('해당 유저를 초대하였습니다.');
 
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
@@ -180,6 +182,8 @@
         alert('스터디 그룹 초대에 대한 권한이 없습니다.');
       } else if (error.response.data.resultCode === 'STUDY_GROUP_FULL') {
         alert('스터디 그룹이 가득차 초대할 수 없습니다.');
+      } else if (error.response.data.resultCode === 'ALREADY_STUDY_GROUP_INVITE') {
+        alert('스터디 그룹에 이미 초대하였습니다.');
       } else {
         alert('스터디 그룹 초대에 에러가 발생했습니다.');
       }

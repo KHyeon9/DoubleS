@@ -21,6 +21,7 @@ public enum ErrorCode {
     STUDY_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "Study Group not founded"),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Comment not founded"),
     ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post"),
+    ALREADY_STUDY_GROUP_INVITE(HttpStatus.CONFLICT, "User already study Group invite"),
     CHAT_ROOM_IS_EXIST(HttpStatus.CONFLICT, "Chat room is exist"),
     STUDY_GROUP_FULL(HttpStatus.UNPROCESSABLE_ENTITY, "Study Group is full"),
     LEADER_NOT_EXIT(HttpStatus.UNPROCESSABLE_ENTITY, "Leader not exit"),

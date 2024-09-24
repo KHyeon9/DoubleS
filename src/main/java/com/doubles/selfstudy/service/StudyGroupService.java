@@ -139,7 +139,14 @@ public class StudyGroupService {
         UserAccount inviteMemberAccount = serviceUtils.getUserAccountOrException(inviteUserId);
 
         // 알람 생성
-        Alarm inviteAlarm = Alarm.of(inviteMemberAccount, AlarmType.INVITE_STUDY_GROUP, userId, userStudyGroup.getStudyGroup().getId(), userStudyGroup.getStudyGroup().getStudyGroupName());
+        if (alarmRepository.existsByUserAccountAndFromUserIdAndAlarmType(
+                inviteMemberAccount, userId, AlarmType.INVITE_STUDY_GROUP)) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.ALREADY_STUDY_GROUP_INVITE,
+                    "이미 스터디 그룹에 초대했습니다."
+            );
+        }
+        Alarm inviteAlarm = Alarm.of(inviteMemberAccount, AlarmType.INVITE_STUDY_GROUP, userId, userStudyGroup.getStudyGroup().getId(), userId);
         alarmRepository.save(inviteAlarm);
     }
 
