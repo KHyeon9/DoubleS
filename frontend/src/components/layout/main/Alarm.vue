@@ -6,7 +6,10 @@
               <h5 class="mb-0">Alarm List</h5>
             </div>
             <div class="alarm-body card-body p-3 pb-0">
-              <div v-for="alarm in alarmList" class="alarm-info">
+              <div v-if="alarmList.length === 0" class="alert alert-dark alert-dismissible text-white" role="alert">
+                <span class="text-sm">알림이 존재하지 않습니다.</span>
+              </div>
+              <div v-else v-for="alarm in alarmList" class="alarm-info">
                 <div v-if="alarm.alarmType === 'NEW_LIKE_ON_POST'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">질문 게시글인 {{ truncateText(alarm.data, 10) }}에 좋아요를 눌렸습니다.</span>
                   <router-link :to="`/main/question_board/${alarm.targetId}`" type="button" class="btn-base me-5 text-lg py-3 opacity-10">
@@ -164,7 +167,25 @@
     return text.slice(0, len) + '...';
   };
 
-   onMounted(() => {
+  const nextPageAndFetch = () => {
+    nextPage();
+    getAlarmList();
+    pageScrollTop();
+  };
+
+  const prevPageAndFetch = () => {
+    prevPage();
+    getAlarmList();
+    pageScrollTop();
+  };
+
+  const goToPageAndFetch = (pageNumber) => {
+    goToPage(pageNumber);
+    getAlarmList();
+    pageScrollTop();
+  };
+
+  onMounted(() => {
     getAlarmList();
   });
 </script>
