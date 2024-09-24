@@ -1,11 +1,14 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupBoardCommentDto;
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.StudyGroupBoard;
 import com.doubles.selfstudy.entity.StudyGroupBoardComment;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyGroupBoardCommentService {
 
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
+    private final AlarmRepository alarmRepository;
     private final ServiceUtils serviceUtils;
 
     // 스터디 그룹 게시글의 댓글들 조회
@@ -45,6 +49,17 @@ public class StudyGroupBoardCommentService {
         studyGroupBoardCommentRepository.save(
                 StudyGroupBoardComment.of(userAccount, studyGroupBoard, comment)
         );
+        
+        // 알람 저장
+        Alarm alarm = Alarm.of(
+                studyGroupBoard.getUserAccount(),
+                AlarmType.NEW_COMMENT_ON_STUDY_GROUP_POST,
+                userId,
+                studyGroupBoardId,
+                studyGroupBoard.getTitle()
+            );
+
+        alarmRepository.save(alarm);
     }
 
     // 스터디 그룹 게시글의 댓글 수정
