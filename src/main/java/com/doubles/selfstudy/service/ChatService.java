@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -146,14 +147,14 @@ public class ChatService {
         // 알림 저장
         UserAccount alarmUser = null;
 
-        if (chatRoom.getUser1() == userAccount) {
+        if (Objects.equals(chatRoom.getUser1().getUserId(), userId)) {
             alarmUser = chatRoom.getUser2();
         } else {
             alarmUser = chatRoom.getUser1();
         }
 
         // 알람 저장
-        Alarm alarm = Alarm.of(alarmUser, AlarmType.NEW_CHAT_MESSAGE, userId, chatRoom.getId(), alarmUser.getUserId());
+        Alarm alarm = Alarm.of(alarmUser, AlarmType.NEW_CHAT_MESSAGE, userId, chatRoom.getId(), userId);
         alarmRepository.save(alarm);
 
         return ChatMessageDto.fromEntity(chatMessageRepository.save(chatMessage));
