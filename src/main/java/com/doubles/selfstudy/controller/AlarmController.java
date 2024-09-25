@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.controller;
 
+import com.doubles.selfstudy.controller.request.AlarmDeleteRequest;
 import com.doubles.selfstudy.controller.response.AlarmResponse;
 import com.doubles.selfstudy.controller.response.Response;
 import com.doubles.selfstudy.service.AlarmService;
@@ -8,9 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/main/alarm")
@@ -28,5 +27,15 @@ public class AlarmController {
                 alarmService.alarmList(authentication.getName(), pageable)
                         .map(AlarmResponse::fromAlarmDto)
         );
+    }
+
+    @DeleteMapping
+    public Response<Void> deleteAlarm(
+            Authentication authentication,
+            @RequestBody AlarmDeleteRequest request
+    ) {
+        alarmService.deleteAlarm(authentication.getName(), request.getTargetId(), request.getAlarmType());
+
+        return Response.success();
     }
 }
