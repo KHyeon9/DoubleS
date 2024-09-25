@@ -27,4 +27,13 @@ public class AlarmService {
         return results.map(result -> AlarmDto.fromEntity(
                 (AlarmType) result[0], (Long) result[1], (String) result[2], (Long) result[3]));
     }
+
+    // 유저의 알람 삭제
+    public void deleteAlarm(String userId, Long targetId, AlarmType alarmType) {
+        // 유저
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 삭제
+        alarmRepository.deleteByUserAccountAndTargetIdAndAlarmType(userAccount, targetId, alarmType);
+    }
 }

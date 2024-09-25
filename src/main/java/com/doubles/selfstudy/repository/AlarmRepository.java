@@ -22,7 +22,10 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     // 알람 중복이 없어야 하는 경우 존재하는지 조회를 위한 메소드 
     boolean existsByUserAccountAndFromUserIdAndAlarmType(UserAccount user, String fromUserId, AlarmType alarmType);
-    
+
     // 알람 삭제
     void deleteByTargetIdAndAlarmType(Long targetId, AlarmType alarmType);
+
+    // 유저의 알람 삭제
+    void deleteByUserAccountAndTargetIdAndAlarmType(UserAccount user, Long targetId, AlarmType alarmType);
 }
