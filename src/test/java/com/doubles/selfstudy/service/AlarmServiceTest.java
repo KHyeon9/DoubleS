@@ -49,7 +49,7 @@ class AlarmServiceTest {
     }
 
     @Test
-    void 알람_삭제시_로그인을_안한_경우() {
+    void 알람_삭제시_로그인을_안한_경우_에러_반환() {
         // Given
         String userId = "userId";
         Long targetId = 1L;
