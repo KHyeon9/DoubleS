@@ -13,6 +13,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        highlight_sql: true
     defer-datasource-initialization: true
   sql:
     init:
@@ -26,3 +27,5 @@ logging:
   level:
     org.springframework.web.socket: DEBUG
     org.springframework.messaging: DEBUG
+    org.hibernate.sql: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
