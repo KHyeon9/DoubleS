@@ -62,11 +62,13 @@
                   <tbody>
                     <tr v-for="noticeBoard in noticeBoardList" :key="noticeBoard.id">
                       <td>
-                        <div class="d-flex px-2 py-1">
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
+                        <router-link :to="`/main/notice/${noticeBoard.id}`">
+                          <div class="d-flex px-2 py-1">
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-sm">{{ noticeBoard.title }}</h6>
+                            </div>
                           </div>
-                        </div>
+                        </router-link>
                       </td>
                       <td class="align-middle text-center">
                         <span class="text-secondary text-xs font-weight-bold">{{ formatDate(noticeBoard.createdAt) }}</span>
