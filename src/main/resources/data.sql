@@ -1,12 +1,12 @@
 -- admin 추가
 insert into user_account(user_id, password, role_type, email, nickname, memo, created_at, modified_at)
 values ('admin', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'ADMIN', 'admin@email.com', 'admin', null, now(), now()),
-       ('tester', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', 'tester', null, now(), now()),
-       ('tester2', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester2@email.com', 'tester2', null, now(), now()),
-       ('tester3', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester3@email.com', 'tester3', null, now(), now()),
-       ('tester4', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester4@email.com', 'tester4', null, now(), now()),
-       ('tester5', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester5@email.com', 'tester5', null, now(), now()),
-       ('tester6', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester6@email.com', 'tester6', null, now(), now());
+       ('tester', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester@email.com', '닉네임', null, now(), now()),
+       ('tester2', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester2@email.com', '닉네임2', null, now(), now()),
+       ('tester3', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester3@email.com', '닉네임3', null, now(), now()),
+       ('tester4', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester4@email.com', '닉네임4', null, now(), now()),
+       ('tester5', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester5@email.com', '닉네임5', null, now(), now()),
+       ('tester6', '$2a$10$MRoAwXIsWzYskEaj1U9lOOoM84B6EPoR.yj5tQyR72iSgVp2HayG6', 'USER', 'tester6@email.com', '닉네임6', null, now(), now());
 
 -- 공지사항
 insert into notice_board(user_id, title, content, created_by, created_at, modified_by, modified_at)
