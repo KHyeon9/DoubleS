@@ -1,6 +1,5 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.AlarmDeleteRequest;
 import com.doubles.selfstudy.dto.alarm.AlarmDto;
 import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.exception.ErrorCode;
@@ -47,7 +46,8 @@ class AlarmControllerTest {
         // When&Then
         mockMvc.perform(delete("/api/main/alarm")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new AlarmDeleteRequest(targetId, alarmType)))
+                        .param("targetId", String.valueOf(targetId))
+                        .param("alarmType", String.valueOf(alarmType))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -64,7 +64,8 @@ class AlarmControllerTest {
         // When&Then
         mockMvc.perform(delete("/api/main/alarm")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new AlarmDeleteRequest(targetId, alarmType)))
+                        .param("targetId", String.valueOf(targetId))
+                        .param("alarmType", String.valueOf(alarmType))
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
