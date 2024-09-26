@@ -8,7 +8,12 @@
               {{ studyGroupBoard.title }}
             </h3>
             <p class="mb-0 font-weight-normal text-s">
-              {{ studyGroupBoard.user?.nickname }} ( {{ studyGroupBoard.user?.userId }} ) 
+              <router-link v-if="studyGroupBoard.user?.userId != userId" :to="`/main/profile/user/${studyGroupBoard.user?.userId}`">
+                {{ studyGroupBoard.user?.nickname }} ( {{ studyGroupBoard.user?.userId }} ) 
+              </router-link>
+              <router-link v-else :to="`/main/profile/${studyGroupBoard.user?.userId}`">
+                {{ studyGroupBoard.user?.nickname }} ( {{ studyGroupBoard.user?.userId }} ) 
+              </router-link>
             </p>
             <p class="mb-0 font-weight-normal text-sm">
               {{ formatDate(studyGroupBoard.createdAt) }}

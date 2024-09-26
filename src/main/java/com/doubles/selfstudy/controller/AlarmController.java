@@ -1,8 +1,8 @@
 package com.doubles.selfstudy.controller;
 
-import com.doubles.selfstudy.controller.request.AlarmDeleteRequest;
 import com.doubles.selfstudy.controller.response.AlarmResponse;
 import com.doubles.selfstudy.controller.response.Response;
+import com.doubles.selfstudy.dto.alarm.AlarmType;
 import com.doubles.selfstudy.service.AlarmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,9 +32,10 @@ public class AlarmController {
     @DeleteMapping
     public Response<Void> deleteAlarm(
             Authentication authentication,
-            @RequestBody AlarmDeleteRequest request
+            @RequestParam Long targetId, // 쿼리 파라미터로 받음
+            @RequestParam AlarmType alarmType
     ) {
-        alarmService.deleteAlarm(authentication.getName(), request.getTargetId(), request.getAlarmType());
+        alarmService.deleteAlarm(authentication.getName(), targetId,alarmType);
 
         return Response.success();
     }
