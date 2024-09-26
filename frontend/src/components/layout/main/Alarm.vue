@@ -12,52 +12,52 @@
               <div v-else v-for="alarm in alarmList" class="alarm-info">
                 <div v-if="alarm.alarmType === 'NEW_LIKE_ON_POST'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">질문 게시글인 {{ truncateText(alarm.data, 10) }}에 {{ alarm.alarmCount }}개의 좋아요를 눌렸습니다.</span>
-                  <router-link :to="`/main/question_board/${alarm.targetId}`" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
+                  <router-link :to="`/main/question_board/${alarm.targetId}`"  @click="deleteAlarm(alarm)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
                     <i class="material-icons opacity-10">play_arrow</i>
                   </router-link>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
                 <div v-if="alarm.alarmType === 'NEW_COMMENT_ON_POST'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">질문 게시글인 {{ truncateText(alarm.data, 10) }}에 {{ alarm.alarmCount }}개의 댓글이 달렸습니다.</span>
-                  <router-link :to="`/main/question_board/${alarm.targetId}`" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
+                  <router-link :to="`/main/question_board/${alarm.targetId}`" @click="deleteAlarm(alarm)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
                     <i class="material-icons opacity-10">play_arrow</i>
                   </router-link>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
                 <div v-if="alarm.alarmType === 'INVITE_STUDY_GROUP'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">{{ truncateText(alarm.data, 10) }}가 스터디 그룹에에 초대했습니다.</span>
-                  <a @click="joinStudyGroup(alarm.data)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
+                  <a @click="joinStudyGroup(alarm.data); deleteAlarm(alarm)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
                     <i class="material-icons opacity-10">check</i>
                   </a>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
                 <div v-if="alarm.alarmType === 'NEW_COMMENT_ON_STUDY_GROUP_POST'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">스터디 그룹 게시글인 {{ truncateText(alarm.data, 10) }}에 {{ alarm.alarmCount }}개의 댓글이 달렸습니다.</span>
-                  <router-link :to="`study_group/board/${alarm.targetId}`" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
+                  <router-link :to="`study_group/board/${alarm.targetId}`" @click="deleteAlarm(alarm)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
                     <i class="material-icons opacity-10">play_arrow</i>
                   </router-link>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
                 <div v-if="alarm.alarmType === 'NEW_CHAT_MESSAGE'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">{{ truncateText(alarm.data, 10) }}에게 {{ alarm.alarmCount }}개의 새로운 메시지가 왔습니다.</span>
-                  <a @click="goToChatPage(alarm.data)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
+                  <a @click="goToChatPage(alarm.data); deleteAlarm(alarm)" type="button" class="btn-base me-5 text-lg mt-3 opacity-10">
                     <i class="material-icons opacity-10">play_arrow</i>
                   </a>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
                 <div v-if="alarm.alarmType === 'CHANGE_LEADER'" class="alert alert-info alert-dismissible text-white" role="alert">
                   <span class="text-sm">스터디 그룹의 리더가 당신으로 변경되었습니다.</span>
-                  <button type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
+                  <button @click="deleteAlarm(alarm)" type="button" class="btn-close text-lg opacity-10" data-bs-dismiss="alert" aria-label="Close">
                     <i class="material-icons opacity-10">close</i>
                   </button>
                 </div>
@@ -155,6 +155,20 @@
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('채팅관련 에러가 발생했습니다.');
+    }
+  };
+
+  const deleteAlarm = async (alarm) => {
+    try {
+      const response = await apiClient.delete('/main/alarm', {
+        params: {
+          targetId: alarm.targetId,
+          alarmType: alarm.alarmType
+        }
+      });
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('알람 삭제관련 에러가 발생했습니다.');
     }
   };
 
