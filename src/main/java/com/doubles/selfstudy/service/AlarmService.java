@@ -11,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class AlarmService {
@@ -27,6 +30,31 @@ public class AlarmService {
 
         return results.map(result -> AlarmDto.fromEntity(
                 (AlarmType) result[0], (Long) result[1], (String) result[2], (Long) result[3]));
+    }
+
+    // 탑 네비 알람 조회
+    public List<AlarmDto> topNavAlarmList(String userId) {
+        // 유저 조회
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 알람 조회
+        List<AlarmDto> alarmList = new ArrayList<>();
+
+        for (AlarmType alarmType : AlarmType.values()) {
+            Long alarmCount = alarmRepository.countByUserAccountAndAlarmType(userAccount, alarmType);
+
+            // 알람이 있을 경우만 add
+            if (alarmCount > 0) {
+                alarmList.add(
+                        AlarmDto.fromEntity(
+                                alarmType,
+                                alarmCount
+                        )
+                );
+            }
+        }
+
+        return alarmList;
     }
 
     // 유저의 알람 삭제
