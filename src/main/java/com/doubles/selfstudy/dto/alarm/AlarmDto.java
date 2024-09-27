@@ -26,4 +26,13 @@ public class AlarmDto {
                 alarmCount
         );
     }
+
+    public static AlarmDto fromEntity(AlarmType alarmType, Long alarmCount) {
+        return new AlarmDto(
+                alarmType,
+                null,
+                null,
+                alarmCount
+        );
+    }
 }
