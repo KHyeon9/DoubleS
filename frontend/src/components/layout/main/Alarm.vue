@@ -90,6 +90,7 @@
    import apiClient from '../../../config/authConfig';
    import { ref, onMounted } from 'vue';
    import { usePagination } from '../../../utils/pagination';
+   import { useNavAlarmStore } from '../../../store/navAlarmStore.js';
    import router from '../../../router/router.js';
 
    const { 
@@ -101,6 +102,8 @@
     paginatedPageNumbers,
     pageScrollTop
   } = usePagination();
+
+  const navAlarmStore = useNavAlarmStore();
 
    const alarmList = ref([]);
 
@@ -166,6 +169,8 @@
           alarmType: alarm.alarmType
         }
       });
+
+      navAlarmStore.getTopNavAlarmList();
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('알람 삭제관련 에러가 발생했습니다.');
@@ -201,6 +206,7 @@
 
   onMounted(() => {
     getAlarmList();
+    navAlarmStore.getTopNavAlarmList();
   });
 </script>
 <style scoped>
