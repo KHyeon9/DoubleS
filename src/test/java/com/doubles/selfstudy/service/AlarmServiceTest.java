@@ -83,4 +83,19 @@ class AlarmServiceTest {
         // Then
         assertDoesNotThrow(() -> alarmService.alarmList(userId, pageable));
     }
+
+    @Test
+    void 탑_네비_알람_리스트_조회() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(alarmRepository.countByUserAccountAndAlarmType(any(), any()))
+                .thenReturn(1L);
+
+        // Then
+        assertDoesNotThrow(() -> alarmService.topNavAlarmList(userId));
+    }
 }
