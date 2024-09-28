@@ -26,6 +26,7 @@ public enum ErrorCode {
     STUDY_GROUP_FULL(HttpStatus.UNPROCESSABLE_ENTITY, "Study Group is full"),
     LEADER_NOT_EXIT(HttpStatus.UNPROCESSABLE_ENTITY, "Leader not exit"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Permission is invalid"),
+    ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Connecting alarm occurs error")
     ;
 
     private HttpStatus status;
