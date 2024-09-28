@@ -23,6 +23,7 @@ public class StudyGroupBoardCommentService {
 
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
     private final ServiceUtils serviceUtils;
 
     // 스터디 그룹 게시글의 댓글들 조회
@@ -51,15 +52,16 @@ public class StudyGroupBoardCommentService {
         );
         
         // 알람 저장
-        Alarm alarm = Alarm.of(
+        Alarm alarm = alarmRepository.save(Alarm.of(
                 studyGroupBoard.getUserAccount(),
                 AlarmType.NEW_COMMENT_ON_STUDY_GROUP_POST,
                 userId,
                 studyGroupBoardId,
                 studyGroupBoard.getTitle()
-            );
+            )
+        );
 
-        alarmRepository.save(alarm);
+        alarmService.alarmSend(alarm.getId(), studyGroupBoard.getUserAccount().getUserId());
     }
 
     // 스터디 그룹 게시글의 댓글 수정

@@ -25,6 +25,7 @@ public class QuestionBoardCommentService {
 
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
     private final ServiceUtils serviceUtils;
 
     // 질문 게시글 댓글 리스트 조회
@@ -52,15 +53,17 @@ public class QuestionBoardCommentService {
 
         // 게시글 작성자가 아닌 경우 알람 저장
         if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userId)) {
-            Alarm alarm = Alarm.of(
-                    questionBoard.getUserAccount(),
-                    AlarmType.NEW_COMMENT_ON_POST,
-                    userId,
-                    questionBoardId,
-                    questionBoard.getTitle()
+            Alarm alarm = alarmRepository.save(
+                    Alarm.of(
+                            questionBoard.getUserAccount(),
+                            AlarmType.NEW_COMMENT_ON_POST,
+                            userId,
+                            questionBoardId,
+                            questionBoard.getTitle()
+                    )
             );
 
-            alarmRepository.save(alarm);
+            alarmService.alarmSend(alarm.getId(), questionBoard.getUserAccount().getUserId());
         }
     }
 
