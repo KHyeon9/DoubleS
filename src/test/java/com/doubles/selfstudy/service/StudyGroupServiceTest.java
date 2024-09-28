@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 class StudyGroupServiceTest {
 
@@ -38,6 +41,8 @@ class StudyGroupServiceTest {
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
     private AlarmRepository alarmRepository;
+    @MockBean
+    private AlarmService alarmService;
 
     @Test
     void 스터디_그룹_생성에_성공한_경우() {
@@ -335,6 +340,8 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(userStudyGroupLeaderFixture));
         when(userAccountRepository.findById(inviteUserId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
+        when(alarmRepository.save(any()))
+                .thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> studyGroupService.inviteAlarmStudyGroupMember(leaderUserId, inviteUserId));
@@ -645,6 +652,8 @@ class StudyGroupServiceTest {
                 .thenReturn(Optional.of(memberFixture));
         when(userStudyGroupRepository.saveAndFlush(any()))
                 .thenReturn(ChangeLeaderFixture);
+        when(alarmRepository.save(any()))
+                .thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> studyGroupService.changeStudyGroupLeader(nowLeaderId, changeLeaderId));

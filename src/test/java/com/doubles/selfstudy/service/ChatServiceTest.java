@@ -41,6 +41,8 @@ class ChatServiceTest {
     private ChatMessageRepository chatMessageRepository;
     @MockBean
     private AlarmRepository alarmRepository;
+    @MockBean
+    private AlarmService alarmService;
 
     @Test
     void 채팅룸_생성_성공한_경우() {

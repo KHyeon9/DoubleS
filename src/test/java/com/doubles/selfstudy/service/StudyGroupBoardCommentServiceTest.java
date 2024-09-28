@@ -1,12 +1,15 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.Alarm;
 import com.doubles.selfstudy.entity.StudyGroupBoard;
 import com.doubles.selfstudy.entity.StudyGroupBoardComment;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupBoardCommentFixture;
+import com.doubles.selfstudy.fixture.StudyGroupBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
+import com.doubles.selfstudy.repository.AlarmRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
 import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
@@ -36,6 +39,10 @@ class StudyGroupBoardCommentServiceTest {
     private UserAccountRepository userAccountRepository;
     @MockBean
     private StudyGroupBoardRepository studyGroupBoardRepository;
+    @MockBean
+    private AlarmRepository alarmRepository;
+    @MockBean
+    private AlarmService alarmService;
 
     @Test
     void 스터디_그룹_게시글의_댓글_생성이_성공한_경우() {
@@ -44,11 +51,16 @@ class StudyGroupBoardCommentServiceTest {
         Long studyGroupBoardId = 1L;
         String comment = "comment";
 
+        UserAccount userAccount = UserAccountFixture.get(userId, "password");
+        StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get("writer", "title", "content");
+
         // When
         when(userAccountRepository.findById(userId))
-                .thenReturn(Optional.of(mock(UserAccount.class)));
+                .thenReturn(Optional.of(userAccount));
         when(studyGroupBoardRepository.findById(studyGroupBoardId))
-                .thenReturn(Optional.of(mock(StudyGroupBoard.class)));
+                .thenReturn(Optional.of(studyGroupBoard));
+        when(alarmRepository.save(any()))
+                .thenReturn(mock(Alarm.class));
 
         // Then
         assertDoesNotThrow(() -> studyGroupBoardCommentService
@@ -86,9 +98,11 @@ class StudyGroupBoardCommentServiceTest {
         Long studyGroupBoardId = 1L;
         String comment = "comment";
 
+        UserAccount userAccount = UserAccountFixture.get(userId, "password");
+
         // When
         when(userAccountRepository.findById(userId))
-                .thenReturn(Optional.of(mock(UserAccount.class)));
+                .thenReturn(Optional.of(userAccount));
         when(studyGroupBoardRepository.findById(studyGroupBoardId))
                 .thenReturn(Optional.empty());
 
