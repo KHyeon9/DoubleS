@@ -29,6 +29,7 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
     private final ServiceUtils serviceUtils;
 
     // 채팅룸 리스트 조회
@@ -154,8 +155,11 @@ public class ChatService {
         }
 
         // 알람 저장
-        Alarm alarm = Alarm.of(alarmUser, AlarmType.NEW_CHAT_MESSAGE, userId, chatRoom.getId(), userId);
-        alarmRepository.save(alarm);
+        Alarm alarm = alarmRepository.save(
+                Alarm.of(alarmUser, AlarmType.NEW_CHAT_MESSAGE, userId, chatRoom.getId(), userId)
+        );
+
+        alarmService.alarmSend(alarm.getId(), alarmUser.getUserId());
 
         return ChatMessageDto.fromEntity(chatMessageRepository.save(chatMessage));
     }

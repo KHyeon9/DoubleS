@@ -31,6 +31,7 @@ public class QuestionBoardService {
     private final QuestionBoardLikeRepository questionBoardLikeRepository;
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
     private final ServiceUtils serviceUtils;
 
     // 질문 게시글 리스트
@@ -195,15 +196,17 @@ public class QuestionBoardService {
         
         // 작성자가 자기 게시글 좋아요를 제외하고 알람 저장
         if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userId)) {
-            Alarm alarm = Alarm.of(
+            Alarm alarm = alarmRepository.save(
+                    Alarm.of(
                     questionBoard.getUserAccount(),
                     AlarmType.NEW_LIKE_ON_POST,
                     userId,
                     questionBoardId,
                     questionBoard.getTitle()
+                )
             );
 
-            alarmRepository.save(alarm);
+            alarmService.alarmSend(alarm.getId(), questionBoard.getUserAccount().getUserId());
         }
     }
 

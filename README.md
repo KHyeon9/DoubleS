@@ -17,6 +17,7 @@
 * MySQL 8
 * JWT 0.12.5
 * WebSocket
+* SSE(Server-Sent-Events)
 * Vue3 + Vite
 * Pinia
 

@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest
 class StudyGroupBoardServiceTest {
 
@@ -42,6 +44,8 @@ class StudyGroupBoardServiceTest {
     private StudyGroupBoardRepository studyGroupBoardRepository;
     @MockBean
     private StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
+    @MockBean
+    private AlarmService alarmService;
 
     @Test
     void 스터디_그룹_게시글_생성_성공한_경우() {

@@ -88,10 +88,13 @@
 </template>
 <script setup>
    import apiClient from '../../../config/authConfig';
-   import { ref, onMounted } from 'vue';
+   import { ref, onMounted, onUnmounted } from 'vue';
    import { usePagination } from '../../../utils/pagination';
+   import { useAuthStore } from '../../../store/authStore.js';
+   import { useNavAlarmStore } from '../../../store/navAlarmStore.js';
    import router from '../../../router/router.js';
 
+   const authStore = useAuthStore();
    const { 
     page, 
     totalPages, 
@@ -101,6 +104,10 @@
     paginatedPageNumbers,
     pageScrollTop
   } = usePagination();
+  
+  const alarmEvent = ref(null);
+
+  const navAlarmStore = useNavAlarmStore();
 
    const alarmList = ref([]);
 
@@ -166,6 +173,8 @@
           alarmType: alarm.alarmType
         }
       });
+
+      navAlarmStore.getTopNavAlarmList();
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('알람 삭제관련 에러가 발생했습니다.');
@@ -201,6 +210,42 @@
 
   onMounted(() => {
     getAlarmList();
+    navAlarmStore.getTopNavAlarmList();
+    const token = authStore.token || localStorage.getItem('token');
+
+    if (!token) {
+      console.error("JWT token이 없습니다.");
+      return;
+    }
+
+    const eventSource = new EventSource(`/api/main/alarm/sub?token=${token}`);
+
+    alarmEvent.value = eventSource;
+
+    eventSource.addEventListener('open', () => {
+      console.log('연결 완료');
+    });
+
+    eventSource.addEventListener('alarm', (event) => {
+      console.log('받은 알람 Event: ', event.data);
+      getAlarmList(); // 알람 데이터 갱신
+      navAlarmStore.getTopNavAlarmList(); // 네비의 알람 데이터 갱신
+    });
+
+    eventSource.addEventListener('error', (event) => {
+      console.log("EventSource error state: ", event.target.readyState);
+      if (event.target.readyState === EventSource.CLOSED) {
+        console.log('EventSource Closed');
+      }
+      eventSource.close();
+    })
+  });
+
+  onUnmounted(() => {
+    if (alarmEvent.value) {
+      alarmEvent.value.close(); // 언마운트 될 때 연결 해제
+      console.log("EventSource 연결 해제");
+    }
   });
 </script>
 <style scoped>

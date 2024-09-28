@@ -41,6 +41,8 @@ class QuestionBoardCommentServiceTest {
     private QuestionBoardCommentRepository questionBoardCommentRepository;
     @MockBean
     private AlarmRepository alarmRepository;
+    @MockBean
+    private AlarmService alarmService;
 
     @Test
     void 질문_게시글_댓글_생성_성공() {

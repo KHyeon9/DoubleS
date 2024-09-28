@@ -28,6 +28,7 @@ public class StudyGroupService {
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
 
     private final ServiceUtils serviceUtils;
 
@@ -122,7 +123,6 @@ public class StudyGroupService {
     }
 
     // 스터디 그룹 권한 확인 및 알림 전송
-    // TODO: 테스트 필요
     @Transactional
     public void inviteAlarmStudyGroupMember(String userId, String inviteUserId) {
         // study group 권한 확인
@@ -146,12 +146,20 @@ public class StudyGroupService {
                     "이미 스터디 그룹에 초대했습니다."
             );
         }
-        Alarm inviteAlarm = Alarm.of(inviteMemberAccount, AlarmType.INVITE_STUDY_GROUP, userId, userStudyGroup.getStudyGroup().getId(), userId);
-        alarmRepository.save(inviteAlarm);
+        Alarm inviteAlarm = alarmRepository.save(
+                Alarm.of(
+                        inviteMemberAccount,
+                        AlarmType.INVITE_STUDY_GROUP,
+                        userId,
+                        userStudyGroup.getStudyGroup().getId(),
+                        userId
+                )
+        );
+
+        alarmService.alarmSend(inviteAlarm.getId(), inviteMemberAccount.getUserId());
     }
 
     // 스터디 그룹 초대
-    // TODO: 위에 알람이 추가됨으로써 수정 가능성이 생김
     @Transactional
     public void joinStudyGroupMember(String inviteUserId, String leaderUserId) {
         // study group 권한 확인
@@ -193,15 +201,16 @@ public class StudyGroupService {
         changeLeader.setPosition(StudyGroupPosition.Leader);
 
         // 리더가 된 사람에게 알람 전송
-        Alarm alarm = Alarm.of(
+        Alarm alarm =  alarmRepository.save(Alarm.of(
                 userAccount,
                 AlarmType.CHANGE_LEADER,
                 nowLeaderId,
                 nowLeader.getStudyGroup().getId(),
                 nowLeaderId
+            )
         );
 
-        alarmRepository.save(alarm);
+        alarmService.alarmSend(alarm.getId(), changeLeader.getUserAccount().getUserId());
 
         return  UserStudyGroupDto.fromEntity(userStudyGroupRepository.saveAndFlush(changeLeader));
     }

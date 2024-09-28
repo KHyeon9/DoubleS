@@ -20,8 +20,11 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
             "GROUP BY a.alarmType, a.targetId, a.data")
     Page<Object[]> findAlarmTypesAndCountsByUserAccount(@Param("userAccount") UserAccount userAccount, Pageable pageable);
 
+    // 탑 네비에서 사용될 알람 조회
+    Long countByUserAccountAndAlarmType(UserAccount userAccount, AlarmType alarmType);
+
     // 알람 중복이 없어야 하는 경우 존재하는지 조회를 위한 메소드 
-    boolean existsByUserAccountAndFromUserIdAndAlarmType(UserAccount user, String fromUserId, AlarmType alarmType);
+    boolean existsByUserAccountAndFromUserIdAndAlarmType(UserAccount userAccount, String fromUserId, AlarmType alarmType);
 
     // 알람 삭제
     void deleteByTargetIdAndAlarmType(Long targetId, AlarmType alarmType);

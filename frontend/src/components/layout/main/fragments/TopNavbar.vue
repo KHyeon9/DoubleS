@@ -37,73 +37,83 @@
             </a>
           </li>
           <li class="nav-item dropdown pe-2 d-flex align-items-center">
-            <a href="javascript:;" 
+            <a @click="useNavAlarmStore.getTopNavAlarmList"
               class="nav-link text-body text-center d-flex align-items-center justify-content-center" 
               id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="material-icons cursor-pointer">notifications</i>
+              <div class="nav-alarm">
+                <i class="material-icons cursor-pointer">notifications</i>
+                <span v-if="alarmCount !== 0" class="position-absolute top-5 start-60 translate-middle badge rounded-pill bg-danger border border-white small py-1 px-2">
+                  <span class="small">{{ alarmCount }}</span>
+                  <span class="visually-hidden">unread notifications</span>
+                </span>
+              </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end px-2 py-3 " aria-labelledby="dropdownMenuButton">
-              <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="javascript:;">
+              <li v-if="alarmCount === 0" class="mb-2">
+                <a class="dropdown-item border-radius-md">
                   <div class="d-flex py-1">
-                    <div class="my-auto">
-                      <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3 ">
-                    </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">New message</span> from Laur
+                        <span class="font-weight-bold">새로운 알림이 없습니다.</span>
                       </h6>
-                      <p class="text-xs text-secondary mb-0">
-                        13 minutes ago
-                      </p>
                     </div>
                   </div>
                 </a>
               </li>
-              <li class="mb-2">
+              <li v-else v-for="alarm in navAlarmList" class="mb-2 alarm-list">
                 <a class="dropdown-item border-radius-md" href="javascript:;">
-                  <div class="d-flex py-1">
-                    <div class="my-auto">
-                      <img src="/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                    </div>
+                  <div v-if="alarm.alarmType === 'NEW_COMMENT_ON_POST' && alarm.alarmCount != 0" class="d-flex py-1">
                     <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">New album</span> by Travis Scott
-                      </h6>
-                      <p class="text-xs text-secondary mb-0">
-                        <i class="fa fa-clock me-1"></i>
-                        1 day
-                      </p>
+                      <router-link to="/main/alarm">
+                        <h6  class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">질문 게시글에 새로운 댓글이  {{ alarm.alarmCount }} 개 달렸습니다.</span>
+                        </h6>
+                      </router-link>
                     </div>
                   </div>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item border-radius-md" href="javascript:;">
-                  <div class="d-flex py-1">
-                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                      <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <title>credit-card</title>
-                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                          <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                            <g transform="translate(1716.000000, 291.000000)">
-                              <g transform="translate(453.000000, 454.000000)">
-                                <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                              </g>
-                            </g>
-                          </g>
-                        </g>
-                      </svg>
-                    </div>
+                  <div v-if="alarm.alarmType === 'NEW_LIKE_ON_POST' && alarm.alarmCount != 0" class="d-flex py-1">
                     <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        Payment successfully completed
-                      </h6>
-                      <p class="text-xs text-secondary mb-0">
-                        <i class="fa fa-clock me-1"></i>
-                        2 days
-                      </p>
+                      <router-link to="/main/alarm">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">질문 게시글에 좋아요가 {{ alarm.alarmCount }} 개 달렸습니다.</span>
+                        </h6>
+                      </router-link>
+                    </div>
+                  </div>
+                  <div v-if="alarm.alarmType === 'NEW_COMMENT_ON_STUDY_GROUP_POST' && alarm.alarmCount != 0" class="d-flex py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <router-link to="/main/alarm">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">스터디 그룹 게시글에 댓글이 {{ alarm.alarmCount }} 개 달렸습니다.</span>
+                        </h6>
+                      </router-link>
+                    </div>
+                  </div>
+                  <div v-if="alarm.alarmType === 'INVITE_STUDY_GROUP' && alarm.alarmCount != 0" class="d-flex py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <router-link to="/main/alarm">
+                        <h6 lass="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">스터디 그룹 초대가 왔습니다.</span>
+                        </h6>
+                      </router-link>
+                    </div>
+                  </div>
+                  <div v-if="alarm.alarmType === 'NEW_CHAT_MESSAGE' && alarm.alarmCount != 0" class="d-flex py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <router-link to="/main/alarm">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">새로운 채팅이 {{ alarm.alarmCount }} 개 있습니다.</span>  
+                        </h6>
+                      </router-link>
+                    </div>
+                  </div>
+                  <div v-if="alarm.alarmType === 'CHANGE_LEADER' && alarm.alarmCount != 0" class="d-flex py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <router-link to="/main/alarm">
+                        <h6 v-if="alarm.alarmType === 'CHANGE_LEADER' && alarm.alarmCount != 0" class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold">리더가 당신으로 변경되었습니다.</span>
+                        </h6>
+                      </router-link>
                     </div>
                   </div>
                 </a>
@@ -128,15 +138,21 @@
   import { useRouter } from 'vue-router';
   import { useIndexStore } from '../../../../store/IndexStore.js';
   import { useAuthStore } from '../../../../store/authStore.js';
-  import { computed, ref } from 'vue';
+  import { useNavAlarmStore } from '../../../../store/navAlarmStore.js';
+  import { computed, ref, onMounted } from 'vue';
 
   const router = useRouter();
+
   const indexStore = useIndexStore();
   const now_page = computed(() => indexStore.now_page);
 
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
   const userId = computed(() => authStore.userId);
+
+  const navAlarmStore = useNavAlarmStore();
+  const navAlarmList = computed(() => navAlarmStore.navAlarmList);
+  const alarmCount = computed(() => navAlarmStore.alarmCount);
 
   const findUserId = ref('');
   const isFindIdFocused = ref(false);
@@ -185,9 +201,18 @@
   const handleFindUserIdBlur = () => {
     isFindIdFocused.value = false;
   };
+
+  onMounted(() => {
+    navAlarmStore.getTopNavAlarmList();
+    console.log('component : ', navAlarmList.value);
+    console.log('component : ', alarmCount.value);
+  });
 </script>
 <style scoped>
   .dropdown-menu::before {
     content: none;
+  }
+  .alarm-list {
+    width: 320px;
   }
 </style>
