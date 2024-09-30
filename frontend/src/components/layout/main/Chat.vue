@@ -352,8 +352,8 @@
 
   const deleteChatRoom = async () => {
     if (nowChatRoomId.value === 0) {
-      alert('채팅방이 선택되어 있지 않습니다.');
-      return;
+        alert('채팅방이 선택되어 있지 않습니다.');
+        return;
     }
 
     try {
@@ -363,16 +363,20 @@
         }
       });
 
+      websocketClient.deactivate();  // 연결을 종료
       nowChatUserId.value = '';
       nowChatUserNickname.value = '';
       nowChatDiscription.value = '';
       nowChatRoomId.value = 0;
       websocketClient = '';
-      clearChat();
+      chatMessageList.value = [];
+      console.log('연결 종료');
 
       console.log('채팅방이 삭제되었습니다.', response);
 
       getChatRoomList();
+
+      alert('채팅방에서 나왔습니다.');
 
     } catch (error) {
       console.log('채팅방을 삭제하지 못했습니다.', error);

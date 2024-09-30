@@ -1,10 +1,13 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
+import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
+import com.doubles.selfstudy.repository.ChatRoomRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
 import org.junit.jupiter.api.Test;
@@ -14,11 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.doubles.selfstudy.fixture.UserAccountFixture.get;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -32,6 +37,8 @@ class UserAccountServiceTest {
     private UserAccountRepository userAccountRepository;
     @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
+    @MockBean
+    private ChatRoomRepository chatRoomRepository;
     @MockBean
     private BCryptPasswordEncoder encoder;
 
@@ -223,6 +230,68 @@ class UserAccountServiceTest {
                 () -> userAccountService.modifiyUserPassword(userId, nowPassword, changePassword));
 
         assertEquals(ErrorCode.INVALID_PASSWORD, e.getErrorCode());
+    }
+
+    @Test
+    void 유저_삭제_성공() {
+        // Given
+        String userId = "userId";
+
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup userStudyGroupMember = UserStudyGroupFixture.getMember(userId, studyGroup);
+        UserAccount userAccount = userStudyGroupMember.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupMember));
+        when(chatRoomRepository.findAllByUser(userAccount))
+                .thenReturn(List.of());
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.deleteUserAccount(userId));
+    }
+
+    @Test
+    void 유저_삭제시_유저가_없는_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.deleteUserAccount(userId));
+
+        assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
+    }
+
+    @Test
+    void 유저_삭제시_스터디_그룹_리더인_경우_에러_반환() {
+        // Given
+        String userId = "userId";
+        StudyGroup studyGroup = StudyGroupFixture.get();
+        UserStudyGroup userStudyGroupLeader = UserStudyGroupFixture.getLeader(userId, studyGroup);
+        UserAccount userAccount = userStudyGroupLeader.getUserAccount();
+
+        // When
+        when(userAccountRepository.findById(userId))
+                .thenReturn(Optional.of(userAccount));
+        when(userStudyGroupRepository.findByUserAccount(userAccount))
+                .thenReturn(Optional.of(userStudyGroupLeader));
+        when(chatRoomRepository.findAllByUser(userAccount))
+                .thenReturn(List.of());
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.deleteUserAccount(userId));
+
+        assertEquals(ErrorCode.LEADER_NOT_EXIT, e.getErrorCode());
     }
 
     @Test

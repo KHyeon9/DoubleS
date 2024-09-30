@@ -210,7 +210,7 @@ public class StudyGroupService {
             )
         );
 
-        alarmService.alarmSend(alarm.getId(), changeLeader.getUserAccount().getUserId());
+        alarmService.alarmSend(alarm.getId(), userAccount.getUserId());
 
         return  UserStudyGroupDto.fromEntity(userStudyGroupRepository.saveAndFlush(changeLeader));
     }

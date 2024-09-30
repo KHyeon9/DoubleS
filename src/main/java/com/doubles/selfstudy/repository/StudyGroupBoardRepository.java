@@ -2,6 +2,7 @@ package com.doubles.selfstudy.repository;
 
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.StudyGroupBoard;
+import com.doubles.selfstudy.entity.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,8 @@ public interface StudyGroupBoardRepository extends JpaRepository<StudyGroupBoard
 
     @Query("SELECT s.id FROM StudyGroupBoard s WHERE s.studyGroup.id = :studyGroupId")
     List<Long> findBoardIdsByStudyGroupId(@Param("studyGroupId") Long studyGroupId);
+
+    @Modifying
+    @Query("DELETE FROM StudyGroupBoard b WHERE b.userAccount = :userAccount")
+    void deleteAllByUserAccount(@Param("userAccount") UserAccount userAccount);
 }
