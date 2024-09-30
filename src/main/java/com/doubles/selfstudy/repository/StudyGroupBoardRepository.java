@@ -24,5 +24,7 @@ public interface StudyGroupBoardRepository extends JpaRepository<StudyGroupBoard
     @Query("SELECT s.id FROM StudyGroupBoard s WHERE s.studyGroup.id = :studyGroupId")
     List<Long> findBoardIdsByStudyGroupId(@Param("studyGroupId") Long studyGroupId);
 
-    void deleteAllByUserAccount(UserAccount userAccount);
+    @Modifying
+    @Query("DELETE FROM StudyGroupBoard b WHERE b.userAccount = :userAccount")
+    void deleteAllByUserAccount(@Param("userAccount") UserAccount userAccount);
 }

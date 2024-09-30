@@ -6,7 +6,9 @@ import com.doubles.selfstudy.entity.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -50,5 +52,7 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
             "WHERE q.userAccount.userId = :userId AND q.tag = :tag" )
     Page<Object[]> findAllMyQuestionBoardWithCountsByTag(String userId, QuestionBoardTag tag, Pageable pageable);
 
-    void deleteAllByUserAccount(UserAccount userAccount);
+    @Modifying
+    @Query("DELETE FROM QuestionBoard b WHERE b.userAccount = :userAccount")
+    void deleteAllByUserAccount(@Param("userAccount") UserAccount userAccount);
 }

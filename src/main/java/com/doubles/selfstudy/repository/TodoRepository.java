@@ -3,6 +3,7 @@ package com.doubles.selfstudy.repository;
 import com.doubles.selfstudy.entity.Todo;
 import com.doubles.selfstudy.entity.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,5 +19,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     @Query("SELECT COUNT(t) FROM Todo t WHERE t.userAccount.userId = :userId AND t.isCompleted = true")
     Integer countCompletedByUserId(@Param("userId") String userId);
 
-    void deleteAllByUserAccount(UserAccount userAccount);
+
+    @Modifying
+    @Query("DELETE FROM Todo t WHERE t.userAccount = :userAccount")
+    void deleteAllByUserAccount(@Param("userAccount") UserAccount userAccount);
 }

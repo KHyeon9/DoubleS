@@ -25,5 +25,13 @@ public interface StudyGroupBoardCommentRepository extends JpaRepository<StudyGro
     @Query("DELETE FROM StudyGroupBoardComment c WHERE c.studyGroupBoard.id IN :boardIds")
     void deleteAllByStudyGroupBoardIdIn(@Param("boardIds") List<Long> boardIds);
 
-    void deleteAllByUserAccount(UserAccount userAccount);
+    // 사용자가 작성한 모든 스터디 그룹 게시글 아래의 댓글 삭제
+    @Modifying
+    @Query("DELETE FROM StudyGroupBoardComment c WHERE c.studyGroupBoard.userAccount = :userAccount")
+    void deleteAllMyBoardCommentByUserAccount(@Param("userAccount") UserAccount userAccount);
+
+    // 사용자 명과 관련된 모든 스터디 그룹 댓글 삭제
+    @Modifying
+    @Query("DELETE FROM StudyGroupBoardComment c WHERE c.userAccount = :userAccount")
+    void deleteAllByUserAccount(@Param("userAccount") UserAccount userAccount);
 }
