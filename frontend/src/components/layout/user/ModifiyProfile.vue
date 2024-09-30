@@ -103,7 +103,7 @@
               </div>
               <div class="w-50 text-end">
                 <router-link to="/main/profile" class="btn btn-outline-secondary mb-3 mb-md-0 ms-auto" type="button" name="button">내 프로필로</router-link>
-                <button class="btn bg-gradient-danger mb-0 ms-2" type="button" name="button">계정 삭제</button>
+                <button @click="deleteUser" class="btn bg-gradient-danger mb-0 ms-2" type="button" name="button">계정 삭제</button>
               </div>
             </div>
           </div>
@@ -194,6 +194,26 @@
       }
     }
   };
+
+  const deleteUser = async () => {
+    try {
+      const response = await apiClient.delete("/main/profile");
+
+      console.log(response.data.result);
+
+      alert('계정 삭제가 완료되었습니다.');
+
+      router.push('/login');
+
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      if(error.response.data.resultCode === "LEADER_NOT_EXIT") {
+        alert('스터디 그룹 리더는 그룹을 탈퇴하거나 삭제하야 합니다.')
+      } else {
+        alert('계정 삭제에 실패했습니다.');
+      }
+    }
+  }
 
   const validateUserInfoForm = () => {
     if (!nickname.value) {
