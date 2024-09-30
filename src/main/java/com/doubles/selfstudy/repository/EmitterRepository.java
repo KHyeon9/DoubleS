@@ -27,7 +27,11 @@ public class EmitterRepository {
     // 유저 id로 emitter 찾기
     public Optional<SseEmitter> get(String userId) {
         final String key = getKey(userId);
-        return Optional.of(emitterMap.get(key));
+        SseEmitter emitter = emitterMap.get(key);
+        if (emitter == null) {
+            log.warn("No SseEmitter found for user: {}", userId);
+        }
+        return Optional.ofNullable(emitter);
     }
 
     // emitter 삭제
