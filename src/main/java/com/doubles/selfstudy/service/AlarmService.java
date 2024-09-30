@@ -95,12 +95,14 @@ public class AlarmService {
     public void alarmSend(Long alarmId, String userId) {
         emitterRepository.get(userId).ifPresentOrElse(sseEmitter -> {
             try {
-                sseEmitter.send(SseEmitter.event().id(alarmId.toString()).name(ALARM_NAME).data("new alarm"));
+                sseEmitter.send(
+                        SseEmitter.event().id(alarmId.toString()).name(ALARM_NAME).data("new alarm")
+                );
             } catch (IOException e) {
                 emitterRepository.delete(userId);
                 throw new DoubleSApplicationException(ErrorCode.ALARM_CONNECT_ERROR);
             }
-        }, () -> log.info("emitter를 찾지 못했습니다."));
+        }, () -> log.info("유저 {}에 대한 emitter를 찾지 못했습니다.", userId));
     }
 
     // 유저의 알람 삭제
