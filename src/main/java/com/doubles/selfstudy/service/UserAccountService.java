@@ -1,12 +1,14 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
+import com.doubles.selfstudy.entity.ChatMessage;
+import com.doubles.selfstudy.entity.ChatRoom;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
-import com.doubles.selfstudy.repository.UserAccountRepository;
-import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import com.doubles.selfstudy.repository.*;
 import com.doubles.selfstudy.utils.JwtTokenUtils;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,6 +26,14 @@ public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
     private final UserStudyGroupRepository userStudyGroupRepository;
+    private final QuestionBoardRepository questionBoardRepository;
+    private final QuestionBoardCommentRepository questionBoardCommentRepository;
+    private final QuestionBoardLikeRepository questionBoardLikeRepository;
+    private final TodoRepository todoRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final StudyGroupBoardRepository studyGroupBoardRepository;
+    private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
 
@@ -105,6 +116,68 @@ public class UserAccountService {
         userAccount.setPassword(encoder.encode(changePassword));
 
         return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+    }
+
+    // 유저 삭제
+    @Transactional
+    public void deleteUserAccount(String userId) {
+        // 유저 정보 가져옴
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+
+        // 유저 스터디 그룹의 리더인 경우 에러 반환
+        UserStudyGroup userStudyGroup = userStudyGroupRepository
+                .findByUserAccount(userAccount).orElse(null);
+
+        if (userStudyGroup != null) {
+            if (userStudyGroup.getPosition() == StudyGroupPosition.Leader) {
+                throw new DoubleSApplicationException(
+                        ErrorCode.LEADER_NOT_EXIT,
+                        "그룹 리더는 삭제할 수 없습니다. 리더를 바꾸거나, 스터디 그룹 삭제 혹은 그룹원을 비우세요"
+                );
+            }
+
+            studyGroupBoardCommentRepository.deleteAllByUserAccount(userAccount);
+            studyGroupBoardRepository.deleteAllByUserAccount(userAccount);
+            userStudyGroupRepository.deleteByUserAccount(userAccount);
+        }
+        
+        // 질문 게시글 관련 삭제
+        questionBoardCommentRepository.deleteAllByUserAccount(userAccount);
+        questionBoardLikeRepository.deleteAllByUserAccount(userAccount);
+        questionBoardRepository.deleteAllByUserAccount(userAccount);
+        
+        // todo 관련 삭제
+        todoRepository.deleteAllByUserAccount(userAccount);
+        
+        // 관련된 채팅방 조회
+        List<ChatRoom> chatRooms = chatRoomRepository.findAllByUser(userAccount);
+
+        if (!chatRooms.isEmpty()) {
+            for (ChatRoom chatRoom : chatRooms) {
+                ChatMessage message = null;
+
+                if (chatRoom.getLeaveUserId() != null) {
+                    // 채팅방에 남은 사람이 한명이면 채팅방 삭제
+                    chatMessageRepository.deleteAllByChatRoom(chatRoom);
+                    chatRoomRepository.delete(chatRoom);
+                    continue;
+                } else if (chatRoom.getUser1() == userAccount) {
+                    // 유저1의 탈퇴시 상황
+                    chatRoom.setLeaveUserId(chatRoom.getUser1().getUserId());
+                    message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+                } else if (chatRoom.getUser2() == userAccount) {
+                    // 유저2의 탈퇴시 상황
+                    chatRoom.setLeaveUserId(chatRoom.getUser2().getUserId());
+                    message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+                }
+
+                if (message != null) {
+                    chatMessageRepository.save(message);
+                }
+            }
+        }
+
+        userAccountRepository.deleteById(userId);
     }
 
     // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
