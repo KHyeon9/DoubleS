@@ -57,6 +57,7 @@ public class UserController {
         );
     }
 
+    // 유저 체크
     @GetMapping("/main/check/{userId}")
     public Response<Boolean> checkUserInfo(@PathVariable String userId) {
         // user info check 찾지 못하면 서비스단에 에러 발생
@@ -66,6 +67,7 @@ public class UserController {
         return Response.success(true);
     }
 
+    // 유저의 프로필 데이터 가져오기
     @GetMapping("/main/profile/{userId}")
     public Response<ProfileResponse> getProfileUserInfo(@PathVariable String userId) {
         // user info get
@@ -83,6 +85,7 @@ public class UserController {
                 ));
     }
 
+    // 유저 정보 수정
     @PutMapping("/main/profile/user_info")
     public Response<ProfileResponse> modifyUserInfo(
             Authentication authentication,
@@ -100,7 +103,8 @@ public class UserController {
                     )
         );
     }
-
+    
+    // 유저 비밀번호 수정
     @PutMapping("/main/profile/user_password")
     public Response<Void> modifyUserPassword(
             Authentication authentication,
@@ -116,8 +120,13 @@ public class UserController {
         return Response.success();
     }
 
-    @GetMapping("/alarm")
-    public void alarm() {
-        // alarm get
+    // 유저 삭제
+    @DeleteMapping("/main/profile")
+    public Response<Void> deleteUserAccount(
+            Authentication authentication
+    ) {
+        userAccountService.deleteUserAccount(authentication.getName());
+
+        return Response.success();
     }
 }
