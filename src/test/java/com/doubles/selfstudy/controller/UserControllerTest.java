@@ -269,4 +269,30 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
     }
+
+    @Test
+    @WithMockUser
+    void 유저_삭제_성공() throws Exception {
+        // Given
+
+        // When&Then
+        mockMvc.perform(delete("/api/main/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 유저_삭제시_로그인_안한_경우_에러_발생() throws Exception {
+        // Given
+
+        // When&Then
+        mockMvc.perform(delete("/api/main/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
 }
