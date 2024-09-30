@@ -34,6 +34,7 @@ public class UserAccountService {
     private final ChatMessageRepository chatMessageRepository;
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
+    private final AlarmRepository alarmRepository;
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
 
@@ -124,6 +125,12 @@ public class UserAccountService {
         // 유저 정보 가져옴
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
+        // 탈퇴시 관리지 계정으로 알림하기 위해 가져옴
+        UserAccount admin = serviceUtils.getAdminUserAccountOrException("admin");
+
+        // 알람 삭제
+        alarmRepository.deleteAllByUserAccount(userAccount);
+
         // 유저 스터디 그룹의 리더인 경우 에러 반환
         UserStudyGroup userStudyGroup = userStudyGroupRepository
                 .findByUserAccount(userAccount).orElse(null);
@@ -136,14 +143,17 @@ public class UserAccountService {
                 );
             }
 
+            studyGroupBoardCommentRepository.deleteAllMyBoardCommentByUserAccount(userAccount);
             studyGroupBoardCommentRepository.deleteAllByUserAccount(userAccount);
             studyGroupBoardRepository.deleteAllByUserAccount(userAccount);
             userStudyGroupRepository.deleteByUserAccount(userAccount);
         }
         
         // 질문 게시글 관련 삭제
-        questionBoardCommentRepository.deleteAllByUserAccount(userAccount);
         questionBoardLikeRepository.deleteAllByUserAccount(userAccount);
+        questionBoardLikeRepository.deleteAllMyBoardLikesByUserAccount(userAccount);
+        questionBoardCommentRepository.deleteAllByUserAccount(userAccount);
+        questionBoardCommentRepository.deleteAllMyBoardCommentByUserAccount(userAccount);
         questionBoardRepository.deleteAllByUserAccount(userAccount);
         
         // todo 관련 삭제
@@ -154,26 +164,25 @@ public class UserAccountService {
 
         if (!chatRooms.isEmpty()) {
             for (ChatRoom chatRoom : chatRooms) {
-                ChatMessage message = null;
+                chatMessageRepository.deleteAllByChatRoom(chatRoom);
 
                 if (chatRoom.getLeaveUserId() != null) {
                     // 채팅방에 남은 사람이 한명이면 채팅방 삭제
-                    chatMessageRepository.deleteAllByChatRoom(chatRoom);
                     chatRoomRepository.delete(chatRoom);
                     continue;
                 } else if (chatRoom.getUser1() == userAccount) {
                     // 유저1의 탈퇴시 상황
                     chatRoom.setLeaveUserId(chatRoom.getUser1().getUserId());
-                    message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+                    chatRoom.setUser1(admin);
                 } else if (chatRoom.getUser2() == userAccount) {
                     // 유저2의 탈퇴시 상황
                     chatRoom.setLeaveUserId(chatRoom.getUser2().getUserId());
-                    message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
+                    chatRoom.setUser2(admin);
                 }
 
-                if (message != null) {
-                    chatMessageRepository.save(message);
-                }
+                // 사용자 나갔음을 알리는 메시지 저장
+                ChatMessage message = ChatMessage.of(chatRoom, admin, userAccount.getNickname() + "님이 회원을 탈퇴했습니다..");
+                chatMessageRepository.save(message);
             }
         }
 
