@@ -17,8 +17,9 @@ public interface QuestionBoardLikeRepository extends JpaRepository<QuestionBoard
     Long countByQuestionBoard(QuestionBoard questionBoard);
     void deleteByQuestionBoardAndUserAccount(QuestionBoard questionBoard, UserAccount userAccount);
 
-
     @Modifying // db 변경을 명시
     @Query("DELETE FROM QuestionBoardLike qbl WHERE qbl.questionBoard.id = :questionBoardId")
     void deleteAllByQuestionBoardId(Long questionBoardId);
+
+    void deleteAllByUserAccount(UserAccount userAccount);
 }

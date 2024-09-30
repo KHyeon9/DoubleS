@@ -2,6 +2,7 @@ package com.doubles.selfstudy.repository;
 
 import com.doubles.selfstudy.entity.StudyGroupBoard;
 import com.doubles.selfstudy.entity.StudyGroupBoardComment;
+import com.doubles.selfstudy.entity.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,6 @@ public interface StudyGroupBoardCommentRepository extends JpaRepository<StudyGro
     @Transactional
     @Query("DELETE FROM StudyGroupBoardComment c WHERE c.studyGroupBoard.id IN :boardIds")
     void deleteAllByStudyGroupBoardIdIn(@Param("boardIds") List<Long> boardIds);
+
+    void deleteAllByUserAccount(UserAccount userAccount);
 }

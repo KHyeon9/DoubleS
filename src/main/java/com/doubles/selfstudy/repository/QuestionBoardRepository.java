@@ -49,4 +49,6 @@ public interface QuestionBoardRepository extends JpaRepository<QuestionBoard, Lo
             "FROM QuestionBoard q " +
             "WHERE q.userAccount.userId = :userId AND q.tag = :tag" )
     Page<Object[]> findAllMyQuestionBoardWithCountsByTag(String userId, QuestionBoardTag tag, Pageable pageable);
+
+    void deleteAllByUserAccount(UserAccount userAccount);
 }
