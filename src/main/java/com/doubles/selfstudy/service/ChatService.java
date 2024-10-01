@@ -178,11 +178,11 @@ public class ChatService {
             // 채팅방에 남은 사람이 한명이면 채팅방 삭제
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
             chatRoomRepository.delete(chatRoom);
-        } else if (chatRoom.getUser1() == userAccount) {
+        } else if (Objects.equals(chatRoom.getUser1().getUserId(), userAccount.getUserId())) {
             // 유저1의 탈퇴시 상황
             chatRoom.setLeaveUserId(chatRoom.getUser1().getUserId());
             message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");
-        } else if (chatRoom.getUser2() == userAccount) {
+        } else if (Objects.equals(chatRoom.getUser2().getUserId(), userAccount.getUserId())) {
             // 유저2의 탈퇴시 상황
             chatRoom.setLeaveUserId(chatRoom.getUser2().getUserId());
             message = ChatMessage.of(chatRoom, userAccount, userAccount.getNickname() + "이 채팅방을 나갔습니다.");

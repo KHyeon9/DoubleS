@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class NoticeBoardService {
@@ -49,12 +51,12 @@ public class NoticeBoardService {
 
         // 공지사항 글 가져오기
         NoticeBoard noticeBoard = serviceUtils.getNoticeBoardOrException(noticeBoardId);
-        
+
         // 권한 검사
-        if (noticeBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(noticeBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
-                        "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
+                        "%s는 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",
                         userId,
                         noticeBoardId
                     )
@@ -77,7 +79,7 @@ public class NoticeBoardService {
         NoticeBoard noticeBoard = serviceUtils.getNoticeBoardOrException(noticeBoardId);
 
         // 권한 검사
-        if (noticeBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(noticeBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 공지사항 번호: '%s' 에 대해서 권한이 없습니다.",

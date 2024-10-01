@@ -16,6 +16,7 @@ import java.util.Objects;
 public class ServiceUtils {
 
     private final UserAccountRepository userAccountRepository;
+    private final UserAccountCacheRepository userAccountCacheRepository;
     private final QuestionBoardRepository questionBoardRepository;
     private final QuestionBoardCommentRepository questionBoardCommentRepository;
     private final NoticeBoardRepository noticeBoardRepository;
@@ -29,17 +30,17 @@ public class ServiceUtils {
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
-        return userAccountRepository.findById(userId).orElseThrow(() ->
-                new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId))
+        return userAccountCacheRepository.getUserAccount(userId).orElseGet(() ->
+                userAccountRepository.findById(userId).orElseThrow(
+                        () -> new DoubleSApplicationException(
+                                ErrorCode.USER_NOT_FOUND, String.format("%s를 찾지 못했습니다", userId))
+                )
         );
     }
 
     public UserAccount getAdminUserAccountOrException(String userId) {
         // 유저 정보 가져오가
-        UserAccount userAccount = userAccountRepository.findById(userId).orElseThrow(() ->
-                new DoubleSApplicationException(ErrorCode.USER_NOT_FOUND, String.format("유저 %s를 찾지 못했습니다.", userId)
-                )
-        );
+        UserAccount userAccount = getUserAccountOrException(userId);
 
         // 유저 권한 확인
         if (!Objects.equals(userAccount.getRoleType().getRoleName(), RoleType.ADMIN.getRoleName())) {

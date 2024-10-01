@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -49,7 +50,7 @@ public class TodoService {
         todoRepository.save(Todo.of(userAccount, content, importanceTypeValue));
     }
     
-    // Todo 완료또는 완료 못함 변경 
+    // 완료 또는 완료 못함 변경
     @Transactional
     public TodoDto changeTodoCompletedStatus(String userId, Long todoId) {
         // 유저 정보 가져오기
@@ -74,7 +75,7 @@ public class TodoService {
         return TodoDto.fromEntity(todoRepository.saveAndFlush(todo));
     }
     
-    // Todo 내용 변경
+    // 내용 변경
     @Transactional
     public TodoDto modifyTodoInfo(String userId, Long todoId, String content, String importanceType) {
         // 유저 정보 가져오기
@@ -84,7 +85,7 @@ public class TodoService {
         Todo todo = serviceUtils.getTodoOrException(todoId);
 
         // 유저가 다른 경우 검사
-        if (todo.getUserAccount() != userAccount) {
+        if (!Objects.equals(todo.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 todo 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -110,7 +111,7 @@ public class TodoService {
         Todo todo = serviceUtils.getTodoOrException(todoId);
 
         // 유저가 다른 경우 검사
-        if (todo.getUserAccount() != userAccount) {
+        if (!Objects.equals(todo.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 todo 번호: '%s' 에 대해서 권한이 없습니다.",

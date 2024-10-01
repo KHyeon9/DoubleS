@@ -62,7 +62,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
 
             String userId = JwtTokenUtils.getUserId(token, key);
-            UserAccountDto userAccountDto = userAccountService.loadUserByUserId(userId);
+            UserAccountDto userAccountDto = UserAccountDto.fromEntity(userAccountService.loadUserByUserId(userId));
 
             // 인증 객체 생성 및 값 입력
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

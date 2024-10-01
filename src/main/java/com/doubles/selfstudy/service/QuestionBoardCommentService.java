@@ -77,7 +77,7 @@ public class QuestionBoardCommentService {
                 serviceUtils.getQuestionBoardCommentOrException(questionBoardCommentId);
 
         // 댓글 작성자 확인
-        if (questionBoardComment.getUserAccount() != userAccount) {
+        if (!Objects.equals(questionBoardComment.getUserAccount().getUserId(), userAccount.getUserId())) {
                 throw new DoubleSApplicationException(
                         ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -103,7 +103,7 @@ public class QuestionBoardCommentService {
                 serviceUtils.getQuestionBoardCommentOrException(questionBoardCommentId);
 
         // 댓글 작성자 확인
-        if (questionBoardComment.getUserAccount() != userAccount) {
+        if (!Objects.equals(questionBoardComment.getUserAccount().getUserId(), userAccount.getUserId())) {
                 throw new DoubleSApplicationException(
                         ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
