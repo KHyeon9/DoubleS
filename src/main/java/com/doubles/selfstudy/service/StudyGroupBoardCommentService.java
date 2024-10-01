@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class StudyGroupBoardCommentService {
@@ -75,7 +77,7 @@ public class StudyGroupBoardCommentService {
                 serviceUtils.getStudyGroupBoardCommentOrException(studyGroupBoardCommentId);
 
         // 댓글 작성자 확인
-        if (studyGroupBoardComment.getUserAccount() != userAccount) {
+        if (!Objects.equals(studyGroupBoardComment.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                     "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -104,7 +106,7 @@ public class StudyGroupBoardCommentService {
                 serviceUtils.getStudyGroupBoardCommentOrException(studyGroupBoardCommentId);
 
         // 댓글 작성자 확인
-        if (studyGroupBoardComment.getUserAccount() != userAccount) {
+        if (!Objects.equals(studyGroupBoardComment.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                     "%s는 권한이 댓글 번호: '%s' 에 대해서 권한이 없습니다.",

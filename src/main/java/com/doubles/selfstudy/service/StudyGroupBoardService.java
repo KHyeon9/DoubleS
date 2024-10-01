@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class StudyGroupBoardService {
@@ -87,7 +89,7 @@ public class StudyGroupBoardService {
         // study group board 조회
         StudyGroupBoard studyGroupBoard = serviceUtils.getStudyGroupBoardOrException(studyGroupBoardId);
 
-        if (studyGroupBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(studyGroupBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                     "%s는 권한이 스터디 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -115,7 +117,7 @@ public class StudyGroupBoardService {
         // study group board 조회
         StudyGroupBoard studyGroupBoard = serviceUtils.getStudyGroupBoardOrException(studyGroupBoardId);
 
-        if (studyGroupBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(studyGroupBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                     "%s는 권한이 스터디 게시판 번호: '%s' 에 대해서 권한이 없습니다.",

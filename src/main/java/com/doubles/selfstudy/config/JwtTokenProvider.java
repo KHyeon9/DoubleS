@@ -39,7 +39,7 @@ public class JwtTokenProvider {
         Claims claims = JwtTokenUtils.extractClaims(token, secretKey);
         String userId = (String) claims.get("userId");
 
-        UserAccountDto userAccountDto = userAccountService.loadUserByUserId(userId);
+        UserAccountDto userAccountDto = UserAccountDto.fromEntity(userAccountService.loadUserByUserId(userId));
 
         UserDetails userDetails = new User(
                 userAccountDto.getUserId(),

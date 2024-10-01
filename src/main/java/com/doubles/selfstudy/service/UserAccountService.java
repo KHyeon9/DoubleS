@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -35,6 +36,8 @@ public class UserAccountService {
     private final StudyGroupBoardRepository studyGroupBoardRepository;
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final AlarmRepository alarmRepository;
+    private final UserAccountCacheRepository userAccountCacheRepository;
+
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
 
@@ -62,17 +65,17 @@ public class UserAccountService {
     // 로그인
     public String login(String userId, String password) {
         // 회원 가입 체크
-        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
+        UserAccount userAccountDto = serviceUtils.getUserAccountOrException(userId);
 
         // 비밀 번호 체크
-        if (!encoder.matches(password, userAccount.getPassword())) {
+        if (!encoder.matches(password, userAccountDto.getPassword())) {
             throw new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        // 토큰 생성
-        String token = JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
+        userAccountCacheRepository.setUserAccount(userAccountDto);
 
-        return token;
+        // 토큰 생성
+        return JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
     }
     
     // 유저 정보 조회
@@ -170,11 +173,11 @@ public class UserAccountService {
                     // 채팅방에 남은 사람이 한명이면 채팅방 삭제
                     chatRoomRepository.delete(chatRoom);
                     continue;
-                } else if (chatRoom.getUser1() == userAccount) {
+                } else if (Objects.equals(chatRoom.getUser1().getUserId(), userAccount.getUserId())) {
                     // 유저1의 탈퇴시 상황
                     chatRoom.setLeaveUserId(chatRoom.getUser1().getUserId());
                     chatRoom.setUser1(admin);
-                } else if (chatRoom.getUser2() == userAccount) {
+                } else if (Objects.equals(chatRoom.getUser2().getUserId(), userAccount.getUserId())) {
                     // 유저2의 탈퇴시 상황
                     chatRoom.setLeaveUserId(chatRoom.getUser2().getUserId());
                     chatRoom.setUser2(admin);
@@ -186,14 +189,14 @@ public class UserAccountService {
             }
         }
 
+        // redis에서 유저 삭제
+        userAccountCacheRepository.deleteUserAccount(userId);
+
         userAccountRepository.deleteById(userId);
     }
 
     // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
-    public UserAccountDto loadUserByUserId(String userId) {
-        return userAccountRepository.findById(userId).map(UserAccountDto::fromEntity).orElseThrow(
-                () -> new DoubleSApplicationException(
-                        ErrorCode.USER_NOT_FOUND, String.format("%s를 찾지 못했습니다", userId))
-        );
+    public UserAccount loadUserByUserId(String userId) {
+        return serviceUtils.getUserAccountOrException(userId);
     }
 }

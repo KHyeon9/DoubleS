@@ -125,7 +125,7 @@ public class QuestionBoardService {
         QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);;
 
         // 질문 게시글 권한 확인
-        if (questionBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
                 throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                             "%s는 권한이 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -153,7 +153,7 @@ public class QuestionBoardService {
         QuestionBoard questionBoard = serviceUtils.getQuestionBoardOrException(questionBoardId);;
 
         // 질문 게시판 권한 확인
-        if (questionBoard.getUserAccount() != userAccount) {
+        if (!Objects.equals(questionBoard.getUserAccount().getUserId(), userAccount.getUserId())) {
                 throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 게시판 번호: '%s' 에 대해서 권한이 없습니다.",
