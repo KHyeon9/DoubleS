@@ -44,6 +44,9 @@ dependencies {
     // websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // mysql
     runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -51,6 +54,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // redis LocalDateTime 문제 해결을 위한 JavaTimeModule 추가
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
