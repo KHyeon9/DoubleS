@@ -18,11 +18,13 @@
 * JWT 0.12.5
 * WebSocket
 * SSE(Server-Sent-Events)
+* Redis
 * Vue3 + Vite
 * Pinia
 
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
+* Redis -> Redis 서버
 
 ## 그외
 * Bootstrap5
