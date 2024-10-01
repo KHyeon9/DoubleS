@@ -18,6 +18,7 @@
 * JWT 0.12.5
 * WebSocket
 * SSE(Server-Sent-Events)
+* Redis
 * Vue3 + Vite
 * Pinia
 
