@@ -24,6 +24,7 @@
 
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
+* Redis -> Redis 서버
 
 ## 그외
 * Bootstrap5
