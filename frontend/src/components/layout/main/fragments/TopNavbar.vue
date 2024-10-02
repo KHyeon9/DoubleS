@@ -38,11 +38,11 @@
           </li>
           <li class="nav-item dropdown pe-2 d-flex align-items-center">
             <a @click="useNavAlarmStore.getTopNavAlarmList"
-              class="nav-link text-body text-center d-flex align-items-center justify-content-center" 
+              class="nav-link text-body text-center d-flex align-items-center justify-content-center mt-2" 
               id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <div class="nav-alarm">
                 <i class="material-icons cursor-pointer">notifications</i>
-                <span v-if="alarmCount !== 0" class="position-absolute top-5 start-60 translate-middle badge rounded-pill bg-danger border border-white small py-1 px-2">
+                <span v-if="alarmCount !== 0" class="position-absolute top-15 start-60 translate-middle badge rounded-pill bg-danger border border-white small py-1 px-2">
                   <span class="small">{{ alarmCount }}</span>
                   <span class="visually-hidden">unread notifications</span>
                 </span>
@@ -121,12 +121,12 @@
             </ul>
           </li>
           <li class="nav-item d-flex align-items-center">
-            <a href="#" class="nav-link text-body font-weight-bold px-0">
+            <router-link :to="`/main/profile/${userId}`" class="nav-link text-body font-weight-bold px-0">
               <div class="text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="material-icons opacity-10 me-2">account_circle</i>
                 <span class="d-sm-inline d-none">{{ nickname }}</span>
               </div>
-            </a>
+            </router-link>
           </li>
         </ul>
       </div>
