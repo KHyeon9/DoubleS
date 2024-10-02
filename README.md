@@ -29,3 +29,13 @@
 
 ## 그외
 * Bootstrap5
+
+## 주소
+* https://port-0-doubles-lyfraywr77b765d8.sel5.cloudtype.app
+
+### 테스트 아이디
+* 테스트 ID: tester
+* 테스트 Password: 123456
+### 어드민 테스트 아이디(공지사항 작성 가능)
+* 어드민 테스트 ID: admin
+* 어드민 테스트 Password: 123456
