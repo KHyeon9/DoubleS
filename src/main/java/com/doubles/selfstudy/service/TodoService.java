@@ -56,11 +56,11 @@ public class TodoService {
         // 유저 정보 가져오기
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
-        // todo 가져오가
+        // todo 가져오기
         Todo todo = serviceUtils.getTodoOrException(todoId);
 
         // 유저가 다른 경우 검사
-        if (todo.getUserAccount() != userAccount) {
+        if (!Objects.equals(todo.getUserAccount().getUserId(), userAccount.getUserId())) {
             throw new DoubleSApplicationException(
                     ErrorCode.INVALID_PERMISSION, String.format(
                         "%s는 권한이 todo 번호: '%s' 에 대해서 권한이 없습니다.",
@@ -81,7 +81,7 @@ public class TodoService {
         // 유저 정보 가져오기
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
-        // todo 가져오가
+        // todo 가져오기
         Todo todo = serviceUtils.getTodoOrException(todoId);
 
         // 유저가 다른 경우 검사
@@ -107,7 +107,7 @@ public class TodoService {
         // 유저 정보 가져오기
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
-        // todo 가져오가
+        // todo 가져오기
         Todo todo = serviceUtils.getTodoOrException(todoId);
 
         // 유저가 다른 경우 검사
