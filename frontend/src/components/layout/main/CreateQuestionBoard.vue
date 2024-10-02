@@ -106,6 +106,8 @@
 
       console.log('게시글 생성 성공', response.data);
 
+      alert('게시글이 작성되었습니다.');
+
       router.push('/main/question_board');
     } catch (error) {
       console.log('에러 발생', error);

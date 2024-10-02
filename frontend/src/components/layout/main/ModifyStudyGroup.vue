@@ -58,6 +58,8 @@
 
       console.log('스터디 그룹 수정 성공', response.data);
 
+      alert('스터디 그룹 정보가 수정되었습니다.');
+
       router.push('/main/study_group');
     } catch (error) {
       console.log('에러 발생', error);

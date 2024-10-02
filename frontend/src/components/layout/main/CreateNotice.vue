@@ -71,6 +71,8 @@
 
       console.log(response);
 
+      alert('공지사항이 작성되었습니다.');
+
       router.push('/main/notice');
     } catch (error) {
       console.log('에러가 발생했습니다.', error);

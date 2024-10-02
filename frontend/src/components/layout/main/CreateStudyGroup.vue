@@ -58,6 +58,8 @@
 
       console.log('스터디 그룹 생성 성공', response.data);
 
+      alert('스터디 그룹이 생성되었습니다.');
+
       router.push('/main/study_group');
     } catch (error) {
       console.log('에러 발생', error);

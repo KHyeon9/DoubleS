@@ -74,6 +74,8 @@
 
       console.log('스터디 그룹 게시글 수정 성공', response.data);
 
+      alert('게시글이 수정이 되었습니다.');
+
       router.push(`/main/study_group/board/${studyGroupBoard.value.id}`);
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);
