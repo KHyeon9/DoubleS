@@ -65,14 +65,14 @@ public class UserAccountService {
     // 로그인
     public String login(String userId, String password) {
         // 회원 가입 체크
-        UserAccount userAccountDto = serviceUtils.getUserAccountOrException(userId);
+        UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
         // 비밀 번호 체크
-        if (!encoder.matches(password, userAccountDto.getPassword())) {
+        if (!encoder.matches(password, userAccount.getPassword())) {
             throw new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        userAccountCacheRepository.setUserAccount(userAccountDto);
+        userAccountCacheRepository.setUserAccount(userAccount);
 
         // 토큰 생성
         return JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
