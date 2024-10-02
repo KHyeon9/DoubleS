@@ -8,6 +8,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
 import com.doubles.selfstudy.repository.ChatRoomRepository;
+import com.doubles.selfstudy.repository.UserAccountCacheRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import com.doubles.selfstudy.repository.UserStudyGroupRepository;
 import org.junit.jupiter.api.Test;
@@ -21,12 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.doubles.selfstudy.fixture.UserAccountFixture.get;
+import static com.doubles.selfstudy.fixture.UserAccountFixture.getAdmin;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @SpringBootTest
 class UserAccountServiceTest {
 
@@ -35,6 +37,8 @@ class UserAccountServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
@@ -53,6 +57,8 @@ class UserAccountServiceTest {
         UserAccount fixture = get(userId, password, email, nickname);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
         when(encoder.encode(password)).thenReturn("encrypt_password");
         when(userAccountRepository.save(any())).thenReturn(fixture);
@@ -72,6 +78,8 @@ class UserAccountServiceTest {
         UserAccount fixture = get(userId, password, email, nickname);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(encoder.encode(password)).thenReturn("encrypt_password");
         when(userAccountRepository.save(any())).thenReturn(fixture);
@@ -90,6 +98,8 @@ class UserAccountServiceTest {
         UserAccount fixture = get(userId, password);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(encoder.matches(password, fixture.getPassword())).thenReturn(true);
 
@@ -104,6 +114,8 @@ class UserAccountServiceTest {
         String password = "password";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then
@@ -123,6 +135,8 @@ class UserAccountServiceTest {
         UserAccount fixture = get(userId, password);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
 
         // Then
@@ -145,6 +159,8 @@ class UserAccountServiceTest {
         String memo = "memo test";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(userAccountRepository.saveAndFlush(any())).thenReturn(
                 get(userId, password, nickname, email, memo)
@@ -163,6 +179,8 @@ class UserAccountServiceTest {
         String memo = "test memo";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -185,6 +203,8 @@ class UserAccountServiceTest {
         UserAccount changeFixture = get(userId, changePassword);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(encoder.matches(nowPassword, fixture.getPassword())).thenReturn(true);
         when(userAccountRepository.saveAndFlush(any())).thenReturn(changeFixture);
@@ -201,6 +221,8 @@ class UserAccountServiceTest {
         String changePassword = "change_password";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then
@@ -221,6 +243,8 @@ class UserAccountServiceTest {
         UserAccount fixture = get(userId, nowPassword);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(encoder.matches(nowPassword, fixture.getPassword())).thenReturn(false);
 
@@ -240,10 +264,15 @@ class UserAccountServiceTest {
         StudyGroup studyGroup = StudyGroupFixture.get();
         UserStudyGroup userStudyGroupMember = UserStudyGroupFixture.getMember(userId, studyGroup);
         UserAccount userAccount = userStudyGroupMember.getUserAccount();
+        UserAccount admin = getAdmin("admin", "password");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
+        when(userAccountRepository.findById("admin"))
+                .thenReturn(Optional.of(admin));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupMember));
         when(chatRoomRepository.findAllByUser(userAccount))
@@ -259,6 +288,8 @@ class UserAccountServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -277,10 +308,15 @@ class UserAccountServiceTest {
         StudyGroup studyGroup = StudyGroupFixture.get();
         UserStudyGroup userStudyGroupLeader = UserStudyGroupFixture.getLeader(userId, studyGroup);
         UserAccount userAccount = userStudyGroupLeader.getUserAccount();
+        UserAccount admin = getAdmin("admin", "password");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
+        when(userAccountRepository.findById("admin"))
+                .thenReturn(Optional.of(admin));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroupLeader));
         when(chatRoomRepository.findAllByUser(userAccount))
@@ -303,6 +339,8 @@ class UserAccountServiceTest {
         UserStudyGroup userStudyGroup = UserStudyGroupFixture.get(fixture);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(fixture));
         when(userStudyGroupRepository.findByUserAccount(fixture))
                 .thenReturn(Optional.of(userStudyGroup));
@@ -317,6 +355,8 @@ class UserAccountServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then

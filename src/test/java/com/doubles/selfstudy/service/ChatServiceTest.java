@@ -211,9 +211,13 @@ class ChatServiceTest {
         Long chatRoomId = 1L;
         String userId = "userId";
 
+        UserAccount user1 = UserAccountFixture.get(userId, "password");
+        UserAccount user2 = UserAccountFixture.get("userId2", "password");
+        ChatRoom chatRoom = ChatRoomFixture.get(user1, user2);
+
         // When
         when(chatRoomRepository.findById(chatRoomId))
-                .thenReturn(Optional.of(mock(ChatRoom.class)));
+                .thenReturn(Optional.of(chatRoom));
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(mock(UserAccount.class)));
 
