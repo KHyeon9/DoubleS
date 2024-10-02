@@ -7,8 +7,9 @@ spring:
     password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
+    generate-ddl: true
     properties:
       hibernate:
         format_sql: true
@@ -34,3 +35,5 @@ logging:
     org.springframework.messaging: DEBUG
     org.hibernate.sql: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+server:
+  port: 8080
