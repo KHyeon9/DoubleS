@@ -274,8 +274,12 @@
     nowChatDiscription.value = `마지막 메세지는 ${date} 입니다.`;
 
     chatMessageList.value = [];
+    let url = `wss://${window.location.hostname}:8080/ws/init`;
 
-    const url = `ws://${window.location.hostname}:8080/ws/init`;
+    if (window.location.hostname === "localhost") {
+      url = `ws://${window.location.hostname}:8080/ws/init`;
+    }
+    
     const token = authStore.token;
 
     console.log('chatRoomId', chatRoomId);
