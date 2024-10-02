@@ -275,7 +275,7 @@
 
     chatMessageList.value = [];
 
-    const url = 'ws://localhost:8080/ws/init';
+    const url = `ws://${window.location.hostname}:8080/ws/init`;
     const token = authStore.token;
 
     console.log('chatRoomId', chatRoomId);
