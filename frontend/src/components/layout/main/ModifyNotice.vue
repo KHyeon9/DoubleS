@@ -74,6 +74,8 @@
 
       console.log(response);
 
+      alert('공지사항 수정이 되었습니다.');
+
       router.push(`/main/notice/${noticeBoard.value.id}`);
     } catch (error) {
       console.log('에러가 발생했습니다. ', error);

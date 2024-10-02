@@ -72,8 +72,9 @@
 
       console.log(response.data.result);
 
-      router.push("/main/study_group");
+      alert('게시글이 작성되었습니다.');
 
+      router.push("/main/study_group");
     } catch (error) {
       console.log('에러 발생', error);
       alert('스터디 그룹 게시글 생성에 실패했습니다.');
