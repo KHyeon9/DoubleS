@@ -180,15 +180,17 @@
   import { Client } from '@stomp/stompjs';
   import apiClient from '../../../config/authConfig';
   import { useAuthStore } from '../../../store/authStore';
+  import { useNavAlarmStore } from '../../../store/navAlarmStore.js';
   import { useFormat } from '../../../utils/format'
   import moment from 'moment';
   import { useRouter, useRoute } from 'vue-router';
 
   const { formatDateTime, formatDatediff } = useFormat();
   const router = useRouter();
-  const route = useRoute();
-
+  
   const activeLink = ref(0);
+
+  const navAlarmStore = useNavAlarmStore();
 
   const authStore = useAuthStore();
   const nickname = computed(() => authStore.nickname);
@@ -252,6 +254,8 @@
 
       console.log(searchNickname.value);
 
+      deleteChatAlarm(chatRoomId);
+
       if (searchNickname.value !== '') {
         getChatRoomListByNickname(searchNickname.value);
       } else{
@@ -310,6 +314,7 @@
           body: JSON.stringify({ chatRoomId: chatRoomId })
         });
 
+        deleteChatAlarm(chatRoomId);
       },
       onStompError: (frame) => {
         console.error('STOMP error:', frame);
@@ -384,6 +389,24 @@
     } catch (error) {
       console.log('채팅방을 삭제하지 못했습니다.', error);
       alert('채팅방을 삭제하는데 오류가 생겼습니다.');
+    }
+  };
+
+  const deleteChatAlarm = async (targetId) => {
+    try {
+      const response = await apiClient.delete('/main/alarm', {
+        params: {
+          targetId: targetId,
+          alarmType: 'NEW_CHAT_MESSAGE'
+        }
+      });
+
+      console.log(response.data);
+
+      navAlarmStore.getTopNavAlarmList();
+    } catch (error) {
+      console.log('에러가 발생했습니다.', error);
+      alert('알람 삭제관련 에러가 발생했습니다.');
     }
   };
 
