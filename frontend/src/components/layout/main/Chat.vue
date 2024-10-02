@@ -276,7 +276,7 @@
     chatMessageList.value = [];
 
     const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const port = window.location.port ? `:${window.location.port}` : ':8080';
+    const port = window.location.protocol === 'https:' ? '' : ':8080';
     const url = `${protocol}${window.location.hostname}${port}/ws/init`;
 
     const token = authStore.token;
