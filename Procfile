@@ -1,0 +1,1 @@
+web: java -jar build/libs/self-study-0.0.1-SNAPSHOT.jar
