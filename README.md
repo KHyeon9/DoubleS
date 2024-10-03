@@ -25,7 +25,7 @@
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
 * Redis -> Redis 서버
-* Koyeb -> 웹 서비스 서버 (조금 느림)
+* Koyeb -> 웹 서비스 서버 (리전 위치가 멀어서 지연이 좀 길음. 좋은 서버 찾게되면 변경할 가능성이 있음)
 
 ## 그외
 * Bootstrap5
