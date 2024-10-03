@@ -1,4 +1,5 @@
 # DoubleS
+![image](https://github.com/user-attachments/assets/d00b3129-6ea4-4810-b2f7-d8f2e90a391f)
 독학하는 사람들을 위한 커뮤니티
 
 ## 개발환경
