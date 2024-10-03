@@ -48,7 +48,7 @@
                 <div class="d-flex p-2">
                   <div class="ms-3">
                     <h6 v-if="userId === chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user2.nickname }}</h6>
-                    <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user2.nickname }}</h6>
+                    <h6 v-if="userId !== chatRoom.user1.userId" class="mb-0" :class="[activeLink === chatRoom.id ? 'text-white' : '']">{{ chatRoom.user1.nickname }}</h6>
                     <p v-if="chatRoom.lastMessageTime === null" class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">&nbsp;</p>
                     <p v-else class="text-xs mb-2" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">{{ formatDatediff(chatRoom.lastMessageTime) }}</p>
                     <span v-if="chatRoom.lastMessage !== null" class="text-sm col-12 p-0 text-truncate d-block" :class="[activeLink === chatRoom.id ? 'text-white' : 'text-muted']">{{ chatRoom.lastMessage }}</span>
