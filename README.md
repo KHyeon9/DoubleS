@@ -25,13 +25,13 @@
 ## 서버
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
 * Redis -> Redis 서버
-* CloudType -> 웹 서비스 서버
+* Koyeb -> 웹 서비스 서버 (조금 느리지만 무중단)
 
 ## 그외
 * Bootstrap5
 
 ## 주소
-* https://port-0-doubles-lyfraywr77b765d8.sel5.cloudtype.app
+* https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/
 
 ### 테스트 아이디
 * 테스트 ID: tester
