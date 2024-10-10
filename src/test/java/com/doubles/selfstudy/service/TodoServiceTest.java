@@ -7,6 +7,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.TodoFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.TodoRepository;
+import com.doubles.selfstudy.repository.UserAccountCacheRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ class TodoServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private TodoRepository todoRepository;
 
@@ -57,6 +60,8 @@ class TodoServiceTest {
         String importanceType = "Middle";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
         when(todoRepository.save(any())).thenReturn(mock(Todo.class));
@@ -98,6 +103,8 @@ class TodoServiceTest {
         Long todoId = 1L;
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -188,6 +195,8 @@ class TodoServiceTest {
 
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -279,6 +288,8 @@ class TodoServiceTest {
         Long todoId = 1L;
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 

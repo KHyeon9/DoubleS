@@ -9,10 +9,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.QuestionBoardCommentFixture;
 import com.doubles.selfstudy.fixture.QuestionBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
-import com.doubles.selfstudy.repository.AlarmRepository;
-import com.doubles.selfstudy.repository.QuestionBoardCommentRepository;
-import com.doubles.selfstudy.repository.QuestionBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +36,8 @@ class QuestionBoardCommentServiceTest {
     private QuestionBoardRepository questionBoardRepository;
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private QuestionBoardCommentRepository questionBoardCommentRepository;
     @MockBean
@@ -75,6 +74,8 @@ class QuestionBoardCommentServiceTest {
         QuestionBoard questionBoard = QuestionBoardFixture.get(userId);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
         when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardCommentRepository.save(any())).thenReturn(mock(QuestionBoardComment.class));
@@ -139,6 +140,8 @@ class QuestionBoardCommentServiceTest {
 
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then
@@ -201,6 +204,8 @@ class QuestionBoardCommentServiceTest {
         QuestionBoardComment questionBoardComment = QuestionBoardCommentFixture.get("testUserId", questionBoard, "test");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
 
         // Then

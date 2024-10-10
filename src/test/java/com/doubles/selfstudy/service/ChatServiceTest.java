@@ -9,10 +9,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.ChatMessageFixture;
 import com.doubles.selfstudy.fixture.ChatRoomFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
-import com.doubles.selfstudy.repository.AlarmRepository;
-import com.doubles.selfstudy.repository.ChatMessageRepository;
-import com.doubles.selfstudy.repository.ChatRoomRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +32,8 @@ class ChatServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private ChatRoomRepository chatRoomRepository;
     @MockBean
@@ -75,6 +74,8 @@ class ChatServiceTest {
         String userId2 = "userId2";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId1))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.empty());
 
@@ -94,8 +95,12 @@ class ChatServiceTest {
         UserAccount user1 = UserAccountFixture.get(userId1, "password");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId1))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.of(user1));
+        when(userAccountCacheRepository.getUserAccount(userId2))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId2))
                 .thenReturn(Optional.empty());
 
@@ -116,8 +121,12 @@ class ChatServiceTest {
         UserAccount user2 = UserAccountFixture.get(userId2, "password");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId1))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.of(user1));
+        when(userAccountCacheRepository.getUserAccount(userId2))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId2))
                 .thenReturn(Optional.of(user2));
         when(chatRoomRepository.findByUsers(user1, user2))
@@ -194,6 +203,8 @@ class ChatServiceTest {
         // When
         when(chatRoomRepository.findById(chatRoomId))
                 .thenReturn(Optional.of(chatRoom));
+        when(userAccountCacheRepository.getUserAccount(userId1))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId1))
                 .thenReturn(Optional.empty());
 
@@ -252,6 +263,8 @@ class ChatServiceTest {
         // When
         when(chatRoomRepository.findById(chatRoomId))
                 .thenReturn(Optional.of(mock(ChatRoom.class)));
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
