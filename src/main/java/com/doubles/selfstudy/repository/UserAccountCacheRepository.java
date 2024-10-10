@@ -15,6 +15,7 @@ import java.util.Optional;
 public class UserAccountCacheRepository {
     // redis에 저장, 가져오기 위한 레포지토리
     private final RedisTemplate<String, UserAccount> userAccountRedisTemplate;
+    // redis에 저장되어 있는 일수 지정
     private final static Duration USER_CACHE_TTL = Duration.ofDays(3);
 
     public void setUserAccount(UserAccount userAccount) {

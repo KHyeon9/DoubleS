@@ -39,8 +39,8 @@ public class RedisConfig {
 
         // RedisStandaloneConfiguration에 호스트, 포트, 패스워드 설정
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(redisHost);
-        redisConfig.setPort(redisPort);
+        redisConfig.setHostName(redisHost); // 호스트 서정
+        redisConfig.setPort(redisPort); // 포트 설정
         redisConfig.setPassword(redisPassword);  // 패스워드 설정
 
         return new LettuceConnectionFactory(redisConfig, clientConfig);
@@ -48,10 +48,12 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, UserAccount> userAccountRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        // 템플릿의 레디스의 키 벨류를 설정
         RedisTemplate<String, UserAccount> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(UserAccount.class));  // 직렬화할 타입 명시
+        redisTemplate.setConnectionFactory(redisConnectionFactory); // 레디스 템플릿과 연결할 펙토리 셋팅
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); // 키 직렬화시 키를 문자열로 변환해 저장
+        // 직렬화할 타입 명시 -> UserAccount를 JSON형식으로 변환해 저장
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(UserAccount.class));
 
         return redisTemplate;
     }
