@@ -7,6 +7,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.NoticeBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.NoticeBoardRepository;
+import com.doubles.selfstudy.repository.UserAccountCacheRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ class NoticeBoardServiceTest {
     @MockBean
     private UserAccountRepository userAccountRepository;
     @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
+    @MockBean
     private NoticeBoardRepository noticeBoardRepository;
 
     @Test
@@ -47,6 +50,8 @@ class NoticeBoardServiceTest {
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.save(any()))
@@ -65,6 +70,8 @@ class NoticeBoardServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
         when(noticeBoardRepository.save(any()))
@@ -117,6 +124,8 @@ class NoticeBoardServiceTest {
         NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -142,6 +151,8 @@ class NoticeBoardServiceTest {
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -170,6 +181,8 @@ class NoticeBoardServiceTest {
         NoticeBoard noticeBoard = NoticeBoardFixture.get(writer);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -225,6 +238,8 @@ class NoticeBoardServiceTest {
         NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -247,6 +262,8 @@ class NoticeBoardServiceTest {
         NoticeBoard noticeBoard = NoticeBoardFixture.get(userAccount);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -272,6 +289,8 @@ class NoticeBoardServiceTest {
         UserAccount userAccount = UserAccountFixture.getAdmin(userId, password);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.findById(noticeBoardId))
@@ -299,6 +318,8 @@ class NoticeBoardServiceTest {
         NoticeBoard noticeBoard = NoticeBoardFixture.get(writer);
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(noticeBoardRepository.findById(noticeBoardId))

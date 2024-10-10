@@ -9,10 +9,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupBoardCommentFixture;
 import com.doubles.selfstudy.fixture.StudyGroupBoardFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
-import com.doubles.selfstudy.repository.AlarmRepository;
-import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
-import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +36,8 @@ class StudyGroupBoardCommentServiceTest {
     private StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private StudyGroupBoardRepository studyGroupBoardRepository;
     @MockBean
@@ -82,6 +81,8 @@ class StudyGroupBoardCommentServiceTest {
         String comment = "comment";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -157,6 +158,8 @@ class StudyGroupBoardCommentServiceTest {
         String comment = "modify_comment";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -256,6 +259,8 @@ class StudyGroupBoardCommentServiceTest {
         Long studyGroupBoardCommentId = 1L;
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 

@@ -72,8 +72,6 @@ public class UserAccountService {
             throw new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        userAccountCacheRepository.setUserAccount(userAccount);
-
         // 토큰 생성
         return JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
     }

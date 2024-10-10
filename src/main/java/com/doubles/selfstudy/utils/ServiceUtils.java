@@ -30,12 +30,15 @@ public class ServiceUtils {
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
-        return userAccountCacheRepository.getUserAccount(userId).orElseGet(() ->
+        UserAccount userAccount = userAccountCacheRepository.getUserAccount(userId).orElseGet(() ->
                 userAccountRepository.findById(userId).orElseThrow(
                         () -> new DoubleSApplicationException(
                                 ErrorCode.USER_NOT_FOUND, String.format("%s를 찾지 못했습니다", userId))
                 )
         );
+        userAccountCacheRepository.setUserAccount(userAccount);
+
+        return userAccount;
     }
 
     public UserAccount getAdminUserAccountOrException(String userId) {

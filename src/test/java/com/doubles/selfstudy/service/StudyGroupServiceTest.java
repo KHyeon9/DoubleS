@@ -8,10 +8,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
-import com.doubles.selfstudy.repository.AlarmRepository;
-import com.doubles.selfstudy.repository.StudyGroupRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
-import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +32,8 @@ class StudyGroupServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private StudyGroupRepository studyGroupRepository;
     @MockBean
@@ -71,6 +70,8 @@ class StudyGroupServiceTest {
         String description = "description";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -93,6 +94,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -125,6 +128,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -146,6 +151,8 @@ class StudyGroupServiceTest {
         String modifyDescription = "modify_description";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -193,6 +200,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -224,6 +233,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -249,6 +260,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -264,6 +277,8 @@ class StudyGroupServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -308,6 +323,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -334,6 +351,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -354,6 +373,8 @@ class StudyGroupServiceTest {
         String inviteUserId = "inviteUserId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.empty());
 
@@ -404,6 +425,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(notLeaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(notLeaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -430,6 +453,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -459,6 +484,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -488,6 +515,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -509,6 +538,8 @@ class StudyGroupServiceTest {
         String leaderUserId = "leaderUserId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(inviteUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(inviteUserId))
                 .thenReturn(Optional.empty());
 
@@ -533,6 +564,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -581,6 +614,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(leaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(leaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -611,6 +646,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(notLeaderUserId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(notLeaderUserId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -642,10 +679,14 @@ class StudyGroupServiceTest {
         UserAccount changeLeader = memberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(nowLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(nowLeaderId))
                 .thenReturn(Optional.of(nowLeader));
         when(userStudyGroupRepository.findByUserAccount(nowLeader))
                 .thenReturn(Optional.of(leaderFixture));
+        when(userAccountCacheRepository.getUserAccount(changeLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(changeLeaderId))
                 .thenReturn(Optional.of(changeLeader));
         when(userStudyGroupRepository.findByUserAccount(changeLeader))
@@ -666,6 +707,8 @@ class StudyGroupServiceTest {
         String changeLeaderId= "changeLeaderId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(nowLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(nowLeaderId))
                 .thenReturn(Optional.empty());
 
@@ -710,6 +753,8 @@ class StudyGroupServiceTest {
         UserAccount changeLeader = memberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(notLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(notLeaderId))
                 .thenReturn(Optional.of(nowLeader));
         when(userStudyGroupRepository.findByUserAccount(nowLeader))
@@ -738,6 +783,8 @@ class StudyGroupServiceTest {
         UserAccount nowLeader = leaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(nowLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(nowLeaderId))
                 .thenReturn(Optional.of(nowLeader));
         when(userStudyGroupRepository.findByUserAccount(nowLeader))
@@ -795,6 +842,8 @@ class StudyGroupServiceTest {
         UserAccount changeLeader = memberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(nowLeaderId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(nowLeaderId))
                 .thenReturn(Optional.of(nowLeader));
         when(userStudyGroupRepository.findByUserAccount(nowLeader))
@@ -825,6 +874,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -843,6 +894,8 @@ class StudyGroupServiceTest {
         String deleteUserId = "deleteUserId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -887,6 +940,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -915,6 +970,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupMemberFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
@@ -939,6 +996,8 @@ class StudyGroupServiceTest {
         UserAccount deleteUserAccount = memberStudyGroup.getUserAccount();
         
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(deleteUserAccount));
         when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
@@ -957,6 +1016,8 @@ class StudyGroupServiceTest {
         UserAccount deleteUserAccount = leaderStudyGroup.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(deleteUserAccount));
         when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
@@ -974,6 +1035,8 @@ class StudyGroupServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -1016,6 +1079,8 @@ class StudyGroupServiceTest {
         UserAccount deleteUserAccount = leaderStudyGroup.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(deleteUserAccount));
         when(userStudyGroupRepository.findByUserAccount(deleteUserAccount))
@@ -1043,6 +1108,8 @@ class StudyGroupServiceTest {
         UserAccount userAccount = userStudyGroupLeaderFixture.getUserAccount();
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))

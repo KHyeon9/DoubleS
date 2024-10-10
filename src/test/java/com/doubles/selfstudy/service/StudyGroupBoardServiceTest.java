@@ -10,10 +10,7 @@ import com.doubles.selfstudy.fixture.StudyGroupBoardFixture;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
-import com.doubles.selfstudy.repository.StudyGroupBoardCommentRepository;
-import com.doubles.selfstudy.repository.StudyGroupBoardRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
-import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,6 +35,8 @@ class StudyGroupBoardServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
@@ -72,6 +71,8 @@ class StudyGroupBoardServiceTest {
         String content = "content";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
         when(userStudyGroupRepository.findByUserAccount(any()))
@@ -139,6 +140,8 @@ class StudyGroupBoardServiceTest {
         String content = "modify_content";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -231,6 +234,8 @@ class StudyGroupBoardServiceTest {
         Long studyGroupBoardId = 1L;
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
@@ -329,6 +334,8 @@ class StudyGroupBoardServiceTest {
         StudyGroupBoard studyGroupBoard = StudyGroupBoardFixture.get(userAccount, studyGroup, "title", "content");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(userStudyGroupRepository.findByUserAccount(userAccount))
                 .thenReturn(Optional.of(userStudyGroup));

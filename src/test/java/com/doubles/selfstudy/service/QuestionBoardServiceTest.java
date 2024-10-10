@@ -36,6 +36,8 @@ class QuestionBoardServiceTest {
     @MockBean
     private UserAccountRepository userAccountRepository;
     @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
+    @MockBean
     private QuestionBoardLikeRepository questionBoardLikeRepository;
     @MockBean
     private QuestionBoardCommentRepository questionBoardCommentRepository;
@@ -71,6 +73,8 @@ class QuestionBoardServiceTest {
         String userId = "userId";
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.empty());
         when(questionBoardRepository.save(any())).thenReturn(mock(QuestionBoard.class));
 
@@ -201,6 +205,8 @@ class QuestionBoardServiceTest {
         UserAccount writer = UserAccountFixture.get("writerUser", "password");
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(writer));
         when(questionBoardRepository.findById(questionBoardId)).thenReturn(Optional.of(questionBoard));
 
@@ -373,6 +379,8 @@ class QuestionBoardServiceTest {
 
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(userAccount));
         when(questionBoardRepository.findById(questionBoard.getId())).thenReturn(Optional.of(questionBoard));
         when(questionBoardLikeRepository.findByUserAccountAndQuestionBoard(userAccount, questionBoard))

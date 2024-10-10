@@ -6,6 +6,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.repository.AlarmRepository;
+import com.doubles.selfstudy.repository.UserAccountCacheRepository;
 import com.doubles.selfstudy.repository.UserAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ class AlarmServiceTest {
 
     @MockBean
     private UserAccountRepository userAccountRepository;
+    @MockBean
+    private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
     private AlarmRepository alarmRepository;
 
@@ -58,6 +61,8 @@ class AlarmServiceTest {
         AlarmType alarmType = AlarmType.NEW_CHAT_MESSAGE;
 
         // When
+        when(userAccountCacheRepository.getUserAccount(userId))
+                .thenReturn(Optional.empty());
         when(userAccountRepository.findById(userId))
                 .thenReturn(Optional.empty());
 
