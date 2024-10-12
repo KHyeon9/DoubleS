@@ -6,6 +6,7 @@
 
 ## 개발환경
 * Intellij IDEA Ultimate 2023.2.2
+* VSCode
 * Java 21
 * Gradle 8.5
 * Spring Boot 3.3.1
