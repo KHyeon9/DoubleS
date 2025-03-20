@@ -35,7 +35,8 @@
 * Bootstrap5
 
 ## 주소
-* [[https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/](https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login)]
+* [koyeb] (https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login) (1시간 마다 꺼져서 오래걸릴 수 있음)
+* [cloudType] (https://port-0-doubles-lyfraywr77b765d8.sel5.cloudtype.app/main/chat) (안될수도있음)
 
 ### 테스트 아이디
 * 테스트 ID: tester
