@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.config.JwtTokenProvider;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.ChatMessage;
@@ -9,10 +10,8 @@ import com.doubles.selfstudy.entity.UserStudyGroup;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.*;
-import com.doubles.selfstudy.utils.JwtTokenUtils;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,12 +39,7 @@ public class UserAccountService {
 
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
-
-    @Value("${jwt.secret-key}")
-    private String secretKey;
-
-    @Value("${jwt.token.expired-time-ms}")
-    private Long expiredTimeMs;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
     @Transactional
@@ -73,7 +67,7 @@ public class UserAccountService {
         }
 
         // 토큰 생성
-        return JwtTokenUtils.createJwtToken(userId, secretKey, expiredTimeMs);
+        return jwtTokenProvider.createToken(userId);
     }
     
     // 유저 정보 조회
@@ -191,10 +185,5 @@ public class UserAccountService {
         userAccountCacheRepository.deleteUserAccount(userId);
 
         userAccountRepository.deleteById(userId);
-    }
-
-    // 토큰 필터 설정에서 좀 더 편하게 사용할 수 있도록 작성
-    public UserAccount loadUserByUserId(String userId) {
-        return serviceUtils.getUserAccountOrException(userId);
     }
 }

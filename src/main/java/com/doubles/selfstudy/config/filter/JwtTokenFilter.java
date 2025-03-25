@@ -1,8 +1,6 @@
 package com.doubles.selfstudy.config.filter;
 
-import com.doubles.selfstudy.dto.user.UserAccountDto;
-import com.doubles.selfstudy.service.UserAccountService;
-import com.doubles.selfstudy.utils.JwtTokenUtils;
+import com.doubles.selfstudy.config.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +21,7 @@ import java.util.List;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final String key;
-    private final UserAccountService userAccountService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final static List<String> TOKEN_IN_PARAM_URLS = List.of("/api/main/alarm/sub");
 
@@ -43,6 +41,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 // get header
                 final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+                logger.info("header : " + header);
+
                 // header가 null이거나 토큰 값이 아닌 경우
                 if (header == null || !header.startsWith("Bearer ")) {
                     log.error("헤더를 얻는 과정에서 에러 발생. 헤더가 null이거나 맞지 않습니다. URL: {}",
@@ -55,21 +55,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
 
             // 토큰이 만료되었는지 확인
-            if (JwtTokenUtils.isExpired(token, key)) {
+            if (jwtTokenProvider.validateToken(token)) {
                 log.error("키가 만료되었습니다.");
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            String userId = JwtTokenUtils.getUserId(token, key);
-            UserAccountDto userAccountDto = UserAccountDto.fromEntity(userAccountService.loadUserByUserId(userId));
+            // String userId = JwtTokenUtils.getUserId(token, key);
+            // UserAccountDto userAccountDto = UserAccountDto.fromEntity(userAccountService.loadUserByUserId(userId));
 
             // 인증 객체 생성 및 값 입력
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userAccountDto,
-                    null,
-                    userAccountDto.getAuthorities()
-            );
+            // UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+            //        userAccountDto,
+            //        null,
+            //        userAccountDto.getAuthorities()
+            // );
+            UsernamePasswordAuthenticationToken authentication = jwtTokenProvider.getAuthentication(token);
 
             // 추가적인 사용자 세부 정보 추가 (IP 등을 추가 할 수 있음)
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

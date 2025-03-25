@@ -2,11 +2,9 @@ package com.doubles.selfstudy.config;
 
 import com.doubles.selfstudy.config.filter.JwtTokenFilter;
 import com.doubles.selfstudy.exception.CustomAuthenticationEntryPoint;
-import com.doubles.selfstudy.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -20,13 +18,13 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 @Configuration
 public class SecurityConfig {
 
-    private final UserAccountService userAccountService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${jwt.secret-key}")
     private String key;
 
-    public SecurityConfig(@Lazy UserAccountService userAccountService) {
-        this.userAccountService = userAccountService;
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Bean
@@ -45,7 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtTokenFilter(key, userAccountService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(key, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handle ->
                             handle.authenticationEntryPoint(
                                     new CustomAuthenticationEntryPoint()
