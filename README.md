@@ -6,6 +6,7 @@
 
 ## 개발환경
 * Intellij IDEA Ultimate 2023.2.2
+* VSCode
 * Java 21
 * Gradle 8.5
 * Spring Boot 3.3.1
@@ -29,12 +30,14 @@
 * OCI(Oracle Cloud Infrastructure) -> MySQL 서버
 * Redis -> Redis 서버
 * Koyeb -> 웹 서비스 서버 (리전 위치가 멀어서 지연이 좀 길음. 좋은 서버 찾게되면 변경할 가능성이 있음)
+* cloudType -> 매일 꺼지기 때문에 다시 켜줘야 함
 
 ## 그외
 * Bootstrap5
 
 ## 주소
-* [[https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/](https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login)]
+* ([koyeb](https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login)) (1시간 마다 꺼져서 오래걸릴 수 있음)
+* ([cloudType](https://port-0-doubles-lyfraywr77b765d8.sel5.cloudtype.app/login)) (안될수도있음)
 
 ### 테스트 아이디
 * 테스트 ID: tester
