@@ -33,7 +33,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor  {
             if (token != null && token.startsWith("Bearer ")) {
                 token = token.substring(7);
                 System.out.println("token: " + token);
-                if (jwtTokenProvider.validateToken(token)) {
+                if (!jwtTokenProvider.validateToken(token)) {
                     UsernamePasswordAuthenticationToken auth =
                             jwtTokenProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(auth);

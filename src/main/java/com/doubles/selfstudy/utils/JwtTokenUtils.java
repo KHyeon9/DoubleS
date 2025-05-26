@@ -18,7 +18,6 @@ public class JwtTokenUtils {
     // 토큰 종료 시간
     public static boolean isExpired(String token, String key) {
         Date expiredDate = extractClaims(token, key).getExpiration();
-
         return expiredDate.before(new Date());
     }
     
