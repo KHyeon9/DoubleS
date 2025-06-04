@@ -15,7 +15,7 @@
 * Spring Boot
 * Spring Web
 * Spring Data JPA
-  * MyBatis를 사용했었으나 생산성을 높일 수 있고 유지 보수하기 편하기 때문에 채용
+  * 팀프로젝트 시에 MyBatis를 사용했었으나 생산성을 높일 수 있고 유지 보수하기 편하기 때문에 채용
   * 추가적으로 필요한 경우 직접 MyBatis와 비슷하게 Query를 입력하여 커스텀도 가능하기 때문에 장점을 모두 이용할 수 있음
 * Spring Security
   * 팀 프로젝트에서는 사용하지 않았지만 로그인 유무나 Http Method, Role에 따라서 쉽게 차단과 같은 보안 처리가 가능
