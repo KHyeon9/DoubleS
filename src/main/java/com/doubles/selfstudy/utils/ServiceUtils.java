@@ -30,13 +30,17 @@ public class ServiceUtils {
 
     public UserAccount getUserAccountOrException(String userId) {
         // 유저 정보 가져오면서 못 찾는 경우 검사
-        UserAccount userAccount = userAccountCacheRepository.getUserAccount(userId).orElseGet(() ->
-                userAccountRepository.findById(userId).orElseThrow(
-                        () -> new DoubleSApplicationException(
-                                ErrorCode.USER_NOT_FOUND, String.format("%s를 찾지 못했습니다", userId))
-                )
-        );
-        userAccountCacheRepository.setUserAccount(userAccount);
+        UserAccount userAccount = userAccountCacheRepository.getUserAccount(userId)
+                .orElseGet(() -> {
+                    // Redis에 없으면 DB 조회
+                    UserAccount dbAccount = userAccountRepository.findById(userId)
+                            .orElseThrow(() -> new DoubleSApplicationException(
+                                    ErrorCode.USER_NOT_FOUND, userId + "를 찾지 못했습니다"
+                            ));
+                    // DB에서 조회한 경우만 Redis에 저장
+                    userAccountCacheRepository.setUserAccount(dbAccount);
+                    return dbAccount;
+                });
 
         return userAccount;
     }
