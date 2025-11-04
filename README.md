@@ -6,13 +6,13 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 이 프로젝트는 최신 버전의 기술 스택(Spring Boot 3.3.1, Java 21, Vue.js + Vite)을 활용하여 서비스를 구축하고, 특히 성능 병목 현상 해결 및 안정성 확보에 집중하여 주니어 개발자로서의 문제 해결 능력을 입증하는 것을 목표로 했습니다.
 
 ## 개발환경
-* IDE
+### IDE
  - Intellij IDEA Ultimate 2023.2.2, VSCode
-* Java Version
+### Java Version
  - Java 21
-* Build Tool
+### Build Tool
  - Gradle 8.5
-* Hosting
+### Hosting
  - OCI (MySQL), Redis Server, Koyeb/cloudType (Web Service)
 
 ## 주요 기술 스택 및 선택 이유
@@ -56,11 +56,11 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 * Bootstrap5
 
 ## 코드 안정성 및 유지보수성
-* ORM 전략
+### ORM 전략
   - 생산성을 위해 Spring Data JPA를 주력으로 채택했습니다. MyBatis 경험을 바탕으로, 필요 시 Repository 커스텀 및 직접 SQL 작성을 통해 성능 최적화가 필요한 쿼리를 효율적으로 처리할 수 있습니다.
-* TDD 원칙 적용
+### TDD 원칙 적용
   - 코드 작성 전 TDD의 설계 원칙을 학습하고 적용하여 기능별 로직을 구조화. 실제 테스트 코드 작성 대신, JPQL 최적화와 계층별 명확한 예외 처리에 집중하여 서비스 안정성을 확보. (ex. 비즈니스 예외, 데이터 접근 예외 분리)
-* Lombok:
+### Lombok:
   - 중복 코드를 줄이고 개발 속도를 높여 생산성을 최적화.
 
 ## 배포 및 접속 정보
