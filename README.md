@@ -16,51 +16,48 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
  - OCI (MySQL), Redis Server, Koyeb/cloudType (Web Service)
 
 ## 주요 기술 스택 및 선택 이유
-* Spring Boot
-* Spring Web
-* MySQL 8
-  * 소규모 프로젝트이고 빠른 성능과 많이 사용해본 RDB이고 무료이기 때문에 채용
+### Backend
+* Spring Boot 3.3.1, Java 21 (LTS)
+  * 최신 버전의 Spring Boot와 Java 21 LTS 버전을 사용하여 개발 생산성을 확보를 위해 채택 (결과적으로 장기적인 안정성을 갖추게 됨)
+### Database
+* MySQL
+  * 소규모 프로젝트의 안정적인 데이터 영속성 확보를 위해 채택. JPA와의 연동 및 검증된 성능을 고려.
+### ORM
 * Spring Data JPA
-  * 팀프로젝트 시에 MyBatis를 사용했었으나 생산성을 높일 수 있고 유지 보수하기 편하기 때문에 채용
-  * 추가적으로 필요한 경우 직접 MyBatis와 비슷하게 Query를 입력하여 커스텀도 가능하기 때문에 장점을 모두 이용할 수 있음
-* Spring Security
-  * 팀 프로젝트에서는 사용하지 않았지만 로그인 유무나 Http Method, Role에 따라서 쉽게 차단과 같은 보안 처리가 가능
-  * JWT를 사용하기 때문에 필터를 커스텀하기 위함
-* Spring Boot DevTools
-  * 코드 수정시 반영이 바로 될 수 있도록 하기 위해 사용
-* Lombok
-  * 중복되는 코드들을 줄이기 위해서 사용
-* JWT 0.12.5
-  * 이전 팀 프로젝트에서는 세션에 ID를 저장하여 인증하는 방식 사용했으나 서버의 부하가 걸릴 수있음을 인지
-* WebSocket
-  * 그룹 스터디등 사용자와 사용자끼리 대화할 수 있는 기능이 필요함을 느낌
-  * 이를 해결하기 위해서 채팅 기능이 가능하도록 WebSocket 사용
-* SSE(Server-Sent-Events)
-  * 알림 기능을 사용시 WebSocket과 같이 양방향 통신은 필요없기 때문에 SSE로 채용
-  * 추가적으로 Spring에서 SseEmitter를 제공하기도 하고 메모리나 리소스 비용이 더 작아서 알림 한정으로 사용
+  * 생산성 및 유지보수 편의성 확보를 위해 주력으로 채택
+  * 필요 시 JPQL 작성을 통해 N+1 문제 방지나 성능 최적화 등 JPA 기본 메서드로 해결하기 어려운 쿼리를 효율적으로 처리할 수 있음
+### Authentication
+* Spring Security, JWT 0.12.5
+  * 로그인/권한에 따른 엔드포인트 차단 및 보안 처리 및 세션 방식의 서버 부하 문제 발생 가능성 인지 후 JWT 도입으로 상태 비저장(Stateless)으로 구현하기 위해 사용
+### Caching
 * Redis
-  * 첫 페이지 이후에 모든 페이지에서 인증을 사용하므로 중복되는 인증이 많아지고 쿼리가 1개씩 추가됨
-  * 이를 해결하기 위해서 Redis를 사용해 인증시 db부하를 줄이고 조회 속도를 높이기 위해서 사용
-* Vue3 + Vite
-  * 프론트와 백을 나누고 싶었고 추가적으로 런닝 커프가 낮기 때문에 사용
-* Pinia
-  * 컴포넌트/페이지 간 state를 공유하기 위해서 사용 
-
-## 서버
-* OCI(Oracle Cloud Infrastructure) -> MySQL 서버
-* Redis -> Redis 서버
-* Koyeb -> 웹 서비스 서버 (리전 위치가 멀어서 지연이 좀 길음. 좋은 서버 찾게되면 변경할 가능성이 있음)
-* cloudType -> 매일 꺼지기 때문에 다시 켜줘야 함
+  * 인증 과정의 DB 부하 제거 및 조회 속도 향상. Spring Security Context의 UserID를 기반으로 캐시를 조회하는 Look-Aside Cache 전략 적용
+### Concurrency
+* WebSocket,
+  * 그룹 스터디 채팅 등 양방향 실시간 대화 기능 구현하기 위해 채택
+* SSE (Server-Sent-Events)
+  * 알림 기능 한정으로 사용. WebSocket 대비 리소스 및 메모리 비용이 작아 효율적이기 때문에 사용
+### Frontend
+* Vue3 + Vite, Pinia
+  * 백엔드와 분리된 프론트 구현 및 낮은 학습 곡선이기 때문에 채용. Pinia를 통해 컴포넌트 간 명확하고 모듈화된 전역 상태 관리 구현.
 
 ## 그외
 * Bootstrap5
+
+## Redis 성능 최적화 상세
+### 기술적 문제
+* 반복적인 DB 쿼리로 인한 서버 부하 및 매번 DB를 조회하는 데 소요되는 시간. (DB 직접 조회 시 평균 91ms 소요)
+### 해결 전략 및 성과
+* Redis Look-Aside Cache 패턴 적용으로 DB 접근 횟수 획기적 제거
+  * 구현: Spring Security Context의 UserID를 Key로 사용자 정보를 Value로 저장
+  * 정량적 성과: 평균 응답 속도 91ms → 10ms (약 90% 개선) 달성
 
 ## 코드 안정성 및 유지보수성
 ### ORM 전략
   - 생산성을 위해 Spring Data JPA를 주력으로 채택했습니다. MyBatis 경험을 바탕으로, 필요 시 Repository 커스텀 및 직접 SQL 작성을 통해 성능 최적화가 필요한 쿼리를 효율적으로 처리할 수 있습니다.
 ### TDD 원칙 적용
   - 코드 작성 전 TDD의 설계 원칙을 학습하고 적용하여 기능별 로직을 구조화. 실제 테스트 코드 작성 대신, JPQL 최적화와 계층별 명확한 예외 처리에 집중하여 서비스 안정성을 확보. (ex. 비즈니스 예외, 데이터 접근 예외 분리)
-### Lombok:
+### Lombok & DevTools:
   - 중복 코드를 줄이고 개발 속도를 높여 생산성을 최적화.
 
 ## 배포 및 접속 정보
