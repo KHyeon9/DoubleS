@@ -14,18 +14,19 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
  - Gradle 8.5
 ### Hosting
  - OCI (MySQL), Redis Server, Koyeb/cloudType (Web Service)
-
 ## 주요 기술 스택 및 선택 이유
 ### Backend
 * Spring Boot 3.3.1, Java 21 (LTS)
   * 최신 버전의 Spring Boot와 Java 21 LTS 버전을 사용하여 개발 생산성을 확보를 위해 채택 (결과적으로 장기적인 안정성을 갖추게 됨)
+* Lombok, Devtools
+  * 중복 코드를 줄이고 개발 속도를 높여 생산성을 최적화했습니다.
 ### Database
 * MySQL
   * 소규모 프로젝트의 안정적인 데이터 영속성 확보를 위해 채택. JPA와의 연동 및 검증된 성능을 고려.
 ### ORM
 * Spring Data JPA
   * 생산성 및 유지보수 편의성 확보를 위해 주력으로 채택
-  * 필요 시 JPQL 작성을 통해 N+1 문제 방지나 성능 최적화 등 JPA 기본 메서드로 해결하기 어려운 쿼리를 효율적으로 처리할 수 있음
+  * 필요 시 JPQL 작성을 통해 JPA로 조회하기 힘든 부분 조회 쿼리 커스텀 등 JPA 기본 메서드로 해결하기 어려운 쿼리를 효율적으로 처리할 수 있음
 ### Authentication
 * Spring Security, JWT 0.12.5
   * 로그인/권한에 따른 엔드포인트 차단 및 보안 처리 및 세션 방식의 서버 부하 문제 발생 가능성 인지 후 JWT 도입으로 상태 비저장(Stateless)으로 구현하기 위해 사용
@@ -40,30 +41,33 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 ### Frontend
 * Vue3 + Vite, Pinia
   * 백엔드와 분리된 프론트 구현 및 낮은 학습 곡선이기 때문에 채용. Pinia를 통해 컴포넌트 간 명확하고 모듈화된 전역 상태 관리 구현.
-
 ## 그외
 * Bootstrap5
 
-## Redis 성능 최적화 상세
-### 기술적 문제
-* 반복적인 DB 쿼리로 인한 서버 부하 및 매번 DB를 조회하는 데 소요되는 시간. (DB 직접 조회 시 평균 91ms 소요)
-### 해결 전략 및 성과
-* Redis Look-Aside Cache 패턴 적용으로 DB 접근 횟수 획기적 제거
-  * 구현: Spring Security Context의 UserID를 Key로 사용자 정보를 Value로 저장
-  * 정량적 성과: 평균 응답 속도 91ms → 10ms (약 90% 개선) 달성
-
-## 코드 안정성 및 유지보수성
-### ORM 전략
-  - 생산성을 위해 Spring Data JPA를 주력으로 채택했습니다. MyBatis 경험을 바탕으로, 필요 시 Repository 커스텀 및 직접 SQL 작성을 통해 성능 최적화가 필요한 쿼리를 효율적으로 처리할 수 있습니다.
-### TDD 원칙 적용
-  - 코드 작성 전 TDD의 설계 원칙을 학습하고 적용하여 기능별 로직을 구조화. 실제 테스트 코드 작성 대신, JPQL 최적화와 계층별 명확한 예외 처리에 집중하여 서비스 안정성을 확보. (ex. 비즈니스 예외, 데이터 접근 예외 분리)
-### Lombok & DevTools:
-  - 중복 코드를 줄이고 개발 속도를 높여 생산성을 최적화.
+## 기술 성과
+### 1. 성능 최적화: Redis 캐싱 및 데이터 접근 효율화
+* Redis 캐싱 전략 도입: 사용자 인증 과정(Security Context Load)에서 발생하는 반복적인 DB Read 부하를 줄이기 위해 Redis Cache를 도입했습니다
+  * 성과: 응답 속도 (Latency)를 기존 평균 91 ~ 94ms에서 10ms~14ms 수준으로 약 90% 개선하여 DB 로드를 절감했습니다.
+* N+1 문제 해결
+  * 매핑 구조 변경: 게시글/댓글 조회와 같이 연관 관계 조회에서 발생하는 일반적인 N+1 문제는 양방향 매핑 대신 단방향 매핑을 사용하도록 설계 구조 자체를 변경하여 해결했습니다.
+* 복합 조회 쿼 최적화(JPQL 활용)
+  * 단순 매핑 변경으로 해결이 불가능한 복잡한 조회 문제를 해결하기 위해 JPQL을 직접 작성했습니다. 검색 및 학습 기반으로 연관 관계 즉시 로딩 기법과 서브 쿼리를 활용한 복합 쿼리를 구현했습니다.
+### 2. 코드 안정성 확보: TDD 및 계층별 테스트
+프로젝트의 안정성을 최우선 목표로, TDD(Test-Driven Development)원칙을 도입하여 테스트 코드를 설계 및 작성했습니다.
+* 다계층 테스트 전략
+  * Service Layer (단위 테스트): Repository와 독립된 비즈니스 로직의 성공 및 예외 발생 행위를 검증하여 비즈니스 로직의 신뢰성을 확보했습니다.
+  * Controller Layer (통합 테스트): HTTP 요청(URI, Method, Parameter)과 Spring Security 기반의 인증/권한 검사를 중심으로 API의 동작을 검증했습니다.
+* 인증 및 권한 검증
+  * 비로그인 상태에서 인증이 필요한 API에 접근 시 접근 거부(HTTP 401)가 발생하는지를 명확히 테스트하여 보안 취약점을 사전 방지했습니다.
+### 3. 예외 처리 구조
+* 커스텀 예외 및 ErrorCode 설계
+  *  애플리케이션 전반에 발생하는 모든 비즈니스 예외를 DoubleSApplicationException으로 캡슐화하고, 각 예외 상황에 맞는 커스텀 ErrorCode를 분리하여 사용했습니다.
+* 다계층 예외 흐름 관리(ControllerAdvice 활용)
+  *  Service Layer에서 예외를 발생시키고, Controller Layer의 Exception Handler를 통해 해당 ErrorCode를 HTTP Status Code 및 표준화된 JSON 응답 본문으로 매핑하여 클라이언트에게 명확하게 전달되도록 구조화했습니다.
 
 ## 배포 및 접속 정보
 * ([koyeb](https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login)) (1시간 마다 꺼져서 오래걸릴 수 있음)
 * ([cloudType](https://port-0-doubles-lyfraywr77b765d8.sel5.cloudtype.app/login)) (안될수도있음)
-
 ### 테스트 아이디
 * 테스트 ID: tester
 * 테스트 Password: 123456
