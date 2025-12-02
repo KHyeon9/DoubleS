@@ -68,6 +68,7 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 수정
+    @Transactional
     public QuestionBoardCommentDto modifyQuestionBoardComment(String userId, Long questionBoardCommentId,  String comment) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
@@ -94,6 +95,7 @@ public class QuestionBoardCommentService {
     }
 
     // 질문 게시글 댓글 삭제
+    @Transactional
     public void deleteQuestionBoardComment(String userId, Long questionBoardCommentId) {
         // user 확인
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);

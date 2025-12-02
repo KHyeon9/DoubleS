@@ -103,6 +103,7 @@ public class TodoService {
     }
 
     // Todo 삭제
+    @Transactional
     public void deleteTodo(String userId, Long todoId) {
         // 유저 정보 가져오기
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
