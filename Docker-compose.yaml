@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  #  DoubleS 서비스 설정
+  doubles:
+    # Dockerfile을 사용하여 현재 디렉토리에서 이미지를 빌드합니다.
+    build: .
+    container_name: doubles-app
+    command: ["java", "-jar", "app.jar"]
+    ports:
+      # 호스트 8080 포트를 컨테이너 8080 포트로 연결
+      - "8080:8080"
+    # .env 파일에 정의된 모든 환경 변수를 컨테이너 내부로 전달합니다.
+    env_file:
+      - .env
