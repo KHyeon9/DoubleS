@@ -68,16 +68,20 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// Spring Boot에서 프론트엔드 빌드를 통합하기 위해 사용하는 Gradle Node Plugin의 설정
 apply plugin: 'com.github.node-gradle.node'
 
 node {
+    // frontend 위치 경로 지정
     nodeProjectDir = file("${project.projectDir}/frontend")
+    // 노드 버전 명시
     version = '20.9.0'
+    // 필요 노드 버전 자동 다운로드
     download = true
 }
-
+// dist 폴더 등에 실행해서 생성
 task npmBuild(dependsOn: npmInstall, type: NpmTask) {
     args = ['run', 'build']
 }
-
+// 백엔드 빌드와 프론트엔드 빌드의 통합
 compileJava.dependsOn 'npmBuild'

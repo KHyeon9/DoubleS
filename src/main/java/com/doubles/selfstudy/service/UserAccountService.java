@@ -99,6 +99,7 @@ public class UserAccountService {
     }
 
     // 유저 비밀번호 수정
+    @Transactional
     public UserAccountDto modifiyUserPassword(String userId, String nowPassword, String changePassword) {
         // 유저 정보 가져옴
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);

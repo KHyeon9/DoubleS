@@ -71,6 +71,7 @@ public class NoticeBoardService {
     }
 
     // 공지사항 삭제
+    @Transactional
     public void deleteNoticeBoard(String userId, Long noticeBoardId) {
         // 유저 확인
         UserAccount userAccount = serviceUtils.getAdminUserAccountOrException(userId);
