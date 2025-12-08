@@ -6,13 +6,10 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 이 프로젝트는 최신 버전의 기술 스택(Spring Boot 3.3.1, Java 21, Vue.js + Vite)을 활용하여 서비스를 구축하고, 특히 성능 문제 해결 및 안정성 확보에 집중하여 문제 해결 능력을 향상하는 것을 목표로 했습니다.
 
 ## 개발환경
-### IDE
  - Intellij IDEA Ultimate 2023.2.2
  - VSCode
  - Docker
-### Java Version
  - Java 21
-### Build Tool
  - Gradle 8.5
 ### Hosting
  - OCI (MySQL), Redis Server, Koyeb/cloudType (Web Service)
