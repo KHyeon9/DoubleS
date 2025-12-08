@@ -7,7 +7,9 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 
 ## 개발환경
 ### IDE
- - Intellij IDEA Ultimate 2023.2.2, VSCode
+ - Intellij IDEA Ultimate 2023.2.2
+ - VSCode
+ - Docker
 ### Java Version
  - Java 21
 ### Build Tool
@@ -41,7 +43,6 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 ### Frontend
 * Vue3 + Vite, Pinia
   * 백엔드와 분리된 프론트 구현 및 낮은 학습 곡선이기 때문에 채용. Pinia를 통해 컴포넌트 간 명확하고 모듈화된 전역 상태 관리 구현.
-## 그외
 * Bootstrap5
 
 ## 기술 성과
