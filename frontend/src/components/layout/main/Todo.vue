@@ -246,7 +246,6 @@ const getTodos = async () => {
 
   } catch (error) {
     console.log('에러가 발생했습니다. ', error);
-    alert('todo 목록을 가져오는데 오류가 발생했습니다.');
   }
 };
 
@@ -261,7 +260,6 @@ const getImportanceTypes = async () => {
     
   } catch (error) {
     console.log('에러가 발생했습니다. ', error);
-    alert('중요도 목록을 가져오는데 오류가 발생했습니다.');
   }
 };
 
@@ -276,7 +274,6 @@ const getTotalCompletedCount = async () => {
 
   } catch (error) {
     console.log('에러가 발생했습니다. ', error);
-    alert('todo 완료 총 갯수를 가져오는데 오류가 발생했습니다.');
   }
 };
 

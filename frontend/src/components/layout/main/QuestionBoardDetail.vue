@@ -214,7 +214,6 @@
       console.log( questionBoard.value);
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
-      alert('질문 게시글을 가져오지 못했습니다.');
     }
   };
 
@@ -233,7 +232,6 @@
       console.log(response.data);
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
-      alert('해당 게시글의 댓글을 가져오지 못했습니다.');
     }
   }
 

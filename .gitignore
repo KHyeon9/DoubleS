@@ -4,6 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+# Frontend 빌드 결과물 무시
+/src/main/resources/static/
+/frontend/dist/
 
 ### STS ###
 .apt_generated

@@ -17,7 +17,10 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../src/main/resources/static',
-    assetsDir: 'assets'
+    // outDir: '../src/main/resources/static',
+    // static 폴더 오염을 막기위해 수정
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true
   }
 })

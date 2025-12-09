@@ -242,7 +242,6 @@
         studyGroupData.value = null;
       } else {
         console.log('스터디 정보를 가져오지 못했습니다.', error);
-        alert('스터디 정보를 가져오는데 오류가 생겼습니다.');
       }
     }
   };
@@ -265,7 +264,6 @@
 
     } catch (error) {
       console.log('스터디 그룹원을 가져오지 못했습니다.', error);
-      alert('스터디 그룹원 정보를 가져오는데 오류가 생겼습니다.');
     }
   };
 
@@ -284,7 +282,6 @@
 
     } catch (error) {
       console.log('스터디 그룹 게시글을 가져오지 못했습니다.', error);
-      alert('스터디 그룹 게시글 리스트를 가져오는데 오류가 생겼습니다.');
     }
   };
 

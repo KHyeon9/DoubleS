@@ -131,6 +131,8 @@
   };
 
   const loginSubmit = async () => {
+    // 최초 실행 확인 로그
+    console.log('--- [0] loginSubmit function called ---');
     if (!validateForm()) {
       return;
     }
@@ -140,10 +142,12 @@
         userId: userId.value,
         password: password.value
       });
+      // 토큰 응답 전체 출력
+      console.log("Token API Successful. Response:", tokenResponse);
 
-      const token = tokenResponse.data.result.token;
+      const token = tokenResponse.data.result.accessToken;
       authStore.setToken(token);
-
+      console.log("Token Set:", token);
 
       const userInfoResponse = await apiClient.post('/user_info', {
         userId: userId.value,
@@ -152,7 +156,9 @@
 
       const userInfo = userInfoResponse.data.result;
       authStore.setUserInfo(userInfo);
-      console.log(userInfo);
+      // 사용자 정보 출력
+      console.log("User Info Retrieved:", userInfo);
+      console.log("User Info Response (full object):", userInfoResponse);
 
       router.push('/main');
 

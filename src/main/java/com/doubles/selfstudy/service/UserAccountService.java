@@ -2,6 +2,7 @@ package com.doubles.selfstudy.service;
 
 import com.doubles.selfstudy.config.JwtTokenProvider;
 import com.doubles.selfstudy.dto.studygroup.StudyGroupPosition;
+import com.doubles.selfstudy.dto.user.TokenDto;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.entity.ChatMessage;
 import com.doubles.selfstudy.entity.ChatRoom;
@@ -36,6 +37,7 @@ public class UserAccountService {
     private final StudyGroupBoardCommentRepository studyGroupBoardCommentRepository;
     private final AlarmRepository alarmRepository;
     private final UserAccountCacheRepository userAccountCacheRepository;
+    private final RefreshTokenCacheRepository refreshTokenCacheRepository;
 
     private final BCryptPasswordEncoder encoder;
     private final ServiceUtils serviceUtils;
@@ -56,8 +58,9 @@ public class UserAccountService {
         return UserAccountDto.fromEntity(userAccount);
     }
 
-    // 로그인
-    public String login(String userId, String password) {
+    // 로그인 (Access Token과 Refresh Token을 모두 반환하고 RT를 Redis에 저장)
+    @Transactional
+    public TokenDto login(String userId, String password) {
         // 회원 가입 체크
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
 
@@ -66,10 +69,48 @@ public class UserAccountService {
             throw new DoubleSApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        // 토큰 생성
-        return jwtTokenProvider.createToken(userId);
+        // 토큰 생성: Access Token 및 Refresh Token 생성
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+
+        // Refresh Token 저장 (전용 Redis Key에 저장)
+        refreshTokenCacheRepository.saveRefreshToken(userId, refreshToken);
+
+        // 토큰 반환
+        return TokenDto.of(accessToken, refreshToken);
     }
-    
+
+    // 토큰 재발급 (Reissue)
+    public TokenDto reissueToken(String refreshToken) {
+        // Refresh Token 유효성 검증
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new DoubleSApplicationException(ErrorCode.INVALID_TOKEN, "Refresh Token이 유효하지 않습니다.");
+        }
+
+        // Refresh Token에서 userId 추출
+        String userId = jwtTokenProvider.getUserId(refreshToken);
+        // Redis에 저장된 Refresh Token 조회
+        String findRefreshToken = refreshTokenCacheRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new DoubleSApplicationException(
+                                ErrorCode.INVALID_TOKEN,
+                                "Redis에 저장된 Refresh Token을 찾을 수 없습니다. (만료 또는 이미 삭제됨)"
+                        )
+                );
+        // Redis에 저장된 RT와 클라이언트가 보낸 RT가 일치하는지 확인 (보안 강화)
+        if (!findRefreshToken.equals(refreshToken)) {
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_TOKEN,
+                    "Redis의 Refresh Token과 클라이언트의 토큰이 일치하지 않습니다."
+            );
+        }
+
+        // 모든 검증이 통과되면 새로운 Access Token 발급
+        String accessToken = jwtTokenProvider.createAccessToken(userId);
+
+        return TokenDto.of(accessToken, refreshToken);
+    }
+
     // 유저 정보 조회
     public UserAccountDto getUserInfo(String userId) {
         // 아이디 가져옴
@@ -184,6 +225,8 @@ public class UserAccountService {
 
         // redis에서 유저 삭제
         userAccountCacheRepository.deleteUserAccount(userId);
+        // Refresh Token 삭제 (인증 세션 무효화)
+        refreshTokenCacheRepository.deleteByUserId(userId);
 
         userAccountRepository.deleteById(userId);
     }
