@@ -6,9 +6,13 @@ import com.doubles.selfstudy.controller.request.UserPasswordModifyRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.*;
 import com.doubles.selfstudy.dto.question.QuestionBoardDto;
+import com.doubles.selfstudy.dto.user.TokenDto;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
+import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import com.doubles.selfstudy.service.UserAccountService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +26,74 @@ public class UserController {
 
     private final UserAccountService userAccountService;
     private final QuestionBoardService questionBoardService;
-
+    
+    // 로그인
     @PostMapping("/login")
-    public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request) {
-        // login post
-        String token = userAccountService.login(request.getUserId(), request.getPassword());
+    public Response<UserLoginResponse> login(
+            @RequestBody UserLoginRequest request,
+            HttpServletResponse httpServletResponse
+    ) {
+        // Service에서 AT와 RT를 모두 포함하는 TokenResponse를 받습니다.
+        TokenDto tokenDto = userAccountService.login(request.getUserId(), request.getPassword());
 
-        return Response.success(new UserLoginResponse(token));
+        System.out.println("tokenDto: " + tokenDto);
+
+        // RT를 HttpOnly 쿠키로 설정합니다.
+        String sameSiteHeader = setCookie("refreshToken", tokenDto.getRefreshToken());
+        httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
+
+        System.out.println("sameSiteHeader: " + sameSiteHeader);
+
+        return Response.success(UserLoginResponse.ofDto(tokenDto));
+    }
+
+    // token 재발급
+    @PostMapping("/reissue")
+    public Response<UserLoginResponse> reissueToken(
+            // @CookieValue 어노테이션으로 브라우저가 자동으로 보낸 HttpOnly 쿠키의 값을 추출합니다.
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse httpServletResponse
+    ) {
+        if (refreshToken == null) {
+            // Refresh Token이 없는 경우 401 Unauthorized 오류를 반환해야 하지만,
+            // 여기서는 Response 객체를 사용하므로 실패 응답을 반환합니다.
+            return Response.error(ErrorCode.INVALID_TOKEN.name());
+        }
+        // RT를 검증하고 새로운 Access/Refresh Token을 발급받습니다.
+        TokenDto newTokenDto = userAccountService.reissueToken(refreshToken);
+
+        // RT를 다시 HttpOnly 쿠키로 설정합니다. (토큰 회전)
+        String sameSiteHeader = setCookie("refreshToken", newTokenDto.getRefreshToken());
+        httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
+
+        return Response.success(UserLoginResponse.ofDto(newTokenDto));
+    }
+
+    private static String setCookie(String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // login과 동일하게 설정 유지
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60 * 24 * 14); // 14일
+ 
+        // SameSite=Lax 속성 재적용
+        String sameSiteHeader;
+        if (cookie.getSecure()) {
+            sameSiteHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Lax",
+                    cookie.getName(),
+                    cookie.getValue(),
+                    cookie.getMaxAge(),
+                    cookie.getPath()
+            );
+        } else {
+            sameSiteHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; SameSite=Lax",
+                    cookie.getName(),
+                    cookie.getValue(),
+                    cookie.getMaxAge(),
+                    cookie.getPath()
+            );
+        }
+        return sameSiteHeader;
     }
 
     @PostMapping("/regist")
@@ -39,6 +104,7 @@ public class UserController {
 
         return Response.success(UserRegistResponse.fromDto(userAccountDto));
     }
+
 
     // user login시 정보 조회
     @PostMapping("/user_info")
