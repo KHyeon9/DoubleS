@@ -25,7 +25,11 @@ export const useAuthStore = defineStore('auth', {
       this.userId = '';
       this.nickname = '';
       this.roleType = '';
-    } 
+    },
+    logout() {
+      this.clearToken();
+      this.clearUserInfo();
+    }
   },
   getters: {
     isAuthenticated: (state) => !!state.token,
