@@ -5,6 +5,7 @@ import com.doubles.selfstudy.controller.request.UserInfoModifyRequest;
 import com.doubles.selfstudy.controller.request.UserPasswordModifyRequest;
 import com.doubles.selfstudy.controller.request.UserRegistRequest;
 import com.doubles.selfstudy.controller.response.ProfileResponse;
+import com.doubles.selfstudy.dto.user.TokenDto;
 import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
@@ -12,6 +13,7 @@ import com.doubles.selfstudy.fixture.UserAccountFixture;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import com.doubles.selfstudy.service.UserAccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,11 +27,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -47,6 +53,10 @@ class UserControllerTest {
     @MockBean
     private QuestionBoardService questionBoardService;
 
+    private static String refreshToken = "testRefreshToken";
+    private static String accessToken = "testAccessToken";
+    private static String oldRefreshToken = "oldRefreshToken";
+
     @Test
     void 회원가입_정상_작동() throws Exception {
         // Given
@@ -61,8 +71,8 @@ class UserControllerTest {
 
         // Then
         mockMvc.perform(post("/api/regist")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, nickname, email, password)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new UserRegistRequest(userId, nickname, email, password)))
                 )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -94,9 +104,10 @@ class UserControllerTest {
         // Given
         String userId = "userId";
         String password = "password";
+        TokenDto mockTokenDto = TokenDto.of(accessToken, refreshToken); // TokenDto 객체 생성
 
         // When
-        when(userAccountService.login(userId, password)).thenReturn("test_token");
+        when(userAccountService.login(userId, password)).thenReturn(mockTokenDto);
 
         // Then
         mockMvc.perform(post("/api/login")
@@ -143,6 +154,57 @@ class UserControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_PASSWORD.getStatus().value()));
+    }
+
+    @Test
+    void AT_재발급_성공() throws Exception {
+        // Given
+        TokenDto tokenDto = TokenDto.of("test_access_token", "test_refresh_token");
+
+        // When
+        when(userAccountService.reissueToken(oldRefreshToken))
+                .thenReturn(tokenDto);
+
+        // Then
+        mockMvc.perform(post("/api/reissue")
+                        .cookie(new Cookie("refreshToken", oldRefreshToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void AT_재발급시_RT가_null인_경우() throws Exception {
+        // Given
+
+        // When & Then
+        mockMvc.perform(post("/api/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk()) // 값을 반환 error라도 받기때문에
+                .andExpect(jsonPath("$.resultCode").value("INVALID_TOKEN"))
+                .andExpect(jsonPath("$.result").doesNotExist());
+        // 서비스 호출 검증 (호출되지 않아야 함)
+        verify(userAccountService, never()).reissueToken(anyString());
+    }
+
+    @Test
+    void AT_재발급시_RT가_만료거나_일치하지_않는_경우() throws Exception {
+        // Given
+
+        // When
+        when(userAccountService.reissueToken(oldRefreshToken))
+            .thenThrow(new DoubleSApplicationException(ErrorCode.INVALID_TOKEN));
+
+        // Then
+        mockMvc.perform(post("/api/reissue")
+                        .cookie(new Cookie("refreshToken", oldRefreshToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
     }
 
     @Test
