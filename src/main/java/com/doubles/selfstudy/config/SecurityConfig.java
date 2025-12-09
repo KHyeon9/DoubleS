@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/ws/init/**").permitAll()  // WebSocket 엔드포인트 허용
                         .requestMatchers("/api/login", "/api/regist").permitAll()
+                        .requestMatchers("/api/reissue").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/main/notice_board").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/main/notice_board/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/main/notice_board/*").hasRole("ADMIN")
@@ -43,7 +44,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtTokenFilter(key, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handle ->
                             handle.authenticationEntryPoint(
                                     new CustomAuthenticationEntryPoint()
