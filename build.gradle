@@ -79,9 +79,20 @@ node {
     // 필요 노드 버전 자동 다운로드
     download = true
 }
-// dist 폴더 등에 실행해서 생성
+// dist 폴더에 빌드해서 생성하는 task
 task npmBuild(dependsOn: npmInstall, type: NpmTask) {
     args = ['run', 'build']
 }
+
+// task를 통해 빌드
+processResources.dependsOn npmBuild
+
+// 직접 vue 실행시 빌드된 것을 복사하는게 아니라 dist에서 옮겨오므로 수정 
+processResources {
+    from("${project.projectDir}/frontend/dist") {
+        into "static"
+    }
+}
+
 // 백엔드 빌드와 프론트엔드 빌드의 통합
-compileJava.dependsOn 'npmBuild'
+// compileJava.dependsOn 'npmBuild'
