@@ -45,12 +45,12 @@
                           </div>
                         </div>
                         <span class="mb-2 text-s" v-html="formattedContent(questionBoard.content)"></span>
-                        <div class="boardInfo">
+                        <div class="boardInfo d-flex align-items-center">
                           <div class="text-dark mb-0 mt-1">
                             <i class="material-icons text-sm me-2">sell</i>
                             {{ questionBoard.tag.value }}
                           </div>
-                          <div class="ms-auto boardCount">
+                          <div class="ms-auto boardCount d-flex">
                             <div class="text-dark px-3 mb-0">
                               <i class="material-icons text-sm me-2">visibility</i>
                               <span class="font-weight-bold">{{ questionBoard.viewCounts }}</span>
@@ -151,7 +151,6 @@
       console.log(response.data);
     } catch (error) {
       console.log('에러 발생', error);
-      alert('질문 게시글 리스트를 가져오지 못했습니다.');
     }
   };
 
@@ -169,7 +168,6 @@
       console.log(response.data);
     } catch (error) {
       console.log('에러 발생', error);
-      alert('질문 게시글 리스트를 가져오지 못했습니다.');
     }
   };
 
@@ -182,7 +180,6 @@
       console.log(response.data)
     } catch (error) {
       console.log('태그를 가져오지 못했습니다.', error);
-      alert('태그를 가져오는데 오류가 생겼습니다.');
     }
   };
 

@@ -91,8 +91,10 @@
 
   const noticeBoardList = ref([]);
   const questionBoardList = ref([]);
+  const errorMessage = ref(null); // 에러 메시지 상태 추가
 
   const getData = async () => {
+    errorMessage.value = null; // 요청 전 에러 메시지 초기화
     try {
       const noticeBoardResponse = await apiClient.get('/main/notice_board_list');
       const qeustionBoardResponse = await apiClient.get('/main/question_board_list');
@@ -103,7 +105,6 @@
       console.log(questionBoardList.value);
     } catch (error) {
       console.log('데이터 가져오기 실패: ', error);
-      alert('데이터 가져오기를 실패했습니다.');
     }
   };
 

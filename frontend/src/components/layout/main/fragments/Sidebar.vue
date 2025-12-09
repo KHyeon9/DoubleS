@@ -174,9 +174,7 @@
   };
 
   const logout = () => {
-    authStore.clearToken();
-    authStore.clearUserInfo();
-
+    authStore.logout();
     alert('로그아웃 되었습니다.');
 
     router.push('/login');

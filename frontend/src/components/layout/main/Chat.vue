@@ -302,7 +302,6 @@
             console.log(messageBody);
           } catch (error) {
             console.log('메세지를 가져오는데 에러가 발생했습니다. ', error);
-            alert('메세지를 가져오는데 에러가 발생했습니다.');
           }
 
           await nextTick();
@@ -337,7 +336,6 @@
 
     } catch (error) {
       console.log('채팅방을 가져오지 못했습니다.', error);
-      alert('채팅방을 가져오는데 오류가 생겼습니다.');
     }
   };
 
@@ -354,7 +352,6 @@
       }
     } catch (error) {
       console.log('닉네임으로 채팅방을 가져오지 못했습니다.', error);
-      alert('닉네임으로 채팅방을 가져오는데 오류가 생겼습니다.');
     }
   };
 
