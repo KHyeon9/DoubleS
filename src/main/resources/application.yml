@@ -1,4 +1,7 @@
 spring:
+  devtools:
+    restart:
+      exclude: static/**, public/**
   config:
     import: optional:file:.env[.properties]
   datasource:
@@ -26,8 +29,10 @@ spring:
 jwt:
   secret-key: self_study_project.doubles_application_2024.secret_key
   token:
-    # 30 days
-    expired-time-ms: 2592000000
+    # 30 min
+    access-expired-time-ms: 1800000
+    # 2 week
+    refresh-expired-time-ms: 1209600000
 logging:
   level:
     org.springframework.web.socket: DEBUG
