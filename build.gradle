@@ -89,6 +89,9 @@ processResources.dependsOn npmBuild
 
 // 직접 vue 실행시 빌드된 것을 복사하는게 아니라 dist에서 옮겨오므로 수정 
 processResources {
+    // 중복된 파일을 발견했을 때, 둘 중 하나를 제외하고 빌드를 진행합니다.
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     from("${project.projectDir}/frontend/dist") {
         into "static"
     }
