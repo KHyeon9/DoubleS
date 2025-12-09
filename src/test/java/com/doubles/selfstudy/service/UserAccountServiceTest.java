@@ -1,5 +1,6 @@
 package com.doubles.selfstudy.service;
 
+import com.doubles.selfstudy.config.JwtTokenProvider;
 import com.doubles.selfstudy.entity.StudyGroup;
 import com.doubles.selfstudy.entity.UserAccount;
 import com.doubles.selfstudy.entity.UserStudyGroup;
@@ -7,10 +8,7 @@ import com.doubles.selfstudy.exception.DoubleSApplicationException;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.fixture.StudyGroupFixture;
 import com.doubles.selfstudy.fixture.UserStudyGroupFixture;
-import com.doubles.selfstudy.repository.ChatRoomRepository;
-import com.doubles.selfstudy.repository.UserAccountCacheRepository;
-import com.doubles.selfstudy.repository.UserAccountRepository;
-import com.doubles.selfstudy.repository.UserStudyGroupRepository;
+import com.doubles.selfstudy.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +23,6 @@ import static com.doubles.selfstudy.fixture.UserAccountFixture.get;
 import static com.doubles.selfstudy.fixture.UserAccountFixture.getAdmin;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -40,9 +37,13 @@ class UserAccountServiceTest {
     @MockBean
     private UserAccountCacheRepository userAccountCacheRepository;
     @MockBean
+    private RefreshTokenCacheRepository refreshTokenCacheRepository;
+    @MockBean
     private UserStudyGroupRepository userStudyGroupRepository;
     @MockBean
     private ChatRoomRepository chatRoomRepository;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
     @MockBean
     private BCryptPasswordEncoder encoder;
 
@@ -145,6 +146,88 @@ class UserAccountServiceTest {
                 () -> userAccountService.login(userId, wrongPassword));
 
         assertEquals(ErrorCode.INVALID_PASSWORD, e.getErrorCode());
+    }
+
+    @Test
+    void 토큰_재발급_성공() {
+        // Given
+        String refreshToken = "testRefreshToken";
+        String newAccessToken = "newAccessToken";
+        String userId = "userId";
+
+        // When
+        when(jwtTokenProvider.validateToken(refreshToken))
+                .thenReturn(true);
+
+        when(jwtTokenProvider.getUserId(refreshToken))
+                .thenReturn(userId);
+
+        when(refreshTokenCacheRepository.findByUserId(userId))
+                .thenReturn(Optional.of(refreshToken));
+
+        when(jwtTokenProvider.createAccessToken(userId))
+                .thenReturn(newAccessToken);
+
+        // Then
+        assertDoesNotThrow(() -> userAccountService.reissueToken(refreshToken));
+    }
+
+    @Test
+    void 토큰_재발급시_RT가_만료된_경우() {
+        // Given
+        String refreshToken = "testRefreshToken";
+        String newAccessToken = "newAccessToken";
+        String userId = "userId";
+
+        // When
+        when(jwtTokenProvider.validateToken(refreshToken))
+                .thenReturn(false);
+
+        when(jwtTokenProvider.getUserId(refreshToken))
+                .thenReturn(userId);
+
+        when(refreshTokenCacheRepository.findByUserId(userId))
+                .thenReturn(Optional.empty());
+
+        when(jwtTokenProvider.createAccessToken(userId))
+                .thenReturn(newAccessToken);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.reissueToken(refreshToken)
+        );
+
+        assertEquals(ErrorCode.INVALID_TOKEN, e.getErrorCode());
+    }
+
+    @Test
+    void 토큰_재발급시_저장된_RT가_맞지_않는_경우() {
+        // Given
+        String refreshToken = "testRefreshToken";
+        String newAccessToken = "newAccessToken";
+        String userId = "userId";
+
+        // When
+        when(jwtTokenProvider.validateToken(refreshToken))
+                .thenReturn(true);
+
+        when(jwtTokenProvider.getUserId(refreshToken))
+                .thenReturn(userId);
+
+        when(refreshTokenCacheRepository.findByUserId(userId))
+                .thenReturn(Optional.empty());
+
+        when(jwtTokenProvider.createAccessToken(userId))
+                .thenReturn(newAccessToken);
+
+        // Then
+        DoubleSApplicationException e = assertThrows(
+                DoubleSApplicationException.class,
+                () -> userAccountService.reissueToken(refreshToken)
+        );
+
+        assertEquals(ErrorCode.INVALID_TOKEN, e.getErrorCode());
     }
 
     @Test
