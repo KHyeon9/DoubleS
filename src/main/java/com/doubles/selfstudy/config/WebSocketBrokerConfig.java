@@ -12,8 +12,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 @Configuration
 public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
-
-    private final JwtTokenProvider jwtTokenProvider; // JWT를 검증하는 로직을 가진 서비스
+    // 인터셉터 적용을 위한 의존성 주입
+    private final JwtChannelInterceptor jwtChannelInterceptor;
 
     // 메시지를 중간에서 라우팅할 때 사용하는 메시지 브로커를 구성
     @Override
@@ -37,6 +37,6 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new JwtChannelInterceptor(jwtTokenProvider));
+        registration.interceptors(jwtChannelInterceptor);
     }
 }

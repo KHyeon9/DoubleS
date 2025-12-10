@@ -222,7 +222,6 @@
     await websocketClient.publish({
       destination: `/pub/chat/room/${nowChatRoomId.value}`,
       body: JSON.stringify({
-        sendUserId: userId.value,
         chatRoomId: nowChatRoomId.value,
         message: message.value
       })

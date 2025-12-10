@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -46,13 +47,16 @@ public class ChatController {
     @MessageMapping("/chat/room/{chatRoomId}")
     public void sendMessage(
             @DestinationVariable(value = "chatRoomId") Long chatRoomId,
-            SendMessageRequest request
+            SendMessageRequest request,
+            Principal principal
     ) {
+        String userId = principal.getName();
         log.info("# chatRoomId : {}", chatRoomId);
+        log.info("# userId : {}", userId);
         log.info("# message : {}", request.getMessage());
 
         ChatMessageDto chatMessageDto =
-                chatService.newChatMessage(request.getChatRoomId(), request.getSendUserId(), request.getMessage());
+                chatService.newChatMessage(request.getChatRoomId(), userId, request.getMessage());
 
         ChatMessageResponse response = ChatMessageResponse.fromChatMessageDto(chatMessageDto);
 
