@@ -33,9 +33,9 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 * Redis
   * 인증 과정의 DB 부하 제거 및 조회 속도 향상. Spring Security Context의 UserID를 기반으로 캐시를 조회하는 Look-Aside Cache 전략 적용
 ### Concurrency
-* WebSocket,
+* WebSocket
   * 그룹 스터디 채팅 등 양방향 실시간 대화 기능 구현하기 위해 채택
-* SSE (Server-Sent-Events)
+* SSE(Server-Sent-Events)
   * 알림 기능 한정으로 사용. WebSocket 대비 리소스 및 메모리 비용이 작아 효율적이기 때문에 사용
 ### Frontend
 * Vue3 + Vite, Pinia
