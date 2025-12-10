@@ -35,7 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
+        // 토큰 재발급은 jwt 필터 스킵
         if (TOKEN_SKIP_URIS.contains(request.getRequestURI())) {
             log.info("Access Token 검증 스킵: 재발급(Reissue) 경로 접근 허용. URI: {}", request.getRequestURI());
             filterChain.doFilter(request, response);
@@ -44,9 +44,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         final String token;
 
-        // WebSocket 연결 시 토큰 추출 (쿼리 파라미터 체크)
-        // 이 부분은 STOMP 연결을 위한 Spring의 인터셉터(JwtChannelInterceptor)가 처리하는 것이 더 표준적입니다.
-        // 하지만 레거시 호환성을 위해 유지하되, 쿼리스트링 파싱 로직을 개선합니다.
+        // SSE 연결 시 토큰 추출 (쿼리 파라미터 체크)
         if (TOKEN_IN_PARAM_URLS.contains(request.getRequestURI()) && request.getQueryString() != null) {
             String queryString = request.getQueryString();
             String[] params = queryString.split("&");
