@@ -13,6 +13,7 @@ import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.repository.*;
 import com.doubles.selfstudy.utils.ServiceUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserAccountService {
@@ -78,6 +80,14 @@ public class UserAccountService {
 
         // 토큰 반환
         return TokenDto.of(accessToken, refreshToken);
+    }
+
+    // 로그아웃
+    public void logout(String userId) {
+        // 로그아웃시 Refresh Token 삭제
+        refreshTokenCacheRepository.deleteByUserId(userId);
+        
+        log.info("userId의 RT 제거");
     }
 
     // 토큰 재발급 (Reissue)

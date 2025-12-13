@@ -60,11 +60,11 @@ public class SecurityConfig {
     }
     
     // 헤더에 인증 데이터를 특정 주소에서만 읽도록 커스텀 (수정할 수도 있음)
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring()
-                .requestMatchers(RegexRequestMatcher.regexMatcher("^(?!/api/main/).*"))
-                .requestMatchers(HttpMethod.POST, "/api/regist", "/api/login")
-        );
-    }
+    //    @Bean
+    //    public WebSecurityCustomizer webSecurityCustomizer() {
+    //        return (web -> web.ignoring()
+    //                .requestMatchers(RegexRequestMatcher.regexMatcher("^(?!/api/main/).*"))
+    //                .requestMatchers(HttpMethod.POST, "/api/regist", "/api/login")
+    //        );
+    //    }
 }

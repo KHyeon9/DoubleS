@@ -153,6 +153,7 @@
   import { useIndexStore } from '../../../../store/IndexStore.js';
   import { useAuthStore } from '../../../../store/authStore.js';
   import { computed } from 'vue';
+  import apiClient from "../../../../config/authConfig.js";
   const route = useRoute();
   const router = useRouter();
   const indexStore = useIndexStore();
@@ -173,11 +174,21 @@
     return route.path.startsWith(path);
   };
 
-  const logout = () => {
-    authStore.logout();
-    alert('로그아웃 되었습니다.');
-
-    router.push('/login');
+  const logout = async () => {
+    // logout으로 보내서 RT 제거
+    try {
+      const response = await apiClient.post('/logout');
+      console.log('서버 로그아웃 성공:', response.data);
+    } catch (error) {
+      //  서버 요청 실패 (500 Internal Server Error 등) 처리
+      console.error('서버에서 로그아웃 처리 중 오류 발생 (500 등):', error);
+      // 서버에서 RT 제거에 실패했음을 사용자에게 알리는 로직을 추가해야 합니다.
+      // (예: indexStore.showNotification('로그아웃 처리 중 서버 오류가 발생했습니다. 로컬 세션만 종료됩니다.', 'error'))
+    } finally {
+      authStore.logout();
+      alert('로그아웃 되었습니다.');
+      router.push('/login');
+    }
   }
 
 </script>

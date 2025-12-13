@@ -14,11 +14,13 @@ import com.doubles.selfstudy.service.UserAccountService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
@@ -45,6 +47,23 @@ public class UserController {
         System.out.println("sameSiteHeader: " + sameSiteHeader);
 
         return Response.success(UserLoginResponse.ofDto(tokenDto));
+    }
+    
+    // 로그아웃
+    @PostMapping("/logout")
+    public Response<Void> logout(
+            Authentication authentication
+    ) {
+        if (authentication == null) {
+            log.warn("인증되지 않은 사용자(/logout) 요청. 토큰이 없거나 이미 만료된 상태일 수 있습니다.");
+            // 클라이언트 세션 정리만 하도록 유도하기 위해 성공 응답을 반환할 수도 있습니다.
+            // 또는 401 에러를 명시적으로 반환할 수도 있습니다. (정책에 따라 선택)
+            return Response.error(ErrorCode.ACCESS_DENIED.name());
+        }
+
+        userAccountService.logout(authentication.getName());
+
+        return Response.success();
     }
 
     // token 재발급
