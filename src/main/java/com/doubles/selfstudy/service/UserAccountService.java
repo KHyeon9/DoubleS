@@ -85,9 +85,10 @@ public class UserAccountService {
     // 로그아웃
     public void logout(String userId) {
         // 로그아웃시 Refresh Token 삭제
-        refreshTokenCacheRepository.deleteByUserId(userId);
-        
-        log.info("userId의 RT 제거");
+        if (refreshTokenCacheRepository.findByUserId(userId).isPresent()) {
+            refreshTokenCacheRepository.deleteByUserId(userId);
+            log.info("userId의 RT 제거");
+        }
     }
 
     // 토큰 재발급 (Reissue)

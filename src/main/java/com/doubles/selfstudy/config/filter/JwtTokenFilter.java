@@ -25,7 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private static final List<String> TOKEN_SKIP_URIS = List.of(
             "/api/reissue" // Access Token 재발급 요청은 Access Token 검증을 건너뜁니다.
     );
-    // WebSocket 연결 시 STOMP 프로토콜이 아닌 HTTP 요청으로 인증을 시도하는 엔드포인트 목록
+    // SSE 연결 시 HTTP 요청으로 인증을 시도하는 엔드포인트 목록
     private final static List<String> TOKEN_IN_PARAM_URLS = List.of("/api/main/alarm/sub");
     private static final String BEARER_PREFIX = "Bearer ";
     private static String TOKEN_PREFIX = "token=";
