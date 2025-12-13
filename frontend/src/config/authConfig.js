@@ -14,7 +14,8 @@ const apiClient = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-/** 대기열에 쌓인 요청들을 처리합니다.
+/**
+ *  대기열에 쌓인 요청들을 처리합니다.
  *  새 토큰을 받으면 resolve, 재발급 실패 시 reject 처리합니다.
  */
 const processQueue = (error, token = null) => {
@@ -36,16 +37,11 @@ apiClient.interceptors.request.use(
     const token = authStore.token;
 
     if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-        console.log(`[Axios Interceptor] JWT Token attached: ${token.substring(0, 10)}...`);
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log(`[Axios Interceptor] JWT Token : ${token.substring(0, 10)}...`);
     } else {
-        console.log('[Axios Interceptor] No JWT token found in localStorage.');
+        console.log('[Axios Interceptor] No JWT token');
     }
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
     return config;
   },
   (error) => Promise.reject(error)
@@ -63,10 +59,9 @@ apiClient.interceptors.response.use(
         // 401 에러인지 확인 (Access Token 만료)
         // 이미 재시도한 요청이 아닌지 확인 (!originalRequest._retry)
         if (error.response?.status === 401 && !originalRequest._retry) {
-            console.log('[Axios Interceptor] 401 Unauthorized detected. Redirecting to login.');
+            console.log('[Axios Interceptor] 401 Unauthorized 확인. 로그인으로 리다이렉트');
             // 반복 막기위해 true로 변경
             originalRequest._retry = true;
-
             if (isRefreshing) {
                 // 재발급 진행 중: 현재 요청을 대기열에 추가하고 기다립니다.
                 return new Promise((resolve, reject) => {
@@ -90,7 +85,7 @@ apiClient.interceptors.response.use(
                     baseURL: '/api',
                     withCredentials: true,
                 });
-
+                // 재발급 받은 access token
                 const newToken = response.data.result.accessToken;
 
                 // Pinia Store 및 localStorage 업데이트
