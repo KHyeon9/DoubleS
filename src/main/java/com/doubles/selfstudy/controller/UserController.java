@@ -41,7 +41,7 @@ public class UserController {
         System.out.println("tokenDto: " + tokenDto);
 
         // RT를 HttpOnly 쿠키로 설정합니다.
-        String sameSiteHeader = setCookie("refreshToken", tokenDto.getRefreshToken());
+        String sameSiteHeader = setCookie("refreshToken", tokenDto.getRefreshToken(), true);
         httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
 
         System.out.println("sameSiteHeader: " + sameSiteHeader);
@@ -82,16 +82,16 @@ public class UserController {
         TokenDto newTokenDto = userAccountService.reissueToken(refreshToken);
 
         // RT를 다시 HttpOnly 쿠키로 설정합니다. (토큰 회전)
-        String sameSiteHeader = setCookie("refreshToken", newTokenDto.getRefreshToken());
+        String sameSiteHeader = setCookie("refreshToken", newTokenDto.getRefreshToken(), true);
         httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
 
         return Response.success(UserLoginResponse.ofDto(newTokenDto));
     }
 
-    private static String setCookie(String name, String value) {
+    private static String setCookie(String name, String value, boolean secure) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true); // login과 동일하게 설정 유지
+        cookie.setSecure(secure); // login과 동일하게 설정 유지
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60 * 24 * 14); // 14일
  
