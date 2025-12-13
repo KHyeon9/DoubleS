@@ -116,7 +116,7 @@ public class UserAccountService {
         }
 
         // 모든 검증이 통과되면 새로운 Access Token 발급
-        String accessToken = jwtTokenProvider.createAccessToken(userId);
+        String accessToken = jwtTokenProvider.reissueAccessToken(userId);
 
         return TokenDto.of(accessToken, refreshToken);
     }
