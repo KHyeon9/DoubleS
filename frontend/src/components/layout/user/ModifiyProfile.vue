@@ -116,6 +116,9 @@
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
   import apiClient from '../../../config/authConfig';
+  import {useAuthStore} from "../../../store/authStore.js";
+
+  const authStore = useAuthStore();
 
   const router = useRouter();
   const userId = ref('');
@@ -151,17 +154,19 @@
       return;
     }
 
-    const response = await apiClient.put("/main/profile/user_info", {
-      nickname: nickname.value,
-      email: email.value,
-      memo: memo.value
-    });
-
-    console.log(response.data.result);
-
-    router.push('/main/profile');
     try{
+      const response = await apiClient.put("/main/profile/user_info", {
+        nickname: nickname.value,
+        email: email.value,
+        memo: memo.value
+      });
 
+      console.log("수정 성공:", response.data.result);
+
+      // 알림 메시지 (사용자 경험 향상)
+      alert('회원 정보가 수정되었습니다.');
+
+      router.push(`/main/profile/modify/${userId}`);
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       alert('유저 정보 수정을 실패했습니다.');
@@ -183,8 +188,21 @@
         nowPassword: nowPassword.value,
         changePassword: newPassword.value,
       });
-
-      router.push('/main/profile');
+      if (response.status === 200) {
+        // 서버 로그아웃 호출 (토큰/세션 무효화)
+        try {
+          await apiClient.post('/logout');
+          console.log('서버 로그아웃 성공');
+        } catch (logoutError) {
+          // 로그아웃 API가 실패하더라도 클라이언트 상태는 지워야 하므로 에러만 기록
+          console.error('서버 로그아웃 호출 중 오류 발생:', logoutError);
+        }
+        // 클라이언트 상태 초기화 및 리다이렉트
+        authStore.logout();
+        // 사용자에게 알림 후 이동
+        console.log('비밀번호가 성공적으로 변경되었습니다. 다시 로그인 해주세요.');
+        router.push('/login');
+      }
     } catch (error) {
       console.log('에러가 발생했습니다.', error);
       if(error.response.data.resultCode === "INVALID_PASSWORD") {
