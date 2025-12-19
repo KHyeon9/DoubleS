@@ -11,10 +11,10 @@ import com.doubles.selfstudy.dto.user.UserAccountDto;
 import com.doubles.selfstudy.exception.ErrorCode;
 import com.doubles.selfstudy.service.QuestionBoardService;
 import com.doubles.selfstudy.service.UserAccountService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +28,7 @@ public class UserController {
 
     private final UserAccountService userAccountService;
     private final QuestionBoardService questionBoardService;
+    private static int REFRESHTOKEN_AGE = 60 * 60 * 24 * 14;
     
     // 로그인
     @PostMapping("/login")
@@ -41,7 +42,7 @@ public class UserController {
         System.out.println("tokenDto: " + tokenDto);
 
         // RT를 HttpOnly 쿠키로 설정합니다.
-        String sameSiteHeader = setCookie("refreshToken", tokenDto.getRefreshToken(), true);
+        String sameSiteHeader = setRefreshTokenCookie(tokenDto.getRefreshToken(), REFRESHTOKEN_AGE, true);
         httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
 
         System.out.println("sameSiteHeader: " + sameSiteHeader);
@@ -52,7 +53,8 @@ public class UserController {
     // 로그아웃
     @PostMapping("/logout")
     public Response<Void> logout(
-            Authentication authentication
+            Authentication authentication,
+            HttpServletResponse httpServletResponse
     ) {
         if (authentication == null) {
             log.warn("인증되지 않은 사용자(/logout) 요청. 토큰이 없거나 이미 만료된 상태일 수 있습니다.");
@@ -60,8 +62,11 @@ public class UserController {
             // 또는 401 에러를 명시적으로 반환할 수도 있습니다. (정책에 따라 선택)
             return Response.error(ErrorCode.ACCESS_DENIED.name());
         }
-
+        // 서버측 토큰 무효화 (DB/Redis 등에서 삭제)
         userAccountService.logout(authentication.getName());
+        // 브라우저 쿠키 삭제를 위해 Max-Age=0인 쿠키 헤더 설정
+        String deleteCookieHeader = setRefreshTokenCookie("", 0, true);
+        httpServletResponse.setHeader("Set-Cookie", deleteCookieHeader);
 
         return Response.success();
     }
@@ -82,37 +87,24 @@ public class UserController {
         TokenDto newTokenDto = userAccountService.reissueToken(refreshToken);
 
         // RT를 다시 HttpOnly 쿠키로 설정합니다. (토큰 회전)
-        String sameSiteHeader = setCookie("refreshToken", newTokenDto.getRefreshToken(), true);
+        String sameSiteHeader = setRefreshTokenCookie(
+                newTokenDto.getRefreshToken(), REFRESHTOKEN_AGE,true);
         httpServletResponse.setHeader("Set-Cookie", sameSiteHeader);
 
         return Response.success(UserLoginResponse.ofDto(newTokenDto));
     }
 
-    private static String setCookie(String name, String value, boolean secure) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(secure); // login과 동일하게 설정 유지
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60 * 24 * 14); // 14일
- 
-        // SameSite=Lax 속성 재적용
-        String sameSiteHeader;
-        if (cookie.getSecure()) {
-            sameSiteHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Lax",
-                    cookie.getName(),
-                    cookie.getValue(),
-                    cookie.getMaxAge(),
-                    cookie.getPath()
-            );
-        } else {
-            sameSiteHeader = String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; SameSite=Lax",
-                    cookie.getName(),
-                    cookie.getValue(),
-                    cookie.getMaxAge(),
-                    cookie.getPath()
-            );
-        }
-        return sameSiteHeader;
+    private static String setRefreshTokenCookie(String refreshToken, int age, boolean secure) {
+        ResponseCookie cookie  = ResponseCookie
+                .from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(secure)
+                .path("/")
+                .maxAge(age) // 14 일 60 * 60 * 24 * 14
+                .sameSite("Lax") // SameSite=Lax 속성 적용
+                .build();
+
+        return cookie.toString();
     }
 
     @PostMapping("/regist")
