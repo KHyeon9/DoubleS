@@ -40,7 +40,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        new JwtTokenFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .exceptionHandling(handle ->
                             handle.authenticationEntryPoint(
                                     new CustomAuthenticationEntryPoint()

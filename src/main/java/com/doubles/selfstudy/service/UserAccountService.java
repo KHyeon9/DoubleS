@@ -146,13 +146,19 @@ public class UserAccountService {
     public UserAccountDto modifiyUserInfo(String userId, String nickname, String email, String memo) {
         // 유저 정보 가져옴
         UserAccount userAccount = serviceUtils.getUserAccountOrException(userId);
-
+        // 유저 정보 수정
         userAccount.setNickname(nickname);
         userAccount.setEmail(email);
         userAccount.setMemo(memo);
-        
+        // DB에 먼저 반영
+        UserAccount updatedUser = userAccountRepository.saveAndFlush(userAccount);
+        UserAccountDto resultDto = UserAccountDto.fromEntity(updatedUser);
+        // DB 수정이 성공한 직후에 캐시를 삭제하여,
+        // 이후 조회 요청 시 DB의 최신 데이터가 캐시에 다시 올라오도록 유도합니다.
+        userAccountCacheRepository.deleteUserAccount(userId);
+
         // 변경 내용 수정
-        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+        return resultDto;
     }
 
     // 유저 비밀번호 수정
@@ -169,7 +175,14 @@ public class UserAccountService {
         // 변경 내용 수정
         userAccount.setPassword(encoder.encode(changePassword));
 
-        return UserAccountDto.fromEntity(userAccountRepository.saveAndFlush(userAccount));
+        // DB에 먼저 반영
+        UserAccount updatedUser = userAccountRepository.saveAndFlush(userAccount);
+        UserAccountDto resultDto = UserAccountDto.fromEntity(updatedUser);
+        // DB 수정이 성공한 직후에 캐시를 삭제하여,
+        // 이후 조회 요청 시 DB의 최신 데이터가 캐시에 다시 올라오도록 유도합니다.
+        userAccountCacheRepository.deleteUserAccount(userId);
+
+        return resultDto;
     }
 
     // 유저 삭제
