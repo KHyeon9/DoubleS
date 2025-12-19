@@ -89,6 +89,11 @@ public class UserAccountService {
             refreshTokenCacheRepository.deleteByUserId(userId);
             log.info("userId의 RT 제거");
         }
+        // 로그아웃시 redis 캐시 데이터 제거
+        if (userAccountCacheRepository.getUserAccount(userId).isPresent()) {
+            userAccountCacheRepository.deleteUserAccount(userId);
+            log.info("userId 캐싱 데이터 삭제");
+        }
     }
 
     // 토큰 재발급 (Reissue)
