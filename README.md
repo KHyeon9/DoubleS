@@ -67,9 +67,11 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 Access Token만을 이용하는 경우, 토큰 유효 기간 동안 탈취된 토큰이 지속적으로 사용될 수 있는 보안 취약점이 존재했습니다.
 * 구현 및 효과: 이 문제를 해결하기 위해 Access Token과 Refresh Token을 분리하여 구현했습니다.
   * Access Token: 짧은 유효 기간(Short-lived)을 설정하여 토큰 탈취 위험을 최소화했습니다.
-  * Refresh Token:
-    * 긴 유효 기간(Long-lived)을 가지며, DB 대신 Redis에 저장하여 조회 효율성과 데이터 영속성을 확보 및 클라이언트 측의 HttpOnly 쿠키에 저장하여 XSS(Cross-Site Scripting) 공격으로부터 토큰 탈취 위험을 최소화했습니다.
-    * SameSite 설정 Lax와 Secure 속성을 추가함으로 CSRF 공격과 네트워크 스니핑을 방지했습니다.
+  * Refresh Token: 긴 유효 기간(Long-lived)을 가지며, DB 대신 Redis에 저장하여 상태 관리 및 조회 효율성을을 확보했습니다.
+  * 쿠키 보안 속성 최적화
+    1. HttpOnly 설정을 통해 클라이언트 스크립트(JS) 접근을 차단하여 XSS 공격을 방어했습니다.
+    2. SameSite=Lax 설정을 통해 CSRF 공격 시 토큰이 전송되지 않도록 방지했습니다.
+    3. Secure 속성을 추가하여 HTTPS 통신 환경에서만 토큰이 전송되도록 함으로써 네트워크 스니핑 위험을 제거했습니다.
   * Access Token 만료 시 Refresh Token을 이용해 자동 갱신되도록 구현하여 사용자에게 보안 수준을 높이면서 사용자에게는 끊김 없는 인증 세션을 제공할 수 있었습니다.
 ## 배포 및 접속 정보
 * ([koyeb](https://yeasty-kalie-hyeon-7cf77d77.koyeb.app/login)) (1시간 마다 꺼져서 오래걸릴 수 있음)
