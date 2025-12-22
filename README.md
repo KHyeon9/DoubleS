@@ -54,8 +54,8 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 ### 2. 코드 안정성 확보: TDD 및 계층별 테스트
 프로젝트의 안정성을 최우선 목표로, TDD(Test-Driven Development)원칙을 도입하여 테스트 코드를 설계 및 작성했습니다.
 * 다계층 테스트 전략
-  * Service Layer (단위 테스트): Repository와 독립된 비즈니스 로직의 성공 및 예외 발생 행위를 검증하여 비즈니스 로직의 신뢰성을 확보했습니다.
-  * Controller Layer (통합 테스트): HTTP 요청(URI, Method, Parameter)과 Spring Security 기반의 인증/권한 검사를 중심으로 API의 동작을 검증했습니다.
+  * Service Layer: Repository와 독립된 비즈니스 로직의 성공 및 예외 발생 행위를 검증하여 비즈니스 로직의 신뢰성을 확보했습니다.
+  * Controller Layer: HTTP 요청(URI, Method, Parameter)과 Spring Security 기반의 인증/권한 검사를 중심으로 API의 동작을 검증했습니다.
 * 인증 및 권한 검증
   * 비로그인 상태에서 인증이 필요한 API에 접근 시 접근 거부가 발생하는지를 명확히 테스트하여 보안 취약점을 사전 방지했습니다.
 ### 3. 예외 처리 구조
