@@ -52,7 +52,7 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 * 복합 조회 쿼리 작성 및 최적화(JPQL 활용)
   * 단순 매핑 변경으로 해결이 불가능한 복잡한 조회 문제를 해결하기 위해 JPQL을 직접 작성하여, 연관 관계 즉시 로딩 기법과 서브 쿼리를 활용한 복합 쿼리를 구현했습니다.
 ### 2. 코드 안정성 확보: TDD 및 계층별 테스트
-프로젝트의 안정성을 최우선 목표로, TDD(Test-Driven Development)원칙을 도입하여 테스트 코드를 설계 및 작성했습니다.
+프로젝트의 안정성을 최우선 목표로, TDD(Test-Driven Development)원칙을 도입하여 300 여개의 테스트 코드를 설계 및 작성했습니다.
 * 다계층 테스트 전략
   * Service Layer: Repository와 독립된 비즈니스 로직의 성공 및 예외 발생 행위를 검증하여 비즈니스 로직의 신뢰성을 확보했습니다.
   * Controller Layer: HTTP 요청(URI, Method, Parameter)과 Spring Security 기반의 인증/권한 검사를 중심으로 API의 동작을 검증했습니다.
