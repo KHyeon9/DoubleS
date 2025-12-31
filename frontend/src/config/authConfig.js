@@ -58,7 +58,7 @@ apiClient.interceptors.response.use(
         const originalRequest = error.config;
         // 401 에러인지 확인 (Access Token 만료)
         // 이미 재시도한 요청이 아닌지 확인 (!originalRequest._retry)
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/login') {
             console.log('[Axios Interceptor] 401 Unauthorized 확인. 로그인으로 리다이렉트');
             // 반복 막기위해 true로 변경
             originalRequest._retry = true;
@@ -73,6 +73,10 @@ apiClient.interceptors.response.use(
                 }).catch(err => {
                     return Promise.reject(err);
                 });
+            } else if (error.response?.status === 401 && originalRequest.url === '/login') {
+                // 로그인 요청에서 401이 발생한 경우 (비밀번호 틀림 등)
+                console.log('[Axios] 로그인 실패: 아이디 또는 비밀번호 확인 필요');
+                return Promise.reject(new Error('아이디 또는 비밀번호가 일치하지 않습니다.'));
             }
 
             // 재발급 시작
