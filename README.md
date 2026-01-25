@@ -7,7 +7,6 @@ DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 �
 ## 개발환경
  - Intellij IDEA Ultimate 2023.2.2
  - VSCode
- - Docker
  - Java 21
  - Gradle 8.5
 ### Hosting
