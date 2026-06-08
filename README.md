@@ -1,5 +1,14 @@
 # DoubleS
-![image](https://github.com/user-attachments/assets/d00b3129-6ea4-4810-b2f7-d8f2e90a391f)
+<table>
+  <tr>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/d00b3129-6ea4-4810-b2f7-d8f2e90a391f" width="100%" alt="화면1"/>
+    </td>
+    <td width="50%">
+      <img src="https://github.com/user-attachments/assets/5fe2eb20-123f-457f-ba8b-fa3f1a8bd276" width="100%" alt="화면2"/>
+    </td>
+  </tr>
+</table>
 
 ## 설명
 DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 함께 학습하고 정보를 공유하는 커뮤니티 플랫폼으로 성능 문제 해결 및 안정성 확보에 집중하여 문제 해결 능력을 향상하는 것을 목표로 했습니다.
