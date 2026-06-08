@@ -16,6 +16,10 @@
 ## 설명
 DoubleS는 독학하는 사용자들이 그룹 스터디 및 채팅을 통해 함께 학습하고 정보를 공유하는 커뮤니티 플랫폼으로 성능 문제 해결 및 안정성 확보에 집중하여 문제 해결 능력을 향상하는 것을 목표로 했습니다.
 
+## 테이블 구조
+<img width="1300" height="600" alt="image" src="https://github.com/user-attachments/assets/dd55278f-f00b-4cd3-b4a0-053f229544da" />
+
+
 ## 개발환경
  - Intellij IDEA Ultimate 2023.2.2
  - VSCode
