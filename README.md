@@ -1,11 +1,14 @@
 # DoubleS
 <table>
   <tr>
-    <td width="50%">
-      <img src="https://github.com/user-attachments/assets/d00b3129-6ea4-4810-b2f7-d8f2e90a391f" width="100%" alt="화면1"/>
+    <td width="33%">
+      <img src="https://github.com/user-attachments/assets/5fe2eb20-123f-457f-ba8b-fa3f1a8bd276" width="100%" height="100%" alt="login"/>
     </td>
-    <td width="50%">
-      <img src="https://github.com/user-attachments/assets/5fe2eb20-123f-457f-ba8b-fa3f1a8bd276" width="100%" alt="화면2"/>
+    <td width="33%">
+      <img src="https://github.com/user-attachments/assets/d00b3129-6ea4-4810-b2f7-d8f2e90a391f" width="100%" height="100%" alt="main"/>
+    </td>
+     <td width="33%">
+      <img src="https://github.com/user-attachments/assets/b616c1e0-320c-49f9-ba16-2e32824e4908" width="100%" height="100%" alt="chat"/>
     </td>
   </tr>
 </table>
