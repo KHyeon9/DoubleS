@@ -100,7 +100,8 @@ public class UserAccountService {
     public TokenDto reissueToken(String refreshToken) {
         // Refresh Token 유효성 검증
         if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new DoubleSApplicationException(ErrorCode.INVALID_TOKEN, "Refresh Token이 유효하지 않습니다.");
+            throw new DoubleSApplicationException(
+                    ErrorCode.INVALID_TOKEN, "Refresh Token이 유효하지 않습니다.");
         }
 
         // Refresh Token에서 userId 추출
@@ -122,7 +123,7 @@ public class UserAccountService {
         }
 
         // 모든 검증이 통과되면 새로운 Access Token 발급
-        String accessToken = jwtTokenProvider.reissueAccessToken(userId);
+        String accessToken = jwtTokenProvider.reissueAccessToken(refreshToken);
 
         return TokenDto.of(accessToken, refreshToken);
     }
